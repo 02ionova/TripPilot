@@ -1,0 +1,296 @@
+{
+  "data_source": "simulated",
+  "flights": [
+    {
+      "airline": "Simulated Example Air 1",
+      "departure_time": "07:00",
+      "arrival_time": "09:00",
+      "return_departure_time": "21:00",
+      "return_arrival_time": "23:00",
+      "duration_minutes": 120,
+      "price_per_traveler": 100
+    },
+    {
+      "airline": "Simulated Example Air 2",
+      "departure_time": "07:00",
+      "arrival_time": "09:00",
+      "return_departure_time": "21:00",
+      "return_arrival_time": "23:00",
+      "duration_minutes": 120,
+      "price_per_traveler": 155
+    },
+    {
+      "airline": "Simulated Example Air 3",
+      "departure_time": "07:00",
+      "arrival_time": "09:00",
+      "return_departure_time": "21:00",
+      "return_arrival_time": "23:00",
+      "duration_minutes": 120,
+      "price_per_traveler": 240
+    }
+  ],
+  "hotels": [
+    {
+      "name": "Generic simulated hostel",
+      "accommodation_type": "hostel",
+      "price_per_night": 25,
+      "capacity": 1,
+      "neighborhood": "Fictional example neighborhood",
+      "rating": 7.5
+    },
+    {
+      "name": "Generic simulated budget rooms",
+      "accommodation_type": "budget",
+      "price_per_night": 55,
+      "capacity": 2,
+      "neighborhood": "Fictional example neighborhood",
+      "rating": 8.0
+    },
+    {
+      "name": "Generic simulated hotel",
+      "accommodation_type": "hotel",
+      "price_per_night": 95,
+      "capacity": 2,
+      "neighborhood": "Fictional example neighborhood",
+      "rating": 8.5
+    }
+  ],
+  "activities": [
+    {
+      "name": "Generic history exhibition",
+      "category": "attraction",
+      "description": "Generic fictional activity template. No real venue, attraction or opening hours are verified.",
+      "interests": [
+        "history",
+        "museums",
+        "architecture"
+      ],
+      "duration_minutes": 60,
+      "price_per_person": 0,
+      "environment": "indoor",
+      "dietary_compatibility": []
+    },
+    {
+      "name": "Generic art gallery",
+      "category": "attraction",
+      "description": "Generic fictional activity template. No real venue, attraction or opening hours are verified.",
+      "interests": [
+        "museums",
+        "photography"
+      ],
+      "duration_minutes": 60,
+      "price_per_person": 12,
+      "environment": "indoor",
+      "dietary_compatibility": []
+    },
+    {
+      "name": "Generic architecture exhibition",
+      "category": "attraction",
+      "description": "Generic fictional activity template. No real venue, attraction or opening hours are verified.",
+      "interests": [
+        "architecture",
+        "photography",
+        "history"
+      ],
+      "duration_minutes": 60,
+      "price_per_person": 0,
+      "environment": "indoor",
+      "dietary_compatibility": []
+    },
+    {
+      "name": "Generic covered market visit",
+      "category": "attraction",
+      "description": "Generic fictional activity template. No real venue, attraction or opening hours are verified.",
+      "interests": [
+        "local food",
+        "shopping"
+      ],
+      "duration_minutes": 60,
+      "price_per_person": 0,
+      "environment": "indoor",
+      "dietary_compatibility": []
+    },
+    {
+      "name": "Generic cultural exhibition",
+      "category": "attraction",
+      "description": "Generic fictional activity template. No real venue, attraction or opening hours are verified.",
+      "interests": [
+        "history",
+        "museums"
+      ],
+      "duration_minutes": 60,
+      "price_per_person": 8,
+      "environment": "indoor",
+      "dietary_compatibility": []
+    },
+    {
+      "name": "Generic local music venue",
+      "category": "attraction",
+      "description": "Generic fictional activity template. No real venue, attraction or opening hours are verified.",
+      "interests": [
+        "nightlife",
+        "local food"
+      ],
+      "duration_minutes": 60,
+      "price_per_person": 10,
+      "environment": "indoor",
+      "dietary_compatibility": []
+    },
+    {
+      "name": "Generic city photo walk",
+      "category": "attraction",
+      "description": "Generic fictional activity template. No real venue, attraction or opening hours are verified.",
+      "interests": [
+        "photography",
+        "architecture"
+      ],
+      "duration_minutes": 60,
+      "price_per_person": 0,
+      "environment": "outdoor",
+      "dietary_compatibility": []
+    },
+    {
+      "name": "Generic park walk",
+      "category": "attraction",
+      "description": "Generic fictional activity template. No real venue, attraction or opening hours are verified.",
+      "interests": [
+        "nature",
+        "relaxation"
+      ],
+      "duration_minutes": 60,
+      "price_per_person": 0,
+      "environment": "outdoor",
+      "dietary_compatibility": []
+    },
+    {
+      "name": "Generic public square walk",
+      "category": "attraction",
+      "description": "Generic fictional activity template. No real venue, attraction or opening hours are verified.",
+      "interests": [
+        "architecture",
+        "history"
+      ],
+      "duration_minutes": 60,
+      "price_per_person": 0,
+      "environment": "outdoor",
+      "dietary_compatibility": []
+    },
+    {
+      "name": "Generic shopping street walk",
+      "category": "attraction",
+      "description": "Generic fictional activity template. No real venue, attraction or opening hours are verified.",
+      "interests": [
+        "shopping",
+        "photography"
+      ],
+      "duration_minutes": 60,
+      "price_per_person": 0,
+      "environment": "outdoor",
+      "dietary_compatibility": []
+    },
+    {
+      "name": "Generic garden visit",
+      "category": "attraction",
+      "description": "Generic fictional activity template. No real venue, attraction or opening hours are verified.",
+      "interests": [
+        "nature",
+        "relaxation"
+      ],
+      "duration_minutes": 60,
+      "price_per_person": 5,
+      "environment": "outdoor",
+      "dietary_compatibility": []
+    },
+    {
+      "name": "Generic quiet indoor reading space",
+      "category": "attraction",
+      "description": "Generic fictional activity template. No real venue, attraction or opening hours are verified.",
+      "interests": [
+        "relaxation",
+        "history"
+      ],
+      "duration_minutes": 60,
+      "price_per_person": 0,
+      "environment": "indoor",
+      "dietary_compatibility": []
+    },
+    {
+      "name": "Generic plant-based meal",
+      "category": "meal",
+      "description": "Generic fictional meal option, usable for breakfast, lunch or dinner. No real restaurant or dietary certification is implied.",
+      "interests": [
+        "local food"
+      ],
+      "duration_minutes": 45,
+      "price_per_person": 7,
+      "environment": "indoor",
+      "dietary_compatibility": [
+        "vegetarian",
+        "vegan",
+        "gluten-free"
+      ]
+    },
+    {
+      "name": "Generic vegetarian meal",
+      "category": "meal",
+      "description": "Generic fictional meal option, usable for breakfast, lunch or dinner. No real restaurant or dietary certification is implied.",
+      "interests": [
+        "local food"
+      ],
+      "duration_minutes": 45,
+      "price_per_person": 9,
+      "environment": "indoor",
+      "dietary_compatibility": [
+        "vegetarian"
+      ]
+    },
+    {
+      "name": "Generic gluten-free meal",
+      "category": "meal",
+      "description": "Generic fictional meal option, usable for breakfast, lunch or dinner. No real restaurant or dietary certification is implied.",
+      "interests": [
+        "local food"
+      ],
+      "duration_minutes": 45,
+      "price_per_person": 11,
+      "environment": "indoor",
+      "dietary_compatibility": [
+        "gluten-free"
+      ]
+    },
+    {
+      "name": "Generic unrestricted meal",
+      "category": "meal",
+      "description": "Generic fictional meal option, usable for breakfast, lunch or dinner. No real restaurant or dietary certification is implied.",
+      "interests": [
+        "local food"
+      ],
+      "duration_minutes": 45,
+      "price_per_person": 13,
+      "environment": "indoor",
+      "dietary_compatibility": []
+    }
+  ],
+  "weather": {
+    "winter": {
+      "min_temperature": 15,
+      "max_temperature": 22,
+      "rain_probability": 0.35
+    },
+    "spring": {
+      "min_temperature": 15,
+      "max_temperature": 22,
+      "rain_probability": 0.35
+    },
+    "summer": {
+      "min_temperature": 15,
+      "max_temperature": 22,
+      "rain_probability": 0.35
+    },
+    "autumn": {
+      "min_temperature": 15,
+      "max_temperature": 22,
+      "rain_probability": 0.35
+    }
+  }
+}

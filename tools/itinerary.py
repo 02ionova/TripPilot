@@ -15,6 +15,7 @@ from schemas import (
     TripSummary,
     WeatherArgs,
 )
+from tools.catalog import simulation_notes
 from tools.common import ToolFailure, dates, load, success
 from tools.flights import search_flights
 from tools.hotels import search_hotels
@@ -215,6 +216,7 @@ def build_itinerary(args: BuildArgs):
             "All prices, schedules, availability, restaurants and weather are simulated.",
             "EUR 5 per traveler per day covers simulated local transport and airport transfers; flights include no paid extras.",
             "Daily costs include meals, attractions and transport; flights and accommodation are charged once in the trip budget.",
+            *simulation_notes(request.origin, request.destination),
         ],
     )
     return success(result)

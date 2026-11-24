@@ -260,11 +260,11 @@ def test_past_dates_stop_before_api(tmp_path, request_data):
     assert agent.trace.path.exists()
 
 
-def test_unsupported_departure_stops_before_api(tmp_path, request_data):
-    request_data["origin"] = "Berlin"
+def test_identical_cities_stop_before_api(tmp_path, request_data):
+    request_data["origin"] = request_data["destination"]
     _, client, result = run(tmp_path, request_data, [])
     assert result.status == "needs_clarification"
-    assert "Prague" in result.message
+    assert "different" in result.message
     assert not client.requests
 
 

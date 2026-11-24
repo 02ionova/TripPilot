@@ -31,8 +31,10 @@ def test_future_dates_repeat_seasonal_profile():
     assert weather(start="2030-04-10", end="2030-04-13")["status"] == "ok"
 
 
-def test_unsupported_destination():
-    assert weather("Tokyo")["error"]["code"] == "unsupported_destination"
+def test_new_destination_uses_simulated_weather():
+    result = weather("Tokyo")
+    assert result["status"] == "ok"
+    assert result["data_source"] == "simulated"
 
 
 def test_unsupported_dates():
@@ -69,7 +71,7 @@ def test_no_flights():
     assert result["error"]["code"] == "no_results"
 
 
-def test_unsupported_origin():
+def test_other_departure_city():
     result = execute_tool(
         "search_flights",
         dict(
@@ -80,7 +82,9 @@ def test_unsupported_origin():
             travelers=1,
         ),
     )
-    assert result["error"]["code"] == "unsupported_origin"
+    assert result["status"] == "ok"
+    assert result["data"][0]["origin"] == "Berlin"
+    assert result["data"][0]["id"].startswith("synthetic-")
 
 
 def test_hotel_nights_rooms_and_hostel_beds():

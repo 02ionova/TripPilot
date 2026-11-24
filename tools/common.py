@@ -1,10 +1,9 @@
 """Shared dataset loading and recoverable tool errors."""
 
-import json
 from datetime import timedelta
 
-from config import ROOT
 from schemas import ToolError, ToolResult
+from tools.catalog import destination_options
 
 
 class ToolFailure(ValueError):
@@ -14,11 +13,7 @@ class ToolFailure(ValueError):
 
 
 def load(kind: str, destination: str) -> list | dict:
-    data = json.loads((ROOT / "data" / f"{kind}.json").read_text())["destinations"]
-    city = destination.strip().title()
-    if city not in data:
-        raise ToolFailure("unsupported_destination", f"{destination} is not supported.", list(data))
-    return data[city]
+    return destination_options(kind, destination)
 
 
 def dates(start, end):

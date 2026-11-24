@@ -23,6 +23,7 @@ from config import Settings
 from planning import estimate_minimum_budget
 from prompts import DEMONSTRATION_POLICY, SYSTEM_PROMPT
 from schemas import BuildArgs, FinalDecision, FinalResponse, Itinerary, TravelRequest
+from tools.catalog import simulation_notes
 from tools.common import ToolFailure
 from tools.registry import REGISTRY, execute_tool, tool_definitions
 from tracing import Trace, redact
@@ -96,11 +97,6 @@ class TravelAgent:
         except ValidationError as exc:
             details = "; ".join(error["msg"] for error in exc.errors(include_input=False))
             return finish("needs_clarification", "Please correct your request: " + details)
-        if request.origin != "Prague":
-            return finish(
-                "needs_clarification",
-                "Simulated flights currently depart from Prague only. Please select Prague as your departure city.",
-            )
         try:
             budget_estimate = estimate_minimum_budget(request)
         except ToolFailure as exc:
@@ -136,6 +132,8 @@ class TravelAgent:
                 "role": "user",
                 "content": "Python catalogue cost lower bound (not a finished plan or guarantee of feasibility): "
                 + budget_estimate.model_dump_json()
+                + " Simulation notes: "
+                + json.dumps(simulation_notes(request.origin, request.destination))
                 + ". Prefer the cheapest compatible meals and accommodation if the budget is close to this bound. All five tools and final schedule validation are still required.",
             },
         ]

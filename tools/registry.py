@@ -25,7 +25,7 @@ REGISTRY = {
     "search_flights": (
         FlightArgs,
         search_flights,
-        "Search simulated Prague round trips; max_price is the group total.",
+        "Search simulated round trips between the entered cities; max_price is the group total.",
     ),
     "search_hotels": (
         HotelArgs,

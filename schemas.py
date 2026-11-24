@@ -5,8 +5,15 @@ from typing import Generic, Literal, TypeVar
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from cities import normalize_city_name
+
 
 class Model(BaseModel):
+    @field_validator("origin", "destination", check_fields=False)
+    @classmethod
+    def valid_city_label(cls, value: str) -> str:
+        return normalize_city_name(value)
+
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True, allow_inf_nan=False)
 
 
@@ -41,14 +48,11 @@ class TravelRequest(DateRange):
 
     @model_validator(mode="after")
     def departure_not_in_past(self):
+        if self.origin == self.destination:
+            raise ValueError("Departure and destination cities must be different.")
         if self.start_date < current_date():
             raise ValueError("Start date cannot be before today.")
         return self
-
-    @field_validator("origin", "destination")
-    @classmethod
-    def normalize_city(cls, value):
-        return value.title()
 
     @field_validator("interests")
     @classmethod

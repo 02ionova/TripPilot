@@ -15,12 +15,19 @@ st.subheader("Your intelligent travel planning assistant")
 st.info(
     "Educational simulation: all travel prices, schedules, availability and weather are simulated. This application does not make bookings."
 )
+st.caption(
+    "Enter any departure and destination city. Locations outside the sample dataset use generic fictional options, not verified local places or routes."
+)
 with st.form("travel_request"):
     a, b, c = st.columns(3)
-    origin = a.selectbox(
-        "Departure city", ["Prague"], help="Simulated flights currently depart from Prague only."
+    origin = a.text_input(
+        "Departure city", "Prague", help="Enter any city name, preferably in English."
     )
-    destination = b.selectbox("Destination", ["Rome", "Paris", "Barcelona", "Vienna", "Amsterdam"])
+    destination = b.text_input(
+        "Destination",
+        "Rome",
+        help="Enter any city name. Unlisted destinations use generic simulated options.",
+    )
     travelers = c.number_input("Number of travelers", 1, 20, 1)
     a, b, c = st.columns(3)
     today = current_date()

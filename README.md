@@ -14,7 +14,7 @@ TripPilot uses a real OpenAI model to choose tools, inspect results, recover fro
 - Group budgets in EUR, ID-based pricing, meal coverage, weather, flight buffers, pace and schedule validation.
 - Recoverable tool errors, bounded API retries, repeat-call limits and clean termination.
 - Sanitized observable JSON traces and downloadable itinerary/trace files.
-- Rome, Paris, Barcelona, Vienna and Amsterdam, departing from Prague.
+- Free-text departure and destination cities, including Unicode names. Rome, Paris, Barcelona, Vienna and Amsterdam retain their curated simulated fixtures; other routes/cities use clearly labeled generic synthetic templates.
 
 ## Screenshots
 
@@ -65,7 +65,7 @@ The default `gpt-4.1-mini` supports function calling and structured outputs acco
 | Tool | Input and behavior |
 | --- | --- |
 | `get_weather` | Destination and inclusive dates; seasonal temperature, rain, conditions and indoor/outdoor advice. |
-| `search_flights` | Prague origin, destination, round-trip dates, travelers and optional **group total** cap. Returns local outbound/return times and individual/group costs. |
+| `search_flights` | Any departure/destination city labels, round-trip dates, travelers and optional **group total** cap. Returns local outbound/return times and individual/group costs. |
 | `search_hotels` | Destination, check-in/out, travelers, optional **combined nightly** cap and type. Hotel/budget rates are per room (capacity two); hostel rates are per bed. Nights = checkout − checkin. |
 | `search_activities` | Interests, all dietary restrictions, environment and optional **per-person** cap. Returns attractions plus compatible meals; meals remain included regardless of interests/environment. |
 | `build_itinerary` | Original request, flight/hotel IDs and daily activity IDs/times/meal labels. Resolves prices from local data, checks weather and builds a valid itinerary or actionable errors. |
@@ -121,7 +121,7 @@ trip-pilot-ai/
 ├── planning.py, scheduling.py  # Cost lower bound and shared time rules
 ├── tracing.py                 # Sanitized traces
 ├── tools/                     # Five tools, helpers, registry
-├── data/                      # Four simulated JSON datasets
+├── data/                      # Four curated datasets plus generic_templates.json
 ├── examples/                  # Rome and Paris inputs
 ├── traces/                    # Actual runtime traces, including failures
 ├── tests/                     # Mocked agent, tools, budget, schemas, UI
@@ -214,7 +214,7 @@ To reproduce, configure your own key, run both commands above and inspect the pr
 }
 ```
 
-Unrestricted diet uses `[]`; restrictions are `vegetarian`, `vegan`, `gluten-free`, and may be combined. Supported input: 1–14 calendar days during 2026–2035, starting today or later, 1–20 travelers and a positive finite budget. The UI prevents past start/end dates; CLI and agent validation reject past departure dates before any paid API call. Only Prague is offered as the departure city because other origins have no simulated flight data. One-day trips have zero lodging nights.
+Unrestricted diet uses `[]`; restrictions are `vegetarian`, `vegan`, `gluten-free`, and may be combined. Supported input: 1–14 calendar days during 2026–2035, starting today or later, 1–20 travelers and a positive finite budget. The UI prevents past start/end dates; CLI and agent validation reject past departure dates before any paid API call. Both city fields accept free text. Identical city labels after case/whitespace normalization are rejected. City names are labels, not geocoded or checked against a directory; English names are preferred for matching the curated fixtures. One-day trips have zero lodging nights.
 
 Abbreviated illustrative output, not a real API execution:
 
@@ -247,11 +247,11 @@ python -m pytest -v
 
 Tests use scripted SDK-shaped completions without paid calls. They cover input/schema validation; all tools; IDs/arguments; weather/diets; hostel/room/group math; budgets and schedule constraints; tool-call ID preservation; full success and hotel recovery; request tampering; retries, repetition and iteration limits; clean termination; trace generation/redaction; and Streamlit rendering. Temporary traces stay outside the production trace directory.
 
-Final result: **93 tests passed**. Ruff lint and formatting checks also passed. See `VERIFICATION.md` for actual results and startup checks. Rendering works without a key; generating real plans requires a key and network.
+Final result: **107 tests passed**. Ruff lint and formatting checks also passed. See `VERIFICATION.md` for actual results and startup checks. Rendering works without a key; generating real plans requires a key and network.
 
 ## Limitations and future improvements
 
-All schedules, rates, availability, capacities, restaurants, ratings and seasonal weather are invented. Flights are same-day and use the shared Prague/destination local time zone. There are no real opening hours, baggage extras, routing distances, accessibility checks or booking integrations. Restaurant compatibility is illustrative and cannot be relied on for real allergies. Rain handling conservatively requires indoor attractions. The simulated free community gallery does not claim that any real museum is free.
+All schedules, rates, availability, capacities, restaurants, ratings and seasonal weather are invented. Flights use a simplified same-day simulation timeline. Generic routes do not model geographic distance, real flight durations, overnight arrivals, date-line crossings or time-zone offsets; their times must not be interpreted as real flight schedules. There are no real opening hours, baggage extras, routing distances, accessibility checks or booking integrations. Restaurant compatibility is illustrative and cannot be relied on for real allergies. Rain handling conservatively requires indoor attractions. The simulated free community gallery does not claim that any real museum is free.
 
 Future work could add verified API adapters, routing, opening hours, richer availability constraints and model evaluations, while retaining independent price/budget checks. Validated success does not prove optimality; an LLM can also conclude infeasibility prematurely.
 
@@ -259,7 +259,7 @@ Future work could add verified API adapters, routing, opening hours, richer avai
 
 - [x] Native OpenAI tools and explicit inspectable agent loop.
 - [x] Five independent typed tools and structured output.
-- [x] Data for five destinations and Prague departures.
+- [x] Curated data for five destinations and Prague departures, plus generic synthetic fixtures for arbitrary city labels.
 - [x] Python arithmetic and itinerary validation.
 - [x] Feedback, replanning, bounded retries and termination.
 - [x] Streamlit, CLI, examples and automatic sanitized traces.
@@ -275,3 +275,15 @@ A 404 `NotFoundError` means the configured model was not found or is unavailable
 ## Repository workflow
 
 Changes are committed locally and pushed to the user-designated `origin` at `https://github.com/02ionova/TripPilot`. Before committing, run tests, inspect the diff and review any selected trace files for credentials and personal data. `.env` stays ignored. Genuine demonstration traces are deliberately tracked; incidental local execution traces do not need to be included in every commit.
+
+## Arbitrary departure and destination cities
+
+Enter any city label in **Departure city** and **Destination**. The interface no longer restricts either field to a dropdown. Unicode letters, spaces, accents and punctuation in city names are supported; blanks, labels without letters, excessive length and identical departure/destination labels are rejected. Transliteration, aliases and city-country disambiguation are not resolved.
+
+`tools/catalog.py` preserves original Prague-to-curated-city flight IDs/rates. Other routes receive deterministic synthetic flight IDs/prices derived from the normalized origin/destination pair. Unknown destinations use `data/generic_templates.json` for accommodation, 12 generic attractions, diet-compatible meals and neutral fictional weather. Generic names deliberately do not claim that real venues or landmarks exist. SHA-256-derived IDs are consistent across processes and destination-specific, so the builder and budget precheck resolve exactly the same records as search tools.
+
+The final itinerary warns when routes, venues or climate profiles use generic templates. This supports the educational agent flow for arbitrary inputs; it does not provide verified worldwide travel data. Genuine five-tool verification: Berlin to Lisbon, EUR 338 total under EUR 600, vegetarian meals. Reproduce with:
+
+```bash
+python main.py --input examples/berlin_lisbon.json --output results/berlin_lisbon.json
+```

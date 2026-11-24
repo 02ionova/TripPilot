@@ -10,12 +10,13 @@ from math import ceil
 
 from scheduling import required_meals, site_window
 from schemas import BudgetEstimate, TravelRequest
+from tools.catalog import flight_options
 from tools.common import ToolFailure, dates, load
 from tools.itinerary import TRANSPORT_PER_PERSON_DAY
 
 
 def estimate_minimum_budget(request: TravelRequest) -> BudgetEstimate:
-    flights = load("flights", request.destination)
+    flights = flight_options(request.origin, request.destination)
     hotels = load("hotels", request.destination)
     activities = load("activities", request.destination)
     profiles = load("weather", request.destination)

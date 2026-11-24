@@ -47,4 +47,5 @@ def test_date_widgets_reject_past_dates():
     for widget in app.date_input:
         assert widget.min == date(2026, 11, 24)
         assert widget.value >= widget.min
-    assert app.selectbox[0].options == ["Prague"]
+    assert app.text_input[0].value == "Prague"
+    assert app.text_input[1].value == "Rome"
