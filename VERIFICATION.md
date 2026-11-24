@@ -4,7 +4,7 @@ Verified on 24 November 2026, macOS, Python 3.14.0, OpenAI SDK 2.54.0, Pydantic 
 
 - Ruff lint and formatting checks passed for all 24 Python files.
 - Dependencies installed successfully into the existing workspace `.venv`.
-- `python -m pytest -v`: **107 passed in 1.42 seconds (after arbitrary-city support)**.
+- `python -m pytest -v`: **109 passed in 1.77 seconds (after searchable cities and explicit button submission)**.
 - Tests include full mocked five-tool success, hotel `no_results` → revised search → successful Paris build, trace generation, secret redaction, request tampering rejection, bounded API retry/iteration behavior, and real Streamlit rendering through AppTest.
 - Streamlit launched at `http://127.0.0.1:8501`; `/_stcore/health` returned **HTTP 200**, body `ok`.
 - Streamlit AppTest rendered the input form, a complete successful result (three budget metrics), and an error result without exceptions.
@@ -58,3 +58,11 @@ Both city dropdowns were replaced with free-text inputs. The catalogue preserves
 Tests cover Berlin to Lisbon through all five mocked tools, shared search/precheck/builder costs, Unicode/global city labels, stable catalogue IDs, route ID rejection for a different origin, input normalization, identical-city rejection and actual free-text form submission. Existing Rome, Paris and Vienna budget regressions continue to pass.
 
 A genuine `gpt-4.1-mini` run with `examples/berlin_lisbon.json` completed successfully: **EUR 338 / EUR 600**, EUR 262 remaining. Full trace: `traces/20261124T190154_dd0222c2-6ab2-43a6-960e-9e18fc077252.json`. This is a genuine LLM execution over synthetic travel data, not a real-world Lisbon recommendation.
+
+## Searchable-city and submission verification
+
+Both city inputs are now searchable selectors over 168 local suggestions with country labels. Unlisted city names remain accepted through the native new-option behavior. Searching/filtering is handled in the widget without travel API or LLM requests.
+
+The form disables implicit Enter submission with `enter_to_submit=False`. AppTest verifies the serialized form setting, both selectors' new-option settings and displayed country labels. Another test changes city selections and reruns without clicking, proving the agent is not called, then clicks the Generate Travel Plan button and verifies exactly one call with the selected cities. Existing arbitrary-city and Vienna form tests now exercise the searchable selectors. These checks use Streamlit's test harness; browser-level keyboard events were not simulated.
+
+Ruff lint and formatting checks pass. No paid API execution was needed for this interface-only change.

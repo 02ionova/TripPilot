@@ -7,6 +7,7 @@ import streamlit as st
 from pydantic import ValidationError
 
 from agent import TravelAgent
+from city_suggestions import city_label, city_options
 from schemas import TravelRequest, current_date
 
 st.set_page_config(page_title="TripPilot AI", page_icon="✈️", layout="wide")
@@ -18,15 +19,28 @@ st.info(
 st.caption(
     "Enter any departure and destination city. Locations outside the sample dataset use generic fictional options, not verified local places or routes."
 )
-with st.form("travel_request"):
+with st.form("travel_request", enter_to_submit=False):
     a, b, c = st.columns(3)
-    origin = a.text_input(
-        "Departure city", "Prague", help="Enter any city name, preferably in English."
+    cities = city_options()
+    origin = a.selectbox(
+        "Departure city",
+        cities,
+        index=cities.index("Prague"),
+        format_func=city_label,
+        accept_new_options=True,
+        key="origin_city",
+        placeholder="Search or enter a departure city",
+        help="Type to filter city suggestions. Select a city or add your own. Enter selects a city; only the Generate Travel Plan button starts planning.",
     )
-    destination = b.text_input(
+    destination = b.selectbox(
         "Destination",
-        "Rome",
-        help="Enter any city name. Unlisted destinations use generic simulated options.",
+        cities,
+        index=cities.index("Rome"),
+        format_func=city_label,
+        accept_new_options=True,
+        key="destination_city",
+        placeholder="Search or enter a destination city",
+        help="Type to filter city suggestions. If your city is not listed, enter it as a new option.",
     )
     travelers = c.number_input("Number of travelers", 1, 20, 1)
     a, b, c = st.columns(3)

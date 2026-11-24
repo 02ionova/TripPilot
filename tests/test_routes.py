@@ -165,11 +165,12 @@ def test_identical_cities_rejected_after_normalization():
 def test_ui_accepts_any_origin_and_destination(monkeypatch, tmp_path):
     monkeypatch.setattr("tracing.ROOT", tmp_path)
     app = AppTest.from_file(str(ROOT / "app.py")).run(timeout=20)
-    app.text_input[0].set_value("New York")
-    app.text_input[1].set_value("Tokyo")
+    app.selectbox(key="origin_city").set_value("New York")
+    app.selectbox(key="destination_city").set_value("Tokyo")
     app.number_input[1].set_value(1.0)
     app.button[0].click().run(timeout=20)
     assert not app.exception
-    assert [field.value for field in app.text_input] == ["New York", "Tokyo"]
+    assert app.selectbox(key="origin_city").value == "New York"
+    assert app.selectbox(key="destination_city").value == "Tokyo"
     assert app.session_state["result"].status == "infeasible"
     assert app.session_state["trace"]["request"]["origin"] == "New York"

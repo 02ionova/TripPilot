@@ -14,7 +14,7 @@ TripPilot uses a real OpenAI model to choose tools, inspect results, recover fro
 - Group budgets in EUR, ID-based pricing, meal coverage, weather, flight buffers, pace and schedule validation.
 - Recoverable tool errors, bounded API retries, repeat-call limits and clean termination.
 - Sanitized observable JSON traces and downloadable itinerary/trace files.
-- Free-text departure and destination cities, including Unicode names. Rome, Paris, Barcelona, Vienna and Amsterdam retain their curated simulated fixtures; other routes/cities use clearly labeled generic synthetic templates.
+- Searchable departure and destination fields with 168 local city suggestions and country labels; custom city names, including Unicode, remain supported. Rome, Paris, Barcelona, Vienna and Amsterdam retain their curated simulated fixtures; other routes/cities use clearly labeled generic synthetic templates.
 
 ## Screenshots
 
@@ -121,7 +121,7 @@ trip-pilot-ai/
 ├── planning.py, scheduling.py  # Cost lower bound and shared time rules
 ├── tracing.py                 # Sanitized traces
 ├── tools/                     # Five tools, helpers, registry
-├── data/                      # Four curated datasets plus generic_templates.json
+├── data/                      # Curated fixtures, generic templates and city suggestions
 ├── examples/                  # Rome and Paris inputs
 ├── traces/                    # Actual runtime traces, including failures
 ├── tests/                     # Mocked agent, tools, budget, schemas, UI
@@ -247,7 +247,7 @@ python -m pytest -v
 
 Tests use scripted SDK-shaped completions without paid calls. They cover input/schema validation; all tools; IDs/arguments; weather/diets; hostel/room/group math; budgets and schedule constraints; tool-call ID preservation; full success and hotel recovery; request tampering; retries, repetition and iteration limits; clean termination; trace generation/redaction; and Streamlit rendering. Temporary traces stay outside the production trace directory.
 
-Final result: **107 tests passed**. Ruff lint and formatting checks also passed. See `VERIFICATION.md` for actual results and startup checks. Rendering works without a key; generating real plans requires a key and network.
+Final result: **109 tests passed**. Ruff lint and formatting checks also passed. See `VERIFICATION.md` for actual results and startup checks. Rendering works without a key; generating real plans requires a key and network.
 
 ## Limitations and future improvements
 
@@ -278,7 +278,7 @@ Changes are committed locally and pushed to the user-designated `origin` at `htt
 
 ## Arbitrary departure and destination cities
 
-Enter any city label in **Departure city** and **Destination**. The interface no longer restricts either field to a dropdown. Unicode letters, spaces, accents and punctuation in city names are supported; blanks, labels without letters, excessive length and identical departure/destination labels are rejected. Transliteration, aliases and city-country disambiguation are not resolved.
+Type a city name in **Departure city** or **Destination** to filter the suggestions. Each suggestion includes its country. Choose a suggestion or add any unlisted city as a new option; the list is not a restriction on supported input. Unicode letters, spaces, accents and punctuation in city names are supported; blanks, labels without letters, excessive length and identical departure/destination labels are rejected. Transliteration, aliases and city-country disambiguation are not resolved.
 
 `tools/catalog.py` preserves original Prague-to-curated-city flight IDs/rates. Other routes receive deterministic synthetic flight IDs/prices derived from the normalized origin/destination pair. Unknown destinations use `data/generic_templates.json` for accommodation, 12 generic attractions, diet-compatible meals and neutral fictional weather. Generic names deliberately do not claim that real venues or landmarks exist. SHA-256-derived IDs are consistent across processes and destination-specific, so the builder and budget precheck resolve exactly the same records as search tools.
 
@@ -287,3 +287,9 @@ The final itinerary warns when routes, venues or climate profiles use generic te
 ```bash
 python main.py --input examples/berlin_lisbon.json --output results/berlin_lisbon.json
 ```
+
+## City search and explicit submission
+
+The city fields use Streamlit searchable selectors with `accept_new_options=True`. `data/cities.json` supplies 168 offline suggestions, displayed as city and country; the agent receives only the city label. `city_suggestions.py` loads these labels without geocoding, network requests or LLM calls. The suggestion list is a convenience, not a complete world directory, and unlisted city names can still be entered.
+
+The request form explicitly sets `enter_to_submit=False`: Enter can confirm a city selection but does not start planning. Generate a plan only with **Generate Travel Plan**. The implementation uses Streamlit's [documented form submission setting](https://docs.streamlit.io/develop/api-reference/execution-flow/st.form) and [searchable selector with new options](https://docs.streamlit.io/develop/api-reference/widgets/st.selectbox). Streamlit 1.49 or later is required; the installed/tested version is 1.67.0.
