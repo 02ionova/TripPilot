@@ -167,7 +167,16 @@ python main.py --input examples/paris.json --output results/paris.json
 
 The CLI prints itinerary and budget and writes the final JSON plus timestamped trace. Exit codes: 0 success, 2 invalid/missing input, 1 other failures. Valid JSON with invalid fields produces a clarification trace; unreadable or non-JSON files exit before starting the agent.
 
-**Two genuine successful demonstration traces are pending because no API key was available.** No successful real API runs are claimed. After configuring a key, run both commands above and inspect the printed trace files:
+**Two genuine successful OpenAI demonstrations are included**, executed with `gpt-4.1-mini` on 24 November 2026:
+
+| Scenario | Estimated total | Budget | Genuine trace |
+| --- | --- | --- | --- |
+| Rome | EUR 341 | EUR 600 | `traces/20261124T182657_e85c4d77-3850-4df6-8ad1-af5326f86d7f.json` |
+| Paris, hotel search recovery | EUR 209 | EUR 350 | `traces/20261124T182658_1bc27b17-5ca7-4ca0-b721-f697a70fcf60.json` |
+
+Both runs used all five tools and passed Python budget validation. Paris first searched for a hotel at EUR 30/night, received `no_results`, then independently selected a hostel and vegetarian meals. These are real model executions over simulated travel data. No accommodation or tickets were actually booked, regardless of conversational wording in the model's response.
+
+To reproduce, configure your own key, run both commands above and inspect the printed trace files:
 
 1. Confirm `execution_mode=real_llm`, `final_status=success`, all five tools and `budget_validation.valid=true`.
 2. For Paris, confirm hotel `no_results`, a changed subsequent search, vegetarian meals and builder success.
@@ -190,7 +199,7 @@ The CLI prints itinerary and budget and writes the final JSON plus timestamped t
 }
 ```
 
-Unrestricted diet uses `[]`; restrictions are `vegetarian`, `vegan`, `gluten-free`, and may be combined. Supported input: 1–14 calendar days during 2026–2035, 1–20 travelers and a positive finite budget. One-day trips have zero lodging nights.
+Unrestricted diet uses `[]`; restrictions are `vegetarian`, `vegan`, `gluten-free`, and may be combined. Supported input: 1–14 calendar days during 2026–2035, starting today or later, 1–20 travelers and a positive finite budget. The UI prevents past start/end dates; CLI and agent validation reject past departure dates before any paid API call. Only Prague is offered as the departure city because other origins have no simulated flight data. One-day trips have zero lodging nights.
 
 Abbreviated illustrative output, not a real API execution:
 
@@ -223,7 +232,7 @@ python -m pytest -v
 
 Tests use scripted SDK-shaped completions without paid calls. They cover input/schema validation; all tools; IDs/arguments; weather/diets; hostel/room/group math; budgets and schedule constraints; tool-call ID preservation; full success and hotel recovery; request tampering; retries, repetition and iteration limits; clean termination; trace generation/redaction; and Streamlit rendering. Temporary traces stay outside the production trace directory.
 
-Final result: **79 tests passed**. Ruff lint and formatting checks also passed. See `VERIFICATION.md` for actual results and startup checks. Rendering works without a key; generating real plans requires a key and network.
+Final result: **87 tests passed**. Ruff lint and formatting checks also passed. See `VERIFICATION.md` for actual results and startup checks. Rendering works without a key; generating real plans requires a key and network.
 
 ## Limitations and future improvements
 
@@ -240,6 +249,14 @@ Future work could add verified API adapters, routing, opening hours, richer avai
 - [x] Feedback, replanning, bounded retries and termination.
 - [x] Streamlit, CLI, examples and automatic sanitized traces.
 - [x] Mocked automated tests, architecture and setup instructions.
-- [x] Local Git repository; no publication or remote push.
-- [ ] Two genuine successful LLM traces, including Paris recovery — requires your key.
+- [x] Git repository connected to `https://github.com/02ionova/TripPilot`; updates committed and pushed with user authorization.
+- [x] Two genuine successful LLM traces, including Paris recovery.
 - [ ] Real screenshots — placeholders listed above.
+
+## Troubleshooting model access
+
+A 404 `NotFoundError` means the configured model was not found or is unavailable to the API project. The observed failed run used `gpt-5.1-mini`; the verified working configuration uses `OPENAI_MODEL=gpt-4.1-mini`. Update your local `.env`, stop Streamlit with Ctrl+C, then launch `streamlit run app.py` again. Existing environment variables take precedence, so also check any exported `OPENAI_MODEL` value. Authentication, permission, incompatible-request and missing-model failures now produce separate actionable messages; traces retain the exception class and HTTP status without logging raw API response bodies.
+
+## Repository workflow
+
+Changes are committed locally and pushed to the user-designated `origin` at `https://github.com/02ionova/TripPilot`. Before committing, run tests, inspect the diff and review any selected trace files for credentials and personal data. `.env` stays ignored. Genuine demonstration traces are deliberately tracked; incidental local execution traces do not need to be included in every commit.

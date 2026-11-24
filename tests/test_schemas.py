@@ -62,3 +62,18 @@ def test_budget_sum_validation():
             total=6,
             remaining_budget=0,
         )
+
+
+def test_past_departure_rejected(request_data, monkeypatch):
+    from datetime import date
+
+    monkeypatch.setattr("schemas.current_date", lambda: date(2027, 4, 11))
+    with pytest.raises(ValidationError, match="Start date cannot be before today"):
+        TravelRequest(**request_data)
+
+
+def test_today_departure_allowed(request_data, monkeypatch):
+    from datetime import date
+
+    monkeypatch.setattr("schemas.current_date", lambda: date(2027, 4, 10))
+    assert TravelRequest(**request_data).start_date == date(2027, 4, 10)

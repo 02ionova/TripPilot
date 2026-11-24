@@ -117,7 +117,7 @@ def build_itinerary(args: BuildArgs):
                 low, high = windows[slot.meal]
                 if not low <= start <= high:
                     invalid(
-                        f"{slot.meal} must start between {low // 60}:00 and {high // 60}:{high % 60:02}."
+                        f"{selection.date}: {slot.meal} at {slot.start_time:%H:%M} must start between {low // 60}:00 and {high // 60}:{high % 60:02}."
                     )
                 if not set(request.dietary_preferences).issubset(item.dietary_compatibility):
                     invalid(f"{item.name} does not meet all dietary restrictions.")

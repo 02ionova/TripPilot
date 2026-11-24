@@ -37,3 +37,14 @@ def test_error_result_renders():
     app.run(timeout=20)
     assert not app.exception
     assert "Missing API key" in app.error[0].value
+
+
+def test_date_widgets_reject_past_dates():
+    from datetime import date
+
+    app = AppTest.from_file(str(ROOT / "app.py")).run(timeout=20)
+    assert not app.exception
+    for widget in app.date_input:
+        assert widget.min == date(2026, 11, 24)
+        assert widget.value >= widget.min
+    assert app.selectbox[0].options == ["Prague"]

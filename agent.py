@@ -6,7 +6,17 @@ from pathlib import Path
 from time import perf_counter, sleep
 from typing import Callable
 
-from openai import APIConnectionError, APIError, APITimeoutError, OpenAI, RateLimitError
+from openai import (
+    APIConnectionError,
+    APIError,
+    APITimeoutError,
+    AuthenticationError,
+    BadRequestError,
+    NotFoundError,
+    OpenAI,
+    PermissionDeniedError,
+    RateLimitError,
+)
 from pydantic import ValidationError
 
 from config import Settings
@@ -72,10 +82,13 @@ class TravelAgent:
 
         try:
             request = TravelRequest.model_validate(raw)
-        except ValidationError:
+        except ValidationError as exc:
+            details = "; ".join(error["msg"] for error in exc.errors(include_input=False))
+            return finish("needs_clarification", "Please correct your request: " + details)
+        if request.origin != "Prague":
             return finish(
                 "needs_clarification",
-                "Provide valid origin, destination, dates (1–14 days, 2026–2035), positive total budget and traveler count.",
+                "Simulated flights currently depart from Prague only. Please select Prague as your departure city.",
             )
         if self.client is None:
             if not self.settings.api_key:
@@ -94,6 +107,8 @@ class TravelAgent:
         failures = Counter()
         searched = set()
         validated_itinerary = None
+        failure_feedback_sent = False
+        last_build_error = None
         for iteration in range(1, self.settings.max_iterations + 1):
             started = perf_counter()
             self.event(
@@ -133,11 +148,25 @@ class TravelAgent:
                         )
                     sleep(0.5 * 2**attempt)
                 except APIError as exc:
-                    self.event("api_error", error=type(exc).__name__)
-                    return finish(
-                        "error",
-                        "OpenAI rejected the request. Check API credentials, model access and account configuration.",
+                    # Store only allowlisted diagnostic fields, never raw bodies/headers.
+                    self.event(
+                        "api_error",
+                        error=type(exc).__name__,
+                        http_status=getattr(exc, "status_code", None),
                     )
+                    if isinstance(exc, NotFoundError):
+                        detail = f"OpenAI model '{self.settings.model}' was not found or is unavailable to this API project. Set OPENAI_MODEL=gpt-4.1-mini in .env and restart Streamlit, or choose another accessible model with function calling and structured outputs."
+                    elif isinstance(exc, AuthenticationError):
+                        detail = "OpenAI authentication failed. Check OPENAI_API_KEY in .env and restart Streamlit."
+                    elif isinstance(exc, PermissionDeniedError):
+                        detail = "OpenAI denied access. Check your API project permissions and model access."
+                    elif isinstance(exc, BadRequestError):
+                        detail = "OpenAI could not accept this request. Check that OPENAI_MODEL supports Chat Completions, function calling and JSON-schema structured outputs."
+                    else:
+                        detail = (
+                            "OpenAI request failed. Check your account configuration and try again."
+                        )
+                    return finish("error", detail)
             message = response.choices[0].message
             observable = message.model_dump(exclude_none=True)
             usage = response.usage.model_dump() if response.usage else None
@@ -197,6 +226,7 @@ class TravelAgent:
                         failures[name] += 1
                         if name == "build_itinerary":
                             validated_itinerary = None
+                            last_build_error = result.get("error")
                         self.event(
                             "replanning",
                             iteration=iteration,
@@ -228,6 +258,22 @@ class TravelAgent:
                             "Success requires all five tools and a successful builder result."
                         )
                     return finish("success", decision.message, validated_itinerary)
+                if (
+                    decision.status in {"error", "infeasible"}
+                    and last_build_error
+                    and failures["build_itinerary"] < 4
+                    and not failure_feedback_sent
+                ):
+                    failure_feedback_sent = True
+                    feedback = (
+                        "The last builder error is recoverable and does not establish infeasibility. "
+                        "Correct the actual schedule using this feedback, and search cheaper accommodation "
+                        "or meals if cost is the issue. Do not simply describe a correction. "
+                        + json.dumps(last_build_error)
+                    )
+                    self.event("replanning", iteration=iteration, summary=feedback)
+                    messages.append({"role": "user", "content": feedback})
+                    continue
                 return finish(decision.status, decision.message)
             except (ValidationError, ValueError) as exc:
                 feedback = (

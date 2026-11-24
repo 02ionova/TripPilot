@@ -1,13 +1,13 @@
 """English Streamlit UI; business rules remain in the tools and agent."""
 
 import json
-from datetime import date
+from datetime import date, timedelta
 
 import streamlit as st
 from pydantic import ValidationError
 
 from agent import TravelAgent
-from schemas import TravelRequest
+from schemas import TravelRequest, current_date
 
 st.set_page_config(page_title="TripPilot AI", page_icon="✈️", layout="wide")
 st.title("TripPilot AI")
@@ -17,12 +17,17 @@ st.info(
 )
 with st.form("travel_request"):
     a, b, c = st.columns(3)
-    origin = a.text_input("Departure city", "Prague")
+    origin = a.selectbox(
+        "Departure city", ["Prague"], help="Simulated flights currently depart from Prague only."
+    )
     destination = b.selectbox("Destination", ["Rome", "Paris", "Barcelona", "Vienna", "Amsterdam"])
     travelers = c.number_input("Number of travelers", 1, 20, 1)
     a, b, c = st.columns(3)
-    start = a.date_input("Start date", date(2027, 4, 10))
-    end = b.date_input("End date", date(2027, 4, 13))
+    today = current_date()
+    default_start = max(today, date(2027, 4, 10))
+    default_end = min(default_start + timedelta(days=3), date(2035, 12, 31))
+    start = a.date_input("Start date", default_start, min_value=today, max_value=date(2035, 12, 31))
+    end = b.date_input("End date", default_end, min_value=today, max_value=date(2035, 12, 31))
     budget = c.number_input("Total budget in EUR", min_value=1.0, value=600.0, step=25.0)
     a, b, c = st.columns(3)
     pace = a.selectbox("Travel pace", ["relaxed", "moderate", "intensive"], index=1)

@@ -65,3 +65,11 @@ def make_build(raw):
 @pytest.fixture
 def build_args(request_data):
     return make_build(request_data)
+
+
+@pytest.fixture(autouse=True)
+def fixed_application_date(monkeypatch):
+    """Keep historical example-based tests deterministic as real time advances."""
+    from datetime import date
+
+    monkeypatch.setattr("schemas.current_date", lambda: date(2026, 11, 24))

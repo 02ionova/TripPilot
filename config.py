@@ -12,8 +12,10 @@ load_dotenv(ROOT / ".env")
 
 @dataclass(frozen=True)
 class Settings:
-    model: str = os.getenv("OPENAI_MODEL", "gpt-4.1-mini")
-    max_iterations: int = int(os.getenv("MAX_AGENT_ITERATIONS", "15"))
+    model: str = field(default_factory=lambda: os.getenv("OPENAI_MODEL", "gpt-4.1-mini"))
+    max_iterations: int = field(
+        default_factory=lambda: int(os.getenv("MAX_AGENT_ITERATIONS", "15"))
+    )
     api_key: str = field(default_factory=lambda: os.getenv("OPENAI_API_KEY", ""), repr=False)
     timeout: float = 60.0
 

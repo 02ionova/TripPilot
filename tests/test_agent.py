@@ -232,3 +232,62 @@ def test_unexpected_sdk_error_has_trace(tmp_path, request_data):
     agent, _, result = run(tmp_path, request_data, [RuntimeError("internal detail")])
     assert result.status == "error" and agent.trace.path.exists()
     assert "internal detail" not in agent.trace.path.read_text()
+
+
+def test_model_not_found_has_actionable_error(tmp_path, request_data):
+    from openai import NotFoundError
+
+    error = NotFoundError(
+        "sensitive server body must not be logged",
+        response=httpx.Response(404, request=httpx.Request("POST", "https://api.openai.com")),
+        body=None,
+    )
+    agent, client, result = run(tmp_path, request_data, [error])
+    assert result.status == "error" and len(client.requests) == 1
+    assert "OPENAI_MODEL=gpt-4.1-mini" in result.message
+    assert "restart Streamlit" in result.message
+    events = [e for e in agent.trace.data["events"] if e["kind"] == "api_error"]
+    assert events[0]["http_status"] == 404
+    assert "sensitive server body" not in agent.trace.path.read_text()
+
+
+def test_past_dates_stop_before_api(tmp_path, request_data):
+    request_data.update(start_date="2026-04-14", end_date="2026-04-16")
+    agent, client, result = run(tmp_path, request_data, [])
+    assert result.status == "needs_clarification"
+    assert "before today" in result.message
+    assert not client.requests
+    assert agent.trace.path.exists()
+
+
+def test_unsupported_departure_stops_before_api(tmp_path, request_data):
+    request_data["origin"] = "Berlin"
+    _, client, result = run(tmp_path, request_data, [])
+    assert result.status == "needs_clarification"
+    assert "Prague" in result.message
+    assert not client.requests
+
+
+def test_settings_reload_model_from_environment(monkeypatch):
+    monkeypatch.setenv("OPENAI_MODEL", "example-model")
+    assert Settings().model == "example-model"
+
+
+def test_recoverable_build_error_cannot_end_run_prematurely(tmp_path, request_data):
+    responses = flow(request_data)
+    bad_build = make_build(request_data)
+    bad_build["days"][0]["schedule"][0]["meal"] = "lunch"
+    responses[-2:-2] = [
+        response("build_itinerary", bad_build),
+        response(content=json.dumps({"status": "error", "message": "Lunch time needs correction"})),
+    ]
+    agent, client, result = run(tmp_path, request_data, responses)
+    assert result.status == "success"
+    assert any(
+        event["kind"] == "replanning"
+        and "does not establish infeasibility" in event.get("summary", "")
+        for event in agent.trace.data["events"]
+    )
+    assert any(
+        "Correct the actual schedule" in json.dumps(call["messages"]) for call in client.requests
+    )

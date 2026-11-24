@@ -23,6 +23,11 @@ class DateRange(Model):
         return self
 
 
+def current_date() -> date:
+    """Local application date, evaluated on every validation and UI render."""
+    return date.today()
+
+
 class TravelRequest(DateRange):
     origin: str = Field(min_length=1)
     destination: str = Field(min_length=1)
@@ -33,6 +38,12 @@ class TravelRequest(DateRange):
     dietary_preferences: list[Literal["vegetarian", "vegan", "gluten-free"]] = Field(
         default_factory=list
     )
+
+    @model_validator(mode="after")
+    def departure_not_in_past(self):
+        if self.start_date < current_date():
+            raise ValueError("Start date cannot be before today.")
+        return self
 
     @field_validator("origin", "destination")
     @classmethod
