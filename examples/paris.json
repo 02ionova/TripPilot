@@ -1,0 +1,17 @@
+{
+  "origin": "Prague",
+  "destination": "Paris",
+  "start_date": "2027-05-14",
+  "end_date": "2027-05-16",
+  "budget": 350,
+  "travelers": 1,
+  "pace": "relaxed",
+  "interests": [
+    "architecture",
+    "photography",
+    "local food"
+  ],
+  "dietary_preferences": [
+    "vegetarian"
+  ]
+}

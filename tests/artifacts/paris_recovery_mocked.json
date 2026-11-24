@@ -1,0 +1,1510 @@
+{
+  "run_id": "5d8cecc7-e8ba-4424-97ad-a3bcb15e98e9",
+  "start_timestamp": "2026-11-24T18:15:37.327459+00:00",
+  "end_timestamp": "2026-11-24T18:15:37.336516+00:00",
+  "execution_mode": "mocked_unit_test",
+  "request": {
+    "origin": "Prague",
+    "destination": "Paris",
+    "start_date": "2027-05-14",
+    "end_date": "2027-05-16",
+    "budget": 350,
+    "travelers": 1,
+    "pace": "relaxed",
+    "interests": [
+      "architecture",
+      "photography",
+      "local food"
+    ],
+    "dietary_preferences": [
+      "vegetarian"
+    ]
+  },
+  "model": "gpt-4.1-mini",
+  "iterations": [
+    {
+      "iteration": 1,
+      "assistant_response": {
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "id": "call_get_weather_78",
+            "function": {
+              "arguments": "{\"destination\": \"Paris\", \"start_date\": \"2027-05-14\", \"end_date\": \"2027-05-16\"}",
+              "name": "get_weather"
+            },
+            "type": "function"
+          }
+        ]
+      },
+      "token_usage": {
+        "completion_tokens": 10,
+        "prompt_tokens": 10,
+        "total_tokens": 20,
+        "completion_tokens_details": null,
+        "prompt_tokens_details": null
+      },
+      "duration_seconds": 0.0009
+    },
+    {
+      "iteration": 2,
+      "assistant_response": {
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "id": "call_search_flights_121",
+            "function": {
+              "arguments": "{\"origin\": \"Prague\", \"destination\": \"Paris\", \"departure_date\": \"2027-05-14\", \"return_date\": \"2027-05-16\", \"travelers\": 1}",
+              "name": "search_flights"
+            },
+            "type": "function"
+          }
+        ]
+      },
+      "token_usage": {
+        "completion_tokens": 10,
+        "prompt_tokens": 10,
+        "total_tokens": 20,
+        "completion_tokens_details": null,
+        "prompt_tokens_details": null
+      },
+      "duration_seconds": 0.001
+    },
+    {
+      "iteration": 3,
+      "assistant_response": {
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "id": "call_search_hotels_149",
+            "function": {
+              "arguments": "{\"destination\": \"Paris\", \"check_in\": \"2027-05-14\", \"check_out\": \"2027-05-16\", \"travelers\": 1, \"max_nightly_price\": 30, \"accommodation_type\": \"hotel\"}",
+              "name": "search_hotels"
+            },
+            "type": "function"
+          }
+        ]
+      },
+      "token_usage": {
+        "completion_tokens": 10,
+        "prompt_tokens": 10,
+        "total_tokens": 20,
+        "completion_tokens_details": null,
+        "prompt_tokens_details": null
+      },
+      "duration_seconds": 0.0011
+    },
+    {
+      "iteration": 4,
+      "assistant_response": {
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "id": "call_search_hotels_93",
+            "function": {
+              "arguments": "{\"destination\": \"Paris\", \"check_in\": \"2027-05-14\", \"check_out\": \"2027-05-16\", \"travelers\": 1}",
+              "name": "search_hotels"
+            },
+            "type": "function"
+          }
+        ]
+      },
+      "token_usage": {
+        "completion_tokens": 10,
+        "prompt_tokens": 10,
+        "total_tokens": 20,
+        "completion_tokens_details": null,
+        "prompt_tokens_details": null
+      },
+      "duration_seconds": 0.0009
+    },
+    {
+      "iteration": 5,
+      "assistant_response": {
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "id": "call_search_activities_63",
+            "function": {
+              "arguments": "{\"destination\": \"Paris\", \"dietary_preferences\": [\"vegetarian\"]}",
+              "name": "search_activities"
+            },
+            "type": "function"
+          }
+        ]
+      },
+      "token_usage": {
+        "completion_tokens": 10,
+        "prompt_tokens": 10,
+        "total_tokens": 20,
+        "completion_tokens_details": null,
+        "prompt_tokens_details": null
+      },
+      "duration_seconds": 0.001
+    },
+    {
+      "iteration": 6,
+      "assistant_response": {
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "id": "call_build_itinerary_1625",
+            "function": {
+              "arguments": "{\"request\": {\"origin\": \"Prague\", \"destination\": \"Paris\", \"start_date\": \"2027-05-14\", \"end_date\": \"2027-05-16\", \"budget\": 350, \"travelers\": 1, \"pace\": \"relaxed\", \"interests\": [\"architecture\", \"photography\", \"local food\"], \"dietary_preferences\": [\"vegetarian\"]}, \"flight_id\": \"par-flight-1\", \"hotel_id\": \"par-hotel-1\", \"days\": [{\"date\": \"2027-05-14\", \"title\": \"Heritage and local flavors\", \"schedule\": [{\"activity_id\": \"par-meal-1\", \"start_time\": \"10:30\", \"end_time\": \"11:15\", \"meal\": \"breakfast\"}, {\"activity_id\": \"par-meal-1\", \"start_time\": \"12:00\", \"end_time\": \"12:45\", \"meal\": \"lunch\"}, {\"activity_id\": \"par-act-11\", \"start_time\": \"13:00\", \"end_time\": \"14:00\"}, {\"activity_id\": \"par-meal-1\", \"start_time\": \"17:00\", \"end_time\": \"17:45\", \"meal\": \"dinner\"}]}, {\"date\": \"2027-05-15\", \"title\": \"Heritage and local flavors\", \"schedule\": [{\"activity_id\": \"par-meal-1\", \"start_time\": \"10:30\", \"end_time\": \"11:15\", \"meal\": \"breakfast\"}, {\"activity_id\": \"par-meal-1\", \"start_time\": \"12:00\", \"end_time\": \"12:45\", \"meal\": \"lunch\"}, {\"activity_id\": \"par-act-11\", \"start_time\": \"13:00\", \"end_time\": \"14:00\"}, {\"activity_id\": \"par-meal-1\", \"start_time\": \"17:00\", \"end_time\": \"17:45\", \"meal\": \"dinner\"}]}, {\"date\": \"2027-05-16\", \"title\": \"Heritage and local flavors\", \"schedule\": [{\"activity_id\": \"par-meal-1\", \"start_time\": \"10:30\", \"end_time\": \"11:15\", \"meal\": \"breakfast\"}, {\"activity_id\": \"par-meal-1\", \"start_time\": \"12:00\", \"end_time\": \"12:45\", \"meal\": \"lunch\"}, {\"activity_id\": \"par-act-11\", \"start_time\": \"13:00\", \"end_time\": \"14:00\"}, {\"activity_id\": \"par-meal-1\", \"start_time\": \"17:00\", \"end_time\": \"17:45\", \"meal\": \"dinner\"}]}]}",
+              "name": "build_itinerary"
+            },
+            "type": "function"
+          }
+        ]
+      },
+      "token_usage": {
+        "completion_tokens": 10,
+        "prompt_tokens": 10,
+        "total_tokens": 20,
+        "completion_tokens_details": null,
+        "prompt_tokens_details": null
+      },
+      "duration_seconds": 0.0011
+    },
+    {
+      "iteration": 7,
+      "assistant_response": {
+        "content": "{\"status\": \"success\", \"message\": \"Validated simulated travel plan.\"}",
+        "role": "assistant"
+      },
+      "token_usage": {
+        "completion_tokens": 10,
+        "prompt_tokens": 10,
+        "total_tokens": 20,
+        "completion_tokens_details": null,
+        "prompt_tokens_details": null
+      },
+      "duration_seconds": 0.001
+    }
+  ],
+  "events": [
+    {
+      "timestamp": "2026-11-24T18:15:37.327591+00:00",
+      "kind": "iteration",
+      "iteration": 1,
+      "summary": "Requesting the next observable planning action."
+    },
+    {
+      "timestamp": "2026-11-24T18:15:37.328599+00:00",
+      "kind": "tool_call",
+      "iteration": 1,
+      "tool": "get_weather",
+      "tool_call_id": "call_get_weather_78",
+      "arguments": "{\"destination\": \"Paris\", \"start_date\": \"2027-05-14\", \"end_date\": \"2027-05-16\"}",
+      "result": {
+        "status": "ok",
+        "data": [
+          {
+            "date": "2027-05-14",
+            "min_temperature": 11,
+            "max_temperature": 20,
+            "conditions": "Rain likely",
+            "rain_probability": 0.6,
+            "recommendation": "indoor"
+          },
+          {
+            "date": "2027-05-15",
+            "min_temperature": 11,
+            "max_temperature": 20,
+            "conditions": "Rain likely",
+            "rain_probability": 0.6,
+            "recommendation": "indoor"
+          },
+          {
+            "date": "2027-05-16",
+            "min_temperature": 11,
+            "max_temperature": 20,
+            "conditions": "Rain likely",
+            "rain_probability": 0.6,
+            "recommendation": "indoor"
+          }
+        ],
+        "error": null,
+        "data_source": "simulated"
+      },
+      "duration_seconds": 0.0001
+    },
+    {
+      "timestamp": "2026-11-24T18:15:37.328635+00:00",
+      "kind": "iteration",
+      "iteration": 2,
+      "summary": "Requesting the next observable planning action."
+    },
+    {
+      "timestamp": "2026-11-24T18:15:37.329788+00:00",
+      "kind": "tool_call",
+      "iteration": 2,
+      "tool": "search_flights",
+      "tool_call_id": "call_search_flights_121",
+      "arguments": "{\"origin\": \"Prague\", \"destination\": \"Paris\", \"departure_date\": \"2027-05-14\", \"return_date\": \"2027-05-16\", \"travelers\": 1}",
+      "result": {
+        "status": "ok",
+        "data": [
+          {
+            "id": "par-flight-1",
+            "airline": "Simulated Budget Air",
+            "origin": "Prague",
+            "destination": "Paris",
+            "departure_date": "2027-05-14",
+            "return_date": "2027-05-16",
+            "departure_time": "07:00:00",
+            "arrival_time": "09:00:00",
+            "return_departure_time": "21:00:00",
+            "return_arrival_time": "23:00:00",
+            "duration_minutes": 120,
+            "price_per_traveler": 75.0,
+            "total_price": 75.0
+          },
+          {
+            "id": "par-flight-2",
+            "airline": "Simulated Euro Air",
+            "origin": "Prague",
+            "destination": "Paris",
+            "departure_date": "2027-05-14",
+            "return_date": "2027-05-16",
+            "departure_time": "07:00:00",
+            "arrival_time": "09:00:00",
+            "return_departure_time": "21:00:00",
+            "return_arrival_time": "23:00:00",
+            "duration_minutes": 120,
+            "price_per_traveler": 130.0,
+            "total_price": 130.0
+          },
+          {
+            "id": "par-flight-3",
+            "airline": "Simulated Flex Air",
+            "origin": "Prague",
+            "destination": "Paris",
+            "departure_date": "2027-05-14",
+            "return_date": "2027-05-16",
+            "departure_time": "07:00:00",
+            "arrival_time": "09:00:00",
+            "return_departure_time": "21:00:00",
+            "return_arrival_time": "23:00:00",
+            "duration_minutes": 120,
+            "price_per_traveler": 205.0,
+            "total_price": 205.0
+          }
+        ],
+        "error": null,
+        "data_source": "simulated"
+      },
+      "duration_seconds": 0.0001
+    },
+    {
+      "timestamp": "2026-11-24T18:15:37.329857+00:00",
+      "kind": "iteration",
+      "iteration": 3,
+      "summary": "Requesting the next observable planning action."
+    },
+    {
+      "timestamp": "2026-11-24T18:15:37.331109+00:00",
+      "kind": "replanning",
+      "iteration": 3,
+      "tool": "search_hotels",
+      "summary": "Tool returned an error; feedback sent to model.",
+      "error": {
+        "code": "no_results",
+        "message": "No accommodation matches the nightly limit and type. Hostels start at EUR 23–25 per bed; hotel rooms start at EUR 85.",
+        "suggestions": [
+          "Increase the price limit.",
+          "Remove type or environment filters.",
+          "Try hostel accommodation or free activities."
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-11-24T18:15:37.331140+00:00",
+      "kind": "tool_call",
+      "iteration": 3,
+      "tool": "search_hotels",
+      "tool_call_id": "call_search_hotels_149",
+      "arguments": "{\"destination\": \"Paris\", \"check_in\": \"2027-05-14\", \"check_out\": \"2027-05-16\", \"travelers\": 1, \"max_nightly_price\": 30, \"accommodation_type\": \"hotel\"}",
+      "result": {
+        "status": "error",
+        "data": null,
+        "error": {
+          "code": "no_results",
+          "message": "No accommodation matches the nightly limit and type. Hostels start at EUR 23–25 per bed; hotel rooms start at EUR 85.",
+          "suggestions": [
+            "Increase the price limit.",
+            "Remove type or environment filters.",
+            "Try hostel accommodation or free activities."
+          ]
+        },
+        "data_source": "simulated"
+      },
+      "duration_seconds": 0.0001
+    },
+    {
+      "timestamp": "2026-11-24T18:15:37.331168+00:00",
+      "kind": "iteration",
+      "iteration": 4,
+      "summary": "Requesting the next observable planning action."
+    },
+    {
+      "timestamp": "2026-11-24T18:15:37.332193+00:00",
+      "kind": "tool_call",
+      "iteration": 4,
+      "tool": "search_hotels",
+      "tool_call_id": "call_search_hotels_93",
+      "arguments": "{\"destination\": \"Paris\", \"check_in\": \"2027-05-14\", \"check_out\": \"2027-05-16\", \"travelers\": 1}",
+      "result": {
+        "status": "ok",
+        "data": [
+          {
+            "id": "par-hotel-1",
+            "name": "Paris Central Hostel",
+            "accommodation_type": "hostel",
+            "price_per_night": 25.0,
+            "nights": 2,
+            "rooms": 1,
+            "total_cost": 50.0,
+            "neighborhood": "Station district",
+            "rating": 7.8
+          },
+          {
+            "id": "par-hotel-2",
+            "name": "Paris Budget Rooms",
+            "accommodation_type": "budget",
+            "price_per_night": 50.0,
+            "nights": 2,
+            "rooms": 1,
+            "total_cost": 100.0,
+            "neighborhood": "Outer center",
+            "rating": 8.0
+          },
+          {
+            "id": "par-hotel-3",
+            "name": "Paris Garden Hotel",
+            "accommodation_type": "hotel",
+            "price_per_night": 85.0,
+            "nights": 2,
+            "rooms": 1,
+            "total_cost": 170.0,
+            "neighborhood": "Museum district",
+            "rating": 8.6
+          },
+          {
+            "id": "par-hotel-4",
+            "name": "Paris Grand Hotel",
+            "accommodation_type": "hotel",
+            "price_per_night": 160.0,
+            "nights": 2,
+            "rooms": 1,
+            "total_cost": 320.0,
+            "neighborhood": "Historic center",
+            "rating": 9.1
+          }
+        ],
+        "error": null,
+        "data_source": "simulated"
+      },
+      "duration_seconds": 0.0001
+    },
+    {
+      "timestamp": "2026-11-24T18:15:37.332247+00:00",
+      "kind": "iteration",
+      "iteration": 5,
+      "summary": "Requesting the next observable planning action."
+    },
+    {
+      "timestamp": "2026-11-24T18:15:37.333399+00:00",
+      "kind": "tool_call",
+      "iteration": 5,
+      "tool": "search_activities",
+      "tool_call_id": "call_search_activities_63",
+      "arguments": "{\"destination\": \"Paris\", \"dietary_preferences\": [\"vegetarian\"]}",
+      "result": {
+        "status": "ok",
+        "data": [
+          {
+            "id": "par-act-1",
+            "name": "Eiffel Tower viewpoint",
+            "category": "attraction",
+            "description": "Simulated visit to Eiffel Tower viewpoint; booking and access are illustrative.",
+            "interests": [
+              "architecture",
+              "photography",
+              "nature",
+              "relaxation",
+              "history"
+            ],
+            "duration_minutes": 60,
+            "price_per_person": 0.0,
+            "environment": "outdoor",
+            "dietary_compatibility": []
+          },
+          {
+            "id": "par-act-2",
+            "name": "Louvre galleries",
+            "category": "attraction",
+            "description": "Simulated visit to Louvre galleries; booking and access are illustrative.",
+            "interests": [
+              "museums",
+              "history"
+            ],
+            "duration_minutes": 90,
+            "price_per_person": 18.0,
+            "environment": "indoor",
+            "dietary_compatibility": []
+          },
+          {
+            "id": "par-act-3",
+            "name": "Notre-Dame exterior",
+            "category": "attraction",
+            "description": "Simulated visit to Notre-Dame exterior; booking and access are illustrative.",
+            "interests": [
+              "architecture",
+              "photography",
+              "nature",
+              "relaxation",
+              "history"
+            ],
+            "duration_minutes": 60,
+            "price_per_person": 0.0,
+            "environment": "outdoor",
+            "dietary_compatibility": []
+          },
+          {
+            "id": "par-act-4",
+            "name": "Montmartre lanes",
+            "category": "attraction",
+            "description": "Simulated visit to Montmartre lanes; booking and access are illustrative.",
+            "interests": [
+              "architecture",
+              "photography",
+              "nature",
+              "relaxation",
+              "history"
+            ],
+            "duration_minutes": 60,
+            "price_per_person": 0.0,
+            "environment": "outdoor",
+            "dietary_compatibility": []
+          },
+          {
+            "id": "par-act-5",
+            "name": "Luxembourg Gardens",
+            "category": "attraction",
+            "description": "Simulated visit to Luxembourg Gardens; booking and access are illustrative.",
+            "interests": [
+              "architecture",
+              "photography",
+              "nature",
+              "relaxation",
+              "history"
+            ],
+            "duration_minutes": 60,
+            "price_per_person": 0.0,
+            "environment": "outdoor",
+            "dietary_compatibility": []
+          },
+          {
+            "id": "par-act-6",
+            "name": "Le Marais walk",
+            "category": "attraction",
+            "description": "Simulated visit to Le Marais walk; booking and access are illustrative.",
+            "interests": [
+              "architecture",
+              "photography",
+              "nature",
+              "relaxation",
+              "history"
+            ],
+            "duration_minutes": 60,
+            "price_per_person": 0.0,
+            "environment": "outdoor",
+            "dietary_compatibility": []
+          },
+          {
+            "id": "par-act-7",
+            "name": "Musée Carnavalet",
+            "category": "attraction",
+            "description": "Simulated visit to Musée Carnavalet; booking and access are illustrative.",
+            "interests": [
+              "museums",
+              "history"
+            ],
+            "duration_minutes": 60,
+            "price_per_person": 8.0,
+            "environment": "indoor",
+            "dietary_compatibility": []
+          },
+          {
+            "id": "par-act-8",
+            "name": "Seine promenade",
+            "category": "attraction",
+            "description": "Simulated visit to Seine promenade; booking and access are illustrative.",
+            "interests": [
+              "architecture",
+              "photography",
+              "nature",
+              "relaxation",
+              "history"
+            ],
+            "duration_minutes": 60,
+            "price_per_person": 0.0,
+            "environment": "outdoor",
+            "dietary_compatibility": []
+          },
+          {
+            "id": "par-act-9",
+            "name": "Covered passages",
+            "category": "attraction",
+            "description": "Simulated visit to Covered passages; booking and access are illustrative.",
+            "interests": [
+              "museums",
+              "history"
+            ],
+            "duration_minutes": 60,
+            "price_per_person": 0.0,
+            "environment": "indoor",
+            "dietary_compatibility": []
+          },
+          {
+            "id": "par-act-10",
+            "name": "Latin Quarter photo walk",
+            "category": "attraction",
+            "description": "Simulated visit to Latin Quarter photo walk; booking and access are illustrative.",
+            "interests": [
+              "architecture",
+              "photography",
+              "nature",
+              "relaxation",
+              "history"
+            ],
+            "duration_minutes": 60,
+            "price_per_person": 0.0,
+            "environment": "outdoor",
+            "dietary_compatibility": []
+          },
+          {
+            "id": "par-act-11",
+            "name": "Paris community heritage gallery",
+            "category": "attraction",
+            "description": "Simulated free indoor local history and architecture exhibition.",
+            "interests": [
+              "architecture",
+              "history",
+              "photography",
+              "museums"
+            ],
+            "duration_minutes": 60,
+            "price_per_person": 0.0,
+            "environment": "indoor",
+            "dietary_compatibility": []
+          },
+          {
+            "id": "par-meal-1",
+            "name": "Paris Plant kitchen",
+            "category": "meal",
+            "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+            "interests": [
+              "local food"
+            ],
+            "duration_minutes": 45,
+            "price_per_person": 7.0,
+            "environment": "indoor",
+            "dietary_compatibility": [
+              "vegetarian",
+              "vegan",
+              "gluten-free"
+            ]
+          },
+          {
+            "id": "par-meal-2",
+            "name": "Paris Vegetarian café",
+            "category": "meal",
+            "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+            "interests": [
+              "local food"
+            ],
+            "duration_minutes": 45,
+            "price_per_person": 9.0,
+            "environment": "indoor",
+            "dietary_compatibility": [
+              "vegetarian"
+            ]
+          }
+        ],
+        "error": null,
+        "data_source": "simulated"
+      },
+      "duration_seconds": 0.0002
+    },
+    {
+      "timestamp": "2026-11-24T18:15:37.333584+00:00",
+      "kind": "iteration",
+      "iteration": 6,
+      "summary": "Requesting the next observable planning action."
+    },
+    {
+      "timestamp": "2026-11-24T18:15:37.335165+00:00",
+      "kind": "tool_call",
+      "iteration": 6,
+      "tool": "build_itinerary",
+      "tool_call_id": "call_build_itinerary_1625",
+      "arguments": "{\"request\": {\"origin\": \"Prague\", \"destination\": \"Paris\", \"start_date\": \"2027-05-14\", \"end_date\": \"2027-05-16\", \"budget\": 350, \"travelers\": 1, \"pace\": \"relaxed\", \"interests\": [\"architecture\", \"photography\", \"local food\"], \"dietary_preferences\": [\"vegetarian\"]}, \"flight_id\": \"par-flight-1\", \"hotel_id\": \"par-hotel-1\", \"days\": [{\"date\": \"2027-05-14\", \"title\": \"Heritage and local flavors\", \"schedule\": [{\"activity_id\": \"par-meal-1\", \"start_time\": \"10:30\", \"end_time\": \"11:15\", \"meal\": \"breakfast\"}, {\"activity_id\": \"par-meal-1\", \"start_time\": \"12:00\", \"end_time\": \"12:45\", \"meal\": \"lunch\"}, {\"activity_id\": \"par-act-11\", \"start_time\": \"13:00\", \"end_time\": \"14:00\"}, {\"activity_id\": \"par-meal-1\", \"start_time\": \"17:00\", \"end_time\": \"17:45\", \"meal\": \"dinner\"}]}, {\"date\": \"2027-05-15\", \"title\": \"Heritage and local flavors\", \"schedule\": [{\"activity_id\": \"par-meal-1\", \"start_time\": \"10:30\", \"end_time\": \"11:15\", \"meal\": \"breakfast\"}, {\"activity_id\": \"par-meal-1\", \"start_time\": \"12:00\", \"end_time\": \"12:45\", \"meal\": \"lunch\"}, {\"activity_id\": \"par-act-11\", \"start_time\": \"13:00\", \"end_time\": \"14:00\"}, {\"activity_id\": \"par-meal-1\", \"start_time\": \"17:00\", \"end_time\": \"17:45\", \"meal\": \"dinner\"}]}, {\"date\": \"2027-05-16\", \"title\": \"Heritage and local flavors\", \"schedule\": [{\"activity_id\": \"par-meal-1\", \"start_time\": \"10:30\", \"end_time\": \"11:15\", \"meal\": \"breakfast\"}, {\"activity_id\": \"par-meal-1\", \"start_time\": \"12:00\", \"end_time\": \"12:45\", \"meal\": \"lunch\"}, {\"activity_id\": \"par-act-11\", \"start_time\": \"13:00\", \"end_time\": \"14:00\"}, {\"activity_id\": \"par-meal-1\", \"start_time\": \"17:00\", \"end_time\": \"17:45\", \"meal\": \"dinner\"}]}]}",
+      "result": {
+        "status": "ok",
+        "data": {
+          "trip_summary": {
+            "origin": "Prague",
+            "destination": "Paris",
+            "start_date": "2027-05-14",
+            "end_date": "2027-05-16",
+            "travelers": 1,
+            "currency": "EUR"
+          },
+          "selected_flights": {
+            "id": "par-flight-1",
+            "airline": "Simulated Budget Air",
+            "origin": "Prague",
+            "destination": "Paris",
+            "departure_date": "2027-05-14",
+            "return_date": "2027-05-16",
+            "departure_time": "07:00:00",
+            "arrival_time": "09:00:00",
+            "return_departure_time": "21:00:00",
+            "return_arrival_time": "23:00:00",
+            "duration_minutes": 120,
+            "price_per_traveler": 75.0,
+            "total_price": 75.0
+          },
+          "selected_accommodation": {
+            "id": "par-hotel-1",
+            "name": "Paris Central Hostel",
+            "accommodation_type": "hostel",
+            "price_per_night": 25.0,
+            "nights": 2,
+            "rooms": 1,
+            "total_cost": 50.0,
+            "neighborhood": "Station district",
+            "rating": 7.8
+          },
+          "daily_itinerary": [
+            {
+              "date": "2027-05-14",
+              "title": "Heritage and local flavors",
+              "weather": {
+                "date": "2027-05-14",
+                "min_temperature": 11,
+                "max_temperature": 20,
+                "conditions": "Rain likely",
+                "rain_probability": 0.6,
+                "recommendation": "indoor"
+              },
+              "schedule": [
+                {
+                  "activity": {
+                    "id": "par-meal-1",
+                    "name": "Paris Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "10:30:00",
+                  "end_time": "11:15:00",
+                  "meal": "breakfast",
+                  "total_cost": 7.0
+                },
+                {
+                  "activity": {
+                    "id": "par-meal-1",
+                    "name": "Paris Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "12:00:00",
+                  "end_time": "12:45:00",
+                  "meal": "lunch",
+                  "total_cost": 7.0
+                },
+                {
+                  "activity": {
+                    "id": "par-act-11",
+                    "name": "Paris community heritage gallery",
+                    "category": "attraction",
+                    "description": "Simulated free indoor local history and architecture exhibition.",
+                    "interests": [
+                      "architecture",
+                      "history",
+                      "photography",
+                      "museums"
+                    ],
+                    "duration_minutes": 60,
+                    "price_per_person": 0.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": []
+                  },
+                  "start_time": "13:00:00",
+                  "end_time": "14:00:00",
+                  "meal": null,
+                  "total_cost": 0.0
+                },
+                {
+                  "activity": {
+                    "id": "par-meal-1",
+                    "name": "Paris Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "17:00:00",
+                  "end_time": "17:45:00",
+                  "meal": "dinner",
+                  "total_cost": 7.0
+                }
+              ],
+              "estimated_cost": 26.0,
+              "local_transport": 5.0,
+              "recommendations": [
+                "Allow 15 minutes between visits; airport transfers have separate buffers.",
+                "Meal compatibility is simulated; confirm with the restaurant before real travel."
+              ]
+            },
+            {
+              "date": "2027-05-15",
+              "title": "Heritage and local flavors",
+              "weather": {
+                "date": "2027-05-15",
+                "min_temperature": 11,
+                "max_temperature": 20,
+                "conditions": "Rain likely",
+                "rain_probability": 0.6,
+                "recommendation": "indoor"
+              },
+              "schedule": [
+                {
+                  "activity": {
+                    "id": "par-meal-1",
+                    "name": "Paris Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "10:30:00",
+                  "end_time": "11:15:00",
+                  "meal": "breakfast",
+                  "total_cost": 7.0
+                },
+                {
+                  "activity": {
+                    "id": "par-meal-1",
+                    "name": "Paris Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "12:00:00",
+                  "end_time": "12:45:00",
+                  "meal": "lunch",
+                  "total_cost": 7.0
+                },
+                {
+                  "activity": {
+                    "id": "par-act-11",
+                    "name": "Paris community heritage gallery",
+                    "category": "attraction",
+                    "description": "Simulated free indoor local history and architecture exhibition.",
+                    "interests": [
+                      "architecture",
+                      "history",
+                      "photography",
+                      "museums"
+                    ],
+                    "duration_minutes": 60,
+                    "price_per_person": 0.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": []
+                  },
+                  "start_time": "13:00:00",
+                  "end_time": "14:00:00",
+                  "meal": null,
+                  "total_cost": 0.0
+                },
+                {
+                  "activity": {
+                    "id": "par-meal-1",
+                    "name": "Paris Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "17:00:00",
+                  "end_time": "17:45:00",
+                  "meal": "dinner",
+                  "total_cost": 7.0
+                }
+              ],
+              "estimated_cost": 26.0,
+              "local_transport": 5.0,
+              "recommendations": [
+                "Allow 15 minutes between visits; airport transfers have separate buffers.",
+                "Meal compatibility is simulated; confirm with the restaurant before real travel."
+              ]
+            },
+            {
+              "date": "2027-05-16",
+              "title": "Heritage and local flavors",
+              "weather": {
+                "date": "2027-05-16",
+                "min_temperature": 11,
+                "max_temperature": 20,
+                "conditions": "Rain likely",
+                "rain_probability": 0.6,
+                "recommendation": "indoor"
+              },
+              "schedule": [
+                {
+                  "activity": {
+                    "id": "par-meal-1",
+                    "name": "Paris Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "10:30:00",
+                  "end_time": "11:15:00",
+                  "meal": "breakfast",
+                  "total_cost": 7.0
+                },
+                {
+                  "activity": {
+                    "id": "par-meal-1",
+                    "name": "Paris Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "12:00:00",
+                  "end_time": "12:45:00",
+                  "meal": "lunch",
+                  "total_cost": 7.0
+                },
+                {
+                  "activity": {
+                    "id": "par-act-11",
+                    "name": "Paris community heritage gallery",
+                    "category": "attraction",
+                    "description": "Simulated free indoor local history and architecture exhibition.",
+                    "interests": [
+                      "architecture",
+                      "history",
+                      "photography",
+                      "museums"
+                    ],
+                    "duration_minutes": 60,
+                    "price_per_person": 0.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": []
+                  },
+                  "start_time": "13:00:00",
+                  "end_time": "14:00:00",
+                  "meal": null,
+                  "total_cost": 0.0
+                },
+                {
+                  "activity": {
+                    "id": "par-meal-1",
+                    "name": "Paris Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "17:00:00",
+                  "end_time": "17:45:00",
+                  "meal": "dinner",
+                  "total_cost": 7.0
+                }
+              ],
+              "estimated_cost": 26.0,
+              "local_transport": 5.0,
+              "recommendations": [
+                "Allow 15 minutes between visits; airport transfers have separate buffers.",
+                "Meal compatibility is simulated; confirm with the restaurant before real travel."
+              ]
+            }
+          ],
+          "budget_breakdown": {
+            "flights": 75.0,
+            "accommodation": 50.0,
+            "food": 63.0,
+            "activities": 0.0,
+            "local_transport": 15.0,
+            "total": 203.0,
+            "remaining_budget": 147.0
+          },
+          "weather_summary": [
+            {
+              "date": "2027-05-14",
+              "min_temperature": 11,
+              "max_temperature": 20,
+              "conditions": "Rain likely",
+              "rain_probability": 0.6,
+              "recommendation": "indoor"
+            },
+            {
+              "date": "2027-05-15",
+              "min_temperature": 11,
+              "max_temperature": 20,
+              "conditions": "Rain likely",
+              "rain_probability": 0.6,
+              "recommendation": "indoor"
+            },
+            {
+              "date": "2027-05-16",
+              "min_temperature": 11,
+              "max_temperature": 20,
+              "conditions": "Rain likely",
+              "rain_probability": 0.6,
+              "recommendation": "indoor"
+            }
+          ],
+          "recommendations": [
+            "Reserve tickets only after verifying real availability."
+          ],
+          "warnings": [
+            "All prices, schedules, availability, restaurants and weather are simulated.",
+            "EUR 5 per traveler per day covers simulated local transport and airport transfers; flights include no paid extras.",
+            "Daily costs include meals, attractions and transport; flights and accommodation are charged once in the trip budget."
+          ],
+          "data_source": "simulated"
+        },
+        "error": null,
+        "data_source": "simulated"
+      },
+      "duration_seconds": 0.0005
+    },
+    {
+      "timestamp": "2026-11-24T18:15:37.335523+00:00",
+      "kind": "iteration",
+      "iteration": 7,
+      "summary": "Requesting the next observable planning action."
+    }
+  ],
+  "final_response": {
+    "status": "success",
+    "message": "Validated simulated travel plan.",
+    "itinerary": {
+      "trip_summary": {
+        "origin": "Prague",
+        "destination": "Paris",
+        "start_date": "2027-05-14",
+        "end_date": "2027-05-16",
+        "travelers": 1,
+        "currency": "EUR"
+      },
+      "selected_flights": {
+        "id": "par-flight-1",
+        "airline": "Simulated Budget Air",
+        "origin": "Prague",
+        "destination": "Paris",
+        "departure_date": "2027-05-14",
+        "return_date": "2027-05-16",
+        "departure_time": "07:00:00",
+        "arrival_time": "09:00:00",
+        "return_departure_time": "21:00:00",
+        "return_arrival_time": "23:00:00",
+        "duration_minutes": 120,
+        "price_per_traveler": 75.0,
+        "total_price": 75.0
+      },
+      "selected_accommodation": {
+        "id": "par-hotel-1",
+        "name": "Paris Central Hostel",
+        "accommodation_type": "hostel",
+        "price_per_night": 25.0,
+        "nights": 2,
+        "rooms": 1,
+        "total_cost": 50.0,
+        "neighborhood": "Station district",
+        "rating": 7.8
+      },
+      "daily_itinerary": [
+        {
+          "date": "2027-05-14",
+          "title": "Heritage and local flavors",
+          "weather": {
+            "date": "2027-05-14",
+            "min_temperature": 11,
+            "max_temperature": 20,
+            "conditions": "Rain likely",
+            "rain_probability": 0.6,
+            "recommendation": "indoor"
+          },
+          "schedule": [
+            {
+              "activity": {
+                "id": "par-meal-1",
+                "name": "Paris Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "10:30:00",
+              "end_time": "11:15:00",
+              "meal": "breakfast",
+              "total_cost": 7.0
+            },
+            {
+              "activity": {
+                "id": "par-meal-1",
+                "name": "Paris Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "12:00:00",
+              "end_time": "12:45:00",
+              "meal": "lunch",
+              "total_cost": 7.0
+            },
+            {
+              "activity": {
+                "id": "par-act-11",
+                "name": "Paris community heritage gallery",
+                "category": "attraction",
+                "description": "Simulated free indoor local history and architecture exhibition.",
+                "interests": [
+                  "architecture",
+                  "history",
+                  "photography",
+                  "museums"
+                ],
+                "duration_minutes": 60,
+                "price_per_person": 0.0,
+                "environment": "indoor",
+                "dietary_compatibility": []
+              },
+              "start_time": "13:00:00",
+              "end_time": "14:00:00",
+              "meal": null,
+              "total_cost": 0.0
+            },
+            {
+              "activity": {
+                "id": "par-meal-1",
+                "name": "Paris Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "17:00:00",
+              "end_time": "17:45:00",
+              "meal": "dinner",
+              "total_cost": 7.0
+            }
+          ],
+          "estimated_cost": 26.0,
+          "local_transport": 5.0,
+          "recommendations": [
+            "Allow 15 minutes between visits; airport transfers have separate buffers.",
+            "Meal compatibility is simulated; confirm with the restaurant before real travel."
+          ]
+        },
+        {
+          "date": "2027-05-15",
+          "title": "Heritage and local flavors",
+          "weather": {
+            "date": "2027-05-15",
+            "min_temperature": 11,
+            "max_temperature": 20,
+            "conditions": "Rain likely",
+            "rain_probability": 0.6,
+            "recommendation": "indoor"
+          },
+          "schedule": [
+            {
+              "activity": {
+                "id": "par-meal-1",
+                "name": "Paris Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "10:30:00",
+              "end_time": "11:15:00",
+              "meal": "breakfast",
+              "total_cost": 7.0
+            },
+            {
+              "activity": {
+                "id": "par-meal-1",
+                "name": "Paris Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "12:00:00",
+              "end_time": "12:45:00",
+              "meal": "lunch",
+              "total_cost": 7.0
+            },
+            {
+              "activity": {
+                "id": "par-act-11",
+                "name": "Paris community heritage gallery",
+                "category": "attraction",
+                "description": "Simulated free indoor local history and architecture exhibition.",
+                "interests": [
+                  "architecture",
+                  "history",
+                  "photography",
+                  "museums"
+                ],
+                "duration_minutes": 60,
+                "price_per_person": 0.0,
+                "environment": "indoor",
+                "dietary_compatibility": []
+              },
+              "start_time": "13:00:00",
+              "end_time": "14:00:00",
+              "meal": null,
+              "total_cost": 0.0
+            },
+            {
+              "activity": {
+                "id": "par-meal-1",
+                "name": "Paris Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "17:00:00",
+              "end_time": "17:45:00",
+              "meal": "dinner",
+              "total_cost": 7.0
+            }
+          ],
+          "estimated_cost": 26.0,
+          "local_transport": 5.0,
+          "recommendations": [
+            "Allow 15 minutes between visits; airport transfers have separate buffers.",
+            "Meal compatibility is simulated; confirm with the restaurant before real travel."
+          ]
+        },
+        {
+          "date": "2027-05-16",
+          "title": "Heritage and local flavors",
+          "weather": {
+            "date": "2027-05-16",
+            "min_temperature": 11,
+            "max_temperature": 20,
+            "conditions": "Rain likely",
+            "rain_probability": 0.6,
+            "recommendation": "indoor"
+          },
+          "schedule": [
+            {
+              "activity": {
+                "id": "par-meal-1",
+                "name": "Paris Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "10:30:00",
+              "end_time": "11:15:00",
+              "meal": "breakfast",
+              "total_cost": 7.0
+            },
+            {
+              "activity": {
+                "id": "par-meal-1",
+                "name": "Paris Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "12:00:00",
+              "end_time": "12:45:00",
+              "meal": "lunch",
+              "total_cost": 7.0
+            },
+            {
+              "activity": {
+                "id": "par-act-11",
+                "name": "Paris community heritage gallery",
+                "category": "attraction",
+                "description": "Simulated free indoor local history and architecture exhibition.",
+                "interests": [
+                  "architecture",
+                  "history",
+                  "photography",
+                  "museums"
+                ],
+                "duration_minutes": 60,
+                "price_per_person": 0.0,
+                "environment": "indoor",
+                "dietary_compatibility": []
+              },
+              "start_time": "13:00:00",
+              "end_time": "14:00:00",
+              "meal": null,
+              "total_cost": 0.0
+            },
+            {
+              "activity": {
+                "id": "par-meal-1",
+                "name": "Paris Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "17:00:00",
+              "end_time": "17:45:00",
+              "meal": "dinner",
+              "total_cost": 7.0
+            }
+          ],
+          "estimated_cost": 26.0,
+          "local_transport": 5.0,
+          "recommendations": [
+            "Allow 15 minutes between visits; airport transfers have separate buffers.",
+            "Meal compatibility is simulated; confirm with the restaurant before real travel."
+          ]
+        }
+      ],
+      "budget_breakdown": {
+        "flights": 75.0,
+        "accommodation": 50.0,
+        "food": 63.0,
+        "activities": 0.0,
+        "local_transport": 15.0,
+        "total": 203.0,
+        "remaining_budget": 147.0
+      },
+      "weather_summary": [
+        {
+          "date": "2027-05-14",
+          "min_temperature": 11,
+          "max_temperature": 20,
+          "conditions": "Rain likely",
+          "rain_probability": 0.6,
+          "recommendation": "indoor"
+        },
+        {
+          "date": "2027-05-15",
+          "min_temperature": 11,
+          "max_temperature": 20,
+          "conditions": "Rain likely",
+          "rain_probability": 0.6,
+          "recommendation": "indoor"
+        },
+        {
+          "date": "2027-05-16",
+          "min_temperature": 11,
+          "max_temperature": 20,
+          "conditions": "Rain likely",
+          "rain_probability": 0.6,
+          "recommendation": "indoor"
+        }
+      ],
+      "recommendations": [
+        "Reserve tickets only after verifying real availability."
+      ],
+      "warnings": [
+        "All prices, schedules, availability, restaurants and weather are simulated.",
+        "EUR 5 per traveler per day covers simulated local transport and airport transfers; flights include no paid extras.",
+        "Daily costs include meals, attractions and transport; flights and accommodation are charged once in the trip budget."
+      ],
+      "data_source": "simulated"
+    },
+    "data_source": "simulated"
+  },
+  "final_status": "success",
+  "budget_validation": {
+    "valid": true,
+    "total": 203.0,
+    "remaining_budget": 147.0
+  },
+  "duration_seconds": 0.0091
+}

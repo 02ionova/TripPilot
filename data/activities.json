@@ -1,0 +1,1200 @@
+{
+  "data_source": "simulated",
+  "destinations": {
+    "Rome": [
+      {
+        "id": "rom-act-1",
+        "name": "Colosseum exterior",
+        "category": "attraction",
+        "description": "Simulated visit to Colosseum exterior; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "rom-act-2",
+        "name": "Vatican Museums",
+        "category": "attraction",
+        "description": "Simulated visit to Vatican Museums; booking and access are illustrative.",
+        "interests": [
+          "museums",
+          "history"
+        ],
+        "duration_minutes": 90,
+        "price_per_person": 18,
+        "environment": "indoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "rom-act-3",
+        "name": "Pantheon district",
+        "category": "attraction",
+        "description": "Simulated visit to Pantheon district; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "rom-act-4",
+        "name": "Roman Forum overlook",
+        "category": "attraction",
+        "description": "Simulated visit to Roman Forum overlook; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "rom-act-5",
+        "name": "Villa Borghese gardens",
+        "category": "attraction",
+        "description": "Simulated visit to Villa Borghese gardens; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "rom-act-6",
+        "name": "Trastevere lanes",
+        "category": "attraction",
+        "description": "Simulated visit to Trastevere lanes; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "rom-act-7",
+        "name": "Capitoline Museums",
+        "category": "attraction",
+        "description": "Simulated visit to Capitoline Museums; booking and access are illustrative.",
+        "interests": [
+          "museums",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 8,
+        "environment": "indoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "rom-act-8",
+        "name": "Tiber promenade",
+        "category": "attraction",
+        "description": "Simulated visit to Tiber promenade; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "rom-act-9",
+        "name": "Via del Corso",
+        "category": "attraction",
+        "description": "Simulated visit to Via del Corso; booking and access are illustrative.",
+        "interests": [
+          "museums",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "indoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "rom-act-10",
+        "name": "Historic center photo walk",
+        "category": "attraction",
+        "description": "Simulated visit to Historic center photo walk; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "rom-act-11",
+        "name": "Rome community heritage gallery",
+        "category": "attraction",
+        "description": "Simulated free indoor local history and architecture exhibition.",
+        "interests": [
+          "architecture",
+          "history",
+          "photography",
+          "museums"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "indoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "rom-meal-1",
+        "name": "Rome Plant kitchen",
+        "category": "meal",
+        "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+        "interests": [
+          "local food"
+        ],
+        "duration_minutes": 45,
+        "price_per_person": 7,
+        "environment": "indoor",
+        "dietary_compatibility": [
+          "vegetarian",
+          "vegan",
+          "gluten-free"
+        ]
+      },
+      {
+        "id": "rom-meal-2",
+        "name": "Rome Vegetarian caf\u00e9",
+        "category": "meal",
+        "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+        "interests": [
+          "local food"
+        ],
+        "duration_minutes": 45,
+        "price_per_person": 9,
+        "environment": "indoor",
+        "dietary_compatibility": [
+          "vegetarian"
+        ]
+      },
+      {
+        "id": "rom-meal-3",
+        "name": "Rome Gluten-free bistro",
+        "category": "meal",
+        "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+        "interests": [
+          "local food"
+        ],
+        "duration_minutes": 45,
+        "price_per_person": 11,
+        "environment": "indoor",
+        "dietary_compatibility": [
+          "gluten-free"
+        ]
+      },
+      {
+        "id": "rom-meal-4",
+        "name": "Rome Traditional table",
+        "category": "meal",
+        "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+        "interests": [
+          "local food"
+        ],
+        "duration_minutes": 45,
+        "price_per_person": 13,
+        "environment": "indoor",
+        "dietary_compatibility": []
+      }
+    ],
+    "Paris": [
+      {
+        "id": "par-act-1",
+        "name": "Eiffel Tower viewpoint",
+        "category": "attraction",
+        "description": "Simulated visit to Eiffel Tower viewpoint; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "par-act-2",
+        "name": "Louvre galleries",
+        "category": "attraction",
+        "description": "Simulated visit to Louvre galleries; booking and access are illustrative.",
+        "interests": [
+          "museums",
+          "history"
+        ],
+        "duration_minutes": 90,
+        "price_per_person": 18,
+        "environment": "indoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "par-act-3",
+        "name": "Notre-Dame exterior",
+        "category": "attraction",
+        "description": "Simulated visit to Notre-Dame exterior; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "par-act-4",
+        "name": "Montmartre lanes",
+        "category": "attraction",
+        "description": "Simulated visit to Montmartre lanes; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "par-act-5",
+        "name": "Luxembourg Gardens",
+        "category": "attraction",
+        "description": "Simulated visit to Luxembourg Gardens; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "par-act-6",
+        "name": "Le Marais walk",
+        "category": "attraction",
+        "description": "Simulated visit to Le Marais walk; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "par-act-7",
+        "name": "Mus\u00e9e Carnavalet",
+        "category": "attraction",
+        "description": "Simulated visit to Mus\u00e9e Carnavalet; booking and access are illustrative.",
+        "interests": [
+          "museums",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 8,
+        "environment": "indoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "par-act-8",
+        "name": "Seine promenade",
+        "category": "attraction",
+        "description": "Simulated visit to Seine promenade; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "par-act-9",
+        "name": "Covered passages",
+        "category": "attraction",
+        "description": "Simulated visit to Covered passages; booking and access are illustrative.",
+        "interests": [
+          "museums",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "indoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "par-act-10",
+        "name": "Latin Quarter photo walk",
+        "category": "attraction",
+        "description": "Simulated visit to Latin Quarter photo walk; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "par-act-11",
+        "name": "Paris community heritage gallery",
+        "category": "attraction",
+        "description": "Simulated free indoor local history and architecture exhibition.",
+        "interests": [
+          "architecture",
+          "history",
+          "photography",
+          "museums"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "indoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "par-meal-1",
+        "name": "Paris Plant kitchen",
+        "category": "meal",
+        "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+        "interests": [
+          "local food"
+        ],
+        "duration_minutes": 45,
+        "price_per_person": 7,
+        "environment": "indoor",
+        "dietary_compatibility": [
+          "vegetarian",
+          "vegan",
+          "gluten-free"
+        ]
+      },
+      {
+        "id": "par-meal-2",
+        "name": "Paris Vegetarian caf\u00e9",
+        "category": "meal",
+        "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+        "interests": [
+          "local food"
+        ],
+        "duration_minutes": 45,
+        "price_per_person": 9,
+        "environment": "indoor",
+        "dietary_compatibility": [
+          "vegetarian"
+        ]
+      },
+      {
+        "id": "par-meal-3",
+        "name": "Paris Gluten-free bistro",
+        "category": "meal",
+        "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+        "interests": [
+          "local food"
+        ],
+        "duration_minutes": 45,
+        "price_per_person": 11,
+        "environment": "indoor",
+        "dietary_compatibility": [
+          "gluten-free"
+        ]
+      },
+      {
+        "id": "par-meal-4",
+        "name": "Paris Traditional table",
+        "category": "meal",
+        "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+        "interests": [
+          "local food"
+        ],
+        "duration_minutes": 45,
+        "price_per_person": 13,
+        "environment": "indoor",
+        "dietary_compatibility": []
+      }
+    ],
+    "Barcelona": [
+      {
+        "id": "bar-act-1",
+        "name": "Sagrada Fam\u00edlia exterior",
+        "category": "attraction",
+        "description": "Simulated visit to Sagrada Fam\u00edlia exterior; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "bar-act-2",
+        "name": "Picasso Museum",
+        "category": "attraction",
+        "description": "Simulated visit to Picasso Museum; booking and access are illustrative.",
+        "interests": [
+          "museums",
+          "history"
+        ],
+        "duration_minutes": 90,
+        "price_per_person": 18,
+        "environment": "indoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "bar-act-3",
+        "name": "Gothic Quarter",
+        "category": "attraction",
+        "description": "Simulated visit to Gothic Quarter; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "bar-act-4",
+        "name": "Montju\u00efc viewpoints",
+        "category": "attraction",
+        "description": "Simulated visit to Montju\u00efc viewpoints; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "bar-act-5",
+        "name": "Ciutadella Park",
+        "category": "attraction",
+        "description": "Simulated visit to Ciutadella Park; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "bar-act-6",
+        "name": "El Born walk",
+        "category": "attraction",
+        "description": "Simulated visit to El Born walk; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "bar-act-7",
+        "name": "City History Museum",
+        "category": "attraction",
+        "description": "Simulated visit to City History Museum; booking and access are illustrative.",
+        "interests": [
+          "museums",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 8,
+        "environment": "indoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "bar-act-8",
+        "name": "Barceloneta promenade",
+        "category": "attraction",
+        "description": "Simulated visit to Barceloneta promenade; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "bar-act-9",
+        "name": "Passeig de Gr\u00e0cia",
+        "category": "attraction",
+        "description": "Simulated visit to Passeig de Gr\u00e0cia; booking and access are illustrative.",
+        "interests": [
+          "museums",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "indoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "bar-act-10",
+        "name": "Modernist facade photo walk",
+        "category": "attraction",
+        "description": "Simulated visit to Modernist facade photo walk; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "bar-act-11",
+        "name": "Barcelona community heritage gallery",
+        "category": "attraction",
+        "description": "Simulated free indoor local history and architecture exhibition.",
+        "interests": [
+          "architecture",
+          "history",
+          "photography",
+          "museums"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "indoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "bar-meal-1",
+        "name": "Barcelona Plant kitchen",
+        "category": "meal",
+        "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+        "interests": [
+          "local food"
+        ],
+        "duration_minutes": 45,
+        "price_per_person": 7,
+        "environment": "indoor",
+        "dietary_compatibility": [
+          "vegetarian",
+          "vegan",
+          "gluten-free"
+        ]
+      },
+      {
+        "id": "bar-meal-2",
+        "name": "Barcelona Vegetarian caf\u00e9",
+        "category": "meal",
+        "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+        "interests": [
+          "local food"
+        ],
+        "duration_minutes": 45,
+        "price_per_person": 9,
+        "environment": "indoor",
+        "dietary_compatibility": [
+          "vegetarian"
+        ]
+      },
+      {
+        "id": "bar-meal-3",
+        "name": "Barcelona Gluten-free bistro",
+        "category": "meal",
+        "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+        "interests": [
+          "local food"
+        ],
+        "duration_minutes": 45,
+        "price_per_person": 11,
+        "environment": "indoor",
+        "dietary_compatibility": [
+          "gluten-free"
+        ]
+      },
+      {
+        "id": "bar-meal-4",
+        "name": "Barcelona Traditional table",
+        "category": "meal",
+        "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+        "interests": [
+          "local food"
+        ],
+        "duration_minutes": 45,
+        "price_per_person": 13,
+        "environment": "indoor",
+        "dietary_compatibility": []
+      }
+    ],
+    "Vienna": [
+      {
+        "id": "vie-act-1",
+        "name": "St Stephen exterior",
+        "category": "attraction",
+        "description": "Simulated visit to St Stephen exterior; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "vie-act-2",
+        "name": "Kunsthistorisches Museum",
+        "category": "attraction",
+        "description": "Simulated visit to Kunsthistorisches Museum; booking and access are illustrative.",
+        "interests": [
+          "museums",
+          "history"
+        ],
+        "duration_minutes": 90,
+        "price_per_person": 18,
+        "environment": "indoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "vie-act-3",
+        "name": "Hofburg courtyards",
+        "category": "attraction",
+        "description": "Simulated visit to Hofburg courtyards; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "vie-act-4",
+        "name": "Belvedere gardens",
+        "category": "attraction",
+        "description": "Simulated visit to Belvedere gardens; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "vie-act-5",
+        "name": "Stadtpark",
+        "category": "attraction",
+        "description": "Simulated visit to Stadtpark; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "vie-act-6",
+        "name": "Spittelberg walk",
+        "category": "attraction",
+        "description": "Simulated visit to Spittelberg walk; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "vie-act-7",
+        "name": "Vienna Museum",
+        "category": "attraction",
+        "description": "Simulated visit to Vienna Museum; booking and access are illustrative.",
+        "interests": [
+          "museums",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 8,
+        "environment": "indoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "vie-act-8",
+        "name": "Danube promenade",
+        "category": "attraction",
+        "description": "Simulated visit to Danube promenade; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "vie-act-9",
+        "name": "Naschmarkt browsing",
+        "category": "attraction",
+        "description": "Simulated visit to Naschmarkt browsing; booking and access are illustrative.",
+        "interests": [
+          "museums",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "indoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "vie-act-10",
+        "name": "Ringstrasse photo walk",
+        "category": "attraction",
+        "description": "Simulated visit to Ringstrasse photo walk; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "vie-act-11",
+        "name": "Vienna community heritage gallery",
+        "category": "attraction",
+        "description": "Simulated free indoor local history and architecture exhibition.",
+        "interests": [
+          "architecture",
+          "history",
+          "photography",
+          "museums"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "indoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "vie-meal-1",
+        "name": "Vienna Plant kitchen",
+        "category": "meal",
+        "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+        "interests": [
+          "local food"
+        ],
+        "duration_minutes": 45,
+        "price_per_person": 7,
+        "environment": "indoor",
+        "dietary_compatibility": [
+          "vegetarian",
+          "vegan",
+          "gluten-free"
+        ]
+      },
+      {
+        "id": "vie-meal-2",
+        "name": "Vienna Vegetarian caf\u00e9",
+        "category": "meal",
+        "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+        "interests": [
+          "local food"
+        ],
+        "duration_minutes": 45,
+        "price_per_person": 9,
+        "environment": "indoor",
+        "dietary_compatibility": [
+          "vegetarian"
+        ]
+      },
+      {
+        "id": "vie-meal-3",
+        "name": "Vienna Gluten-free bistro",
+        "category": "meal",
+        "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+        "interests": [
+          "local food"
+        ],
+        "duration_minutes": 45,
+        "price_per_person": 11,
+        "environment": "indoor",
+        "dietary_compatibility": [
+          "gluten-free"
+        ]
+      },
+      {
+        "id": "vie-meal-4",
+        "name": "Vienna Traditional table",
+        "category": "meal",
+        "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+        "interests": [
+          "local food"
+        ],
+        "duration_minutes": 45,
+        "price_per_person": 13,
+        "environment": "indoor",
+        "dietary_compatibility": []
+      }
+    ],
+    "Amsterdam": [
+      {
+        "id": "ams-act-1",
+        "name": "Canal houses",
+        "category": "attraction",
+        "description": "Simulated visit to Canal houses; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "ams-act-2",
+        "name": "Rijksmuseum",
+        "category": "attraction",
+        "description": "Simulated visit to Rijksmuseum; booking and access are illustrative.",
+        "interests": [
+          "museums",
+          "history"
+        ],
+        "duration_minutes": 90,
+        "price_per_person": 18,
+        "environment": "indoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "ams-act-3",
+        "name": "Dam Square",
+        "category": "attraction",
+        "description": "Simulated visit to Dam Square; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "ams-act-4",
+        "name": "Jordaan lanes",
+        "category": "attraction",
+        "description": "Simulated visit to Jordaan lanes; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "ams-act-5",
+        "name": "Vondelpark",
+        "category": "attraction",
+        "description": "Simulated visit to Vondelpark; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "ams-act-6",
+        "name": "De Pijp walk",
+        "category": "attraction",
+        "description": "Simulated visit to De Pijp walk; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "ams-act-7",
+        "name": "Amsterdam city galleries",
+        "category": "attraction",
+        "description": "Simulated visit to Amsterdam city galleries; booking and access are illustrative.",
+        "interests": [
+          "museums",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 8,
+        "environment": "indoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "ams-act-8",
+        "name": "Amstel promenade",
+        "category": "attraction",
+        "description": "Simulated visit to Amstel promenade; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "ams-act-9",
+        "name": "Nine Streets",
+        "category": "attraction",
+        "description": "Simulated visit to Nine Streets; booking and access are illustrative.",
+        "interests": [
+          "museums",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "indoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "ams-act-10",
+        "name": "Canal bridge photo walk",
+        "category": "attraction",
+        "description": "Simulated visit to Canal bridge photo walk; booking and access are illustrative.",
+        "interests": [
+          "architecture",
+          "photography",
+          "nature",
+          "relaxation",
+          "history"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "outdoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "ams-act-11",
+        "name": "Amsterdam community heritage gallery",
+        "category": "attraction",
+        "description": "Simulated free indoor local history and architecture exhibition.",
+        "interests": [
+          "architecture",
+          "history",
+          "photography",
+          "museums"
+        ],
+        "duration_minutes": 60,
+        "price_per_person": 0,
+        "environment": "indoor",
+        "dietary_compatibility": []
+      },
+      {
+        "id": "ams-meal-1",
+        "name": "Amsterdam Plant kitchen",
+        "category": "meal",
+        "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+        "interests": [
+          "local food"
+        ],
+        "duration_minutes": 45,
+        "price_per_person": 7,
+        "environment": "indoor",
+        "dietary_compatibility": [
+          "vegetarian",
+          "vegan",
+          "gluten-free"
+        ]
+      },
+      {
+        "id": "ams-meal-2",
+        "name": "Amsterdam Vegetarian caf\u00e9",
+        "category": "meal",
+        "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+        "interests": [
+          "local food"
+        ],
+        "duration_minutes": 45,
+        "price_per_person": 9,
+        "environment": "indoor",
+        "dietary_compatibility": [
+          "vegetarian"
+        ]
+      },
+      {
+        "id": "ams-meal-3",
+        "name": "Amsterdam Gluten-free bistro",
+        "category": "meal",
+        "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+        "interests": [
+          "local food"
+        ],
+        "duration_minutes": 45,
+        "price_per_person": 11,
+        "environment": "indoor",
+        "dietary_compatibility": [
+          "gluten-free"
+        ]
+      },
+      {
+        "id": "ams-meal-4",
+        "name": "Amsterdam Traditional table",
+        "category": "meal",
+        "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+        "interests": [
+          "local food"
+        ],
+        "duration_minutes": 45,
+        "price_per_person": 13,
+        "environment": "indoor",
+        "dietary_compatibility": []
+      }
+    ]
+  }
+}

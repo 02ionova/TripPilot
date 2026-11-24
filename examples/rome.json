@@ -1,0 +1,16 @@
+{
+  "origin": "Prague",
+  "destination": "Rome",
+  "start_date": "2027-04-10",
+  "end_date": "2027-04-13",
+  "budget": 600,
+  "travelers": 1,
+  "pace": "moderate",
+  "interests": [
+    "architecture",
+    "museums",
+    "history",
+    "local food"
+  ],
+  "dietary_preferences": []
+}

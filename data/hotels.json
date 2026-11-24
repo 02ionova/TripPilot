@@ -1,0 +1,195 @@
+{
+  "data_source": "simulated",
+  "destinations": {
+    "Rome": [
+      {
+        "id": "rom-hotel-1",
+        "name": "Rome Central Hostel",
+        "accommodation_type": "hostel",
+        "price_per_night": 23,
+        "capacity": 1,
+        "neighborhood": "Station district",
+        "rating": 7.8
+      },
+      {
+        "id": "rom-hotel-2",
+        "name": "Rome Budget Rooms",
+        "accommodation_type": "budget",
+        "price_per_night": 50,
+        "capacity": 2,
+        "neighborhood": "Outer center",
+        "rating": 8.0
+      },
+      {
+        "id": "rom-hotel-3",
+        "name": "Rome Garden Hotel",
+        "accommodation_type": "hotel",
+        "price_per_night": 85,
+        "capacity": 2,
+        "neighborhood": "Museum district",
+        "rating": 8.6
+      },
+      {
+        "id": "rom-hotel-4",
+        "name": "Rome Grand Hotel",
+        "accommodation_type": "hotel",
+        "price_per_night": 160,
+        "capacity": 2,
+        "neighborhood": "Historic center",
+        "rating": 9.1
+      }
+    ],
+    "Paris": [
+      {
+        "id": "par-hotel-1",
+        "name": "Paris Central Hostel",
+        "accommodation_type": "hostel",
+        "price_per_night": 25,
+        "capacity": 1,
+        "neighborhood": "Station district",
+        "rating": 7.8
+      },
+      {
+        "id": "par-hotel-2",
+        "name": "Paris Budget Rooms",
+        "accommodation_type": "budget",
+        "price_per_night": 50,
+        "capacity": 2,
+        "neighborhood": "Outer center",
+        "rating": 8.0
+      },
+      {
+        "id": "par-hotel-3",
+        "name": "Paris Garden Hotel",
+        "accommodation_type": "hotel",
+        "price_per_night": 85,
+        "capacity": 2,
+        "neighborhood": "Museum district",
+        "rating": 8.6
+      },
+      {
+        "id": "par-hotel-4",
+        "name": "Paris Grand Hotel",
+        "accommodation_type": "hotel",
+        "price_per_night": 160,
+        "capacity": 2,
+        "neighborhood": "Historic center",
+        "rating": 9.1
+      }
+    ],
+    "Barcelona": [
+      {
+        "id": "bar-hotel-1",
+        "name": "Barcelona Central Hostel",
+        "accommodation_type": "hostel",
+        "price_per_night": 23,
+        "capacity": 1,
+        "neighborhood": "Station district",
+        "rating": 7.8
+      },
+      {
+        "id": "bar-hotel-2",
+        "name": "Barcelona Budget Rooms",
+        "accommodation_type": "budget",
+        "price_per_night": 50,
+        "capacity": 2,
+        "neighborhood": "Outer center",
+        "rating": 8.0
+      },
+      {
+        "id": "bar-hotel-3",
+        "name": "Barcelona Garden Hotel",
+        "accommodation_type": "hotel",
+        "price_per_night": 85,
+        "capacity": 2,
+        "neighborhood": "Museum district",
+        "rating": 8.6
+      },
+      {
+        "id": "bar-hotel-4",
+        "name": "Barcelona Grand Hotel",
+        "accommodation_type": "hotel",
+        "price_per_night": 160,
+        "capacity": 2,
+        "neighborhood": "Historic center",
+        "rating": 9.1
+      }
+    ],
+    "Vienna": [
+      {
+        "id": "vie-hotel-1",
+        "name": "Vienna Central Hostel",
+        "accommodation_type": "hostel",
+        "price_per_night": 23,
+        "capacity": 1,
+        "neighborhood": "Station district",
+        "rating": 7.8
+      },
+      {
+        "id": "vie-hotel-2",
+        "name": "Vienna Budget Rooms",
+        "accommodation_type": "budget",
+        "price_per_night": 50,
+        "capacity": 2,
+        "neighborhood": "Outer center",
+        "rating": 8.0
+      },
+      {
+        "id": "vie-hotel-3",
+        "name": "Vienna Garden Hotel",
+        "accommodation_type": "hotel",
+        "price_per_night": 85,
+        "capacity": 2,
+        "neighborhood": "Museum district",
+        "rating": 8.6
+      },
+      {
+        "id": "vie-hotel-4",
+        "name": "Vienna Grand Hotel",
+        "accommodation_type": "hotel",
+        "price_per_night": 160,
+        "capacity": 2,
+        "neighborhood": "Historic center",
+        "rating": 9.1
+      }
+    ],
+    "Amsterdam": [
+      {
+        "id": "ams-hotel-1",
+        "name": "Amsterdam Central Hostel",
+        "accommodation_type": "hostel",
+        "price_per_night": 23,
+        "capacity": 1,
+        "neighborhood": "Station district",
+        "rating": 7.8
+      },
+      {
+        "id": "ams-hotel-2",
+        "name": "Amsterdam Budget Rooms",
+        "accommodation_type": "budget",
+        "price_per_night": 50,
+        "capacity": 2,
+        "neighborhood": "Outer center",
+        "rating": 8.0
+      },
+      {
+        "id": "ams-hotel-3",
+        "name": "Amsterdam Garden Hotel",
+        "accommodation_type": "hotel",
+        "price_per_night": 85,
+        "capacity": 2,
+        "neighborhood": "Museum district",
+        "rating": 8.6
+      },
+      {
+        "id": "ams-hotel-4",
+        "name": "Amsterdam Grand Hotel",
+        "accommodation_type": "hotel",
+        "price_per_night": 160,
+        "capacity": 2,
+        "neighborhood": "Historic center",
+        "rating": 9.1
+      }
+    ]
+  }
+}

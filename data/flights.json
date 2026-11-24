@@ -1,0 +1,165 @@
+{
+  "data_source": "simulated",
+  "destinations": {
+    "Rome": [
+      {
+        "id": "rom-flight-1",
+        "airline": "Simulated Budget Air",
+        "departure_time": "07:00",
+        "arrival_time": "09:00",
+        "return_departure_time": "21:00",
+        "return_arrival_time": "23:00",
+        "duration_minutes": 120,
+        "price_per_traveler": 70
+      },
+      {
+        "id": "rom-flight-2",
+        "airline": "Simulated Euro Air",
+        "departure_time": "07:00",
+        "arrival_time": "09:00",
+        "return_departure_time": "21:00",
+        "return_arrival_time": "23:00",
+        "duration_minutes": 120,
+        "price_per_traveler": 125
+      },
+      {
+        "id": "rom-flight-3",
+        "airline": "Simulated Flex Air",
+        "departure_time": "07:00",
+        "arrival_time": "09:00",
+        "return_departure_time": "21:00",
+        "return_arrival_time": "23:00",
+        "duration_minutes": 120,
+        "price_per_traveler": 200
+      }
+    ],
+    "Paris": [
+      {
+        "id": "par-flight-1",
+        "airline": "Simulated Budget Air",
+        "departure_time": "07:00",
+        "arrival_time": "09:00",
+        "return_departure_time": "21:00",
+        "return_arrival_time": "23:00",
+        "duration_minutes": 120,
+        "price_per_traveler": 75
+      },
+      {
+        "id": "par-flight-2",
+        "airline": "Simulated Euro Air",
+        "departure_time": "07:00",
+        "arrival_time": "09:00",
+        "return_departure_time": "21:00",
+        "return_arrival_time": "23:00",
+        "duration_minutes": 120,
+        "price_per_traveler": 130
+      },
+      {
+        "id": "par-flight-3",
+        "airline": "Simulated Flex Air",
+        "departure_time": "07:00",
+        "arrival_time": "09:00",
+        "return_departure_time": "21:00",
+        "return_arrival_time": "23:00",
+        "duration_minutes": 120,
+        "price_per_traveler": 205
+      }
+    ],
+    "Barcelona": [
+      {
+        "id": "bar-flight-1",
+        "airline": "Simulated Budget Air",
+        "departure_time": "07:00",
+        "arrival_time": "09:00",
+        "return_departure_time": "21:00",
+        "return_arrival_time": "23:00",
+        "duration_minutes": 120,
+        "price_per_traveler": 80
+      },
+      {
+        "id": "bar-flight-2",
+        "airline": "Simulated Euro Air",
+        "departure_time": "07:00",
+        "arrival_time": "09:00",
+        "return_departure_time": "21:00",
+        "return_arrival_time": "23:00",
+        "duration_minutes": 120,
+        "price_per_traveler": 135
+      },
+      {
+        "id": "bar-flight-3",
+        "airline": "Simulated Flex Air",
+        "departure_time": "07:00",
+        "arrival_time": "09:00",
+        "return_departure_time": "21:00",
+        "return_arrival_time": "23:00",
+        "duration_minutes": 120,
+        "price_per_traveler": 210
+      }
+    ],
+    "Vienna": [
+      {
+        "id": "vie-flight-1",
+        "airline": "Simulated Budget Air",
+        "departure_time": "07:00",
+        "arrival_time": "09:00",
+        "return_departure_time": "21:00",
+        "return_arrival_time": "23:00",
+        "duration_minutes": 120,
+        "price_per_traveler": 85
+      },
+      {
+        "id": "vie-flight-2",
+        "airline": "Simulated Euro Air",
+        "departure_time": "07:00",
+        "arrival_time": "09:00",
+        "return_departure_time": "21:00",
+        "return_arrival_time": "23:00",
+        "duration_minutes": 120,
+        "price_per_traveler": 140
+      },
+      {
+        "id": "vie-flight-3",
+        "airline": "Simulated Flex Air",
+        "departure_time": "07:00",
+        "arrival_time": "09:00",
+        "return_departure_time": "21:00",
+        "return_arrival_time": "23:00",
+        "duration_minutes": 120,
+        "price_per_traveler": 215
+      }
+    ],
+    "Amsterdam": [
+      {
+        "id": "ams-flight-1",
+        "airline": "Simulated Budget Air",
+        "departure_time": "07:00",
+        "arrival_time": "09:00",
+        "return_departure_time": "21:00",
+        "return_arrival_time": "23:00",
+        "duration_minutes": 120,
+        "price_per_traveler": 90
+      },
+      {
+        "id": "ams-flight-2",
+        "airline": "Simulated Euro Air",
+        "departure_time": "07:00",
+        "arrival_time": "09:00",
+        "return_departure_time": "21:00",
+        "return_arrival_time": "23:00",
+        "duration_minutes": 120,
+        "price_per_traveler": 145
+      },
+      {
+        "id": "ams-flight-3",
+        "airline": "Simulated Flex Air",
+        "departure_time": "07:00",
+        "arrival_time": "09:00",
+        "return_departure_time": "21:00",
+        "return_arrival_time": "23:00",
+        "duration_minutes": 120,
+        "price_per_traveler": 220
+      }
+    ]
+  }
+}

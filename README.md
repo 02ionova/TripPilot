@@ -1,0 +1,245 @@
+# TripPilot AI
+
+**Your intelligent travel planning assistant**
+
+University project for **Unicorn University — AI for Software Developers, Homework 3: Agentic Application**, implementing **Option A: Travel-Planner Agent**.
+
+TripPilot uses a real OpenAI model to choose tools, inspect results, recover from failures and propose a day-by-day plan. Python validates the plan and calculates every cost. All travel information is **deterministic, simulated educational data**. Nothing is booked and no real-time information is provided.
+
+## Features
+
+- English Streamlit interface and independent JSON-input CLI.
+- Five typed tools, an explicit manual agent loop and native function calling; no orchestration framework.
+- Pydantic validation for requests, arguments, results, itineraries and final responses.
+- Group budgets in EUR, ID-based pricing, meal coverage, weather, flight buffers, pace and schedule validation.
+- Recoverable tool errors, bounded API retries, repeat-call limits and clean termination.
+- Sanitized observable JSON traces and downloadable itinerary/trace files.
+- Rome, Paris, Barcelona, Vienna and Amsterdam, departing from Prague.
+
+## Screenshots
+
+Place genuine screenshots here after running the app:
+
+1. `docs/screenshots/request-form.png` — form and simulation disclaimer (placeholder).
+2. `docs/screenshots/rome-itinerary.png` — successful metrics and daily schedule (placeholder).
+3. `docs/screenshots/paris-recovery.png` — actual hotel failure, revised search and vegetarian meals (placeholder).
+4. `docs/screenshots/budget-trace.png` — budget chart and execution trace (placeholder).
+
+## Stack and architecture
+
+Python 3.11+, OpenAI Python SDK, Pydantic 2, Streamlit, python-dotenv, JSON and pytest. Verification used the workspace Python 3.14 environment; other Python versions have not been executed here. `requirements.txt` specifies major-version ranges; `requirements-tested.txt` records installed versions.
+
+```mermaid
+flowchart TD
+    UI[Streamlit app.py] --> Input[TravelRequest validation]
+    CLI[CLI main.py] --> Input
+    Input --> Loop[agent.py: bounded explicit loop]
+    Loop --> LLM[OpenAI Chat Completions]
+    LLM -->|native function calls and IDs| Dispatch[Typed tool registry]
+    Dispatch --> Weather[get_weather]
+    Dispatch --> Flights[search_flights]
+    Dispatch --> Hotels[search_hotels]
+    Dispatch --> Activities[search_activities]
+    Dispatch --> Build[build_itinerary]
+    Weather & Flights & Hotels & Activities & Build --> Data[(Local simulated JSON)]
+    Dispatch -->|results or actionable errors| Loop
+    Build --> Validation[Schedule and Decimal budget validation]
+    Loop --> Final[Typed response with trusted itinerary]
+    Loop --> Trace[Sanitized JSON trace]
+    Final --> UI
+    Final --> CLI
+```
+
+### Explicit agent loop
+
+Read `TravelAgent._run()` in `agent.py`. Each iteration calls `client.chat.completions.create()` with the conversation, five function schemas and a native strict JSON schema for the final decision. The model chooses tool names and arguments. Python preserves the assistant tool-call message, executes validated calls and appends each result with its matching `tool_call_id`. The next model call receives results, failures and suggestions.
+
+There is **no fixed sequence of five calls** or prebuilt successful itinerary in the application. Parallel function calling is disabled for readability; the loop still preserves all calls if several are returned. Success requires all five tools to have succeeded and the builder to have validated the exact original request. The model cannot increase the user's budget or change dates in the builder. Python attaches the builder result rather than accepting model-invented prices.
+
+Final statuses: `success`, `needs_clarification`, `infeasible`, `error`, `iteration_limit`. Default: 15 model iterations, maximum configuration 50. Identical calls execute at most twice; a tool is blocked after four failures. Network/timeouts/rate limits receive at most three API attempts with short backoff; SDK automatic retries are disabled. Authentication and other API errors terminate immediately. Unexpected runtime errors also finalize a sanitized trace.
+
+The default `gpt-4.1-mini` supports function calling and structured outputs according to its [official model documentation](https://developers.openai.com/api/docs/models/gpt-4.1-mini). Implementation follows the [function-calling guide](https://developers.openai.com/api/docs/guides/function-calling) and [structured-output guide](https://developers.openai.com/api/docs/guides/structured-outputs?api-mode=chat). Account access and paid API execution remain unverified until a key is supplied. Change `OPENAI_MODEL` only to a model supporting both Chat Completions function calling and JSON-schema responses.
+
+### Five tools
+
+| Tool | Input and behavior |
+| --- | --- |
+| `get_weather` | Destination and inclusive dates; seasonal temperature, rain, conditions and indoor/outdoor advice. |
+| `search_flights` | Prague origin, destination, round-trip dates, travelers and optional **group total** cap. Returns local outbound/return times and individual/group costs. |
+| `search_hotels` | Destination, check-in/out, travelers, optional **combined nightly** cap and type. Hotel/budget rates are per room (capacity two); hostel rates are per bed. Nights = checkout − checkin. |
+| `search_activities` | Interests, all dietary restrictions, environment and optional **per-person** cap. Returns attractions plus compatible meals; meals remain included regardless of interests/environment. |
+| `build_itinerary` | Original request, flight/hotel IDs and daily activity IDs/times/meal labels. Resolves prices from local data, checks weather and builds a valid itinerary or actionable errors. |
+
+The registry exposes Pydantic-generated JSON schemas and rejects unknown tools, malformed JSON, extra fields and invalid argument values. Tools return typed `ToolResult` envelopes with typed records or a `ToolError` containing code, message and suggestions. `data_source` is always `simulated`.
+
+### Structured output and budget rules
+
+The LLM's native structured response is a small `FinalDecision` (`status`, `message`). The public `FinalResponse` contains `status`, `message`, `data_source` and an `itinerary` object on success. The nested itinerary contains:
+
+- `trip_summary`, `selected_flights`, `selected_accommodation`.
+- `daily_itinerary` with weather, time slots, typed activity/meal records, daily costs and advice.
+- `budget_breakdown`, `weather_summary`, recommendations and warnings.
+
+Arithmetic uses `Decimal` before JSON number conversion. Budget covers **all** travelers. Flights/accommodation are charged once. Meals/attractions multiply by travelers; local transport is EUR 5 per traveler per calendar day, including simulated airport transfers. Daily costs include meals, attractions and transport, with flights/accommodation added once at trip level. The budget model also validates its component sum.
+
+The builder enforces every trip date exactly once and at least one attraction per day:
+
+- Arrival +90 minutes and return departure −120 minutes; other days 08:00–22:00 local time.
+- Catalogue durations, ordered slots and 15-minute transfer gaps.
+- Breakfast/lunch/dinner when the on-site window permits, valid meal times and all dietary restrictions.
+- Rain probability ≥50% requires indoor attractions.
+- Relaxed: maximum 2 attractions/180 minutes; moderate: 4/360; intensive: 6/540. Meals are additional.
+- Trusted destination-specific IDs and a total within the original budget.
+
+### Error handling and recovery demonstration
+
+Paris has EUR 350 for three days. The prompt's general budget-conscious heuristic (under EUR 125 per traveler per day) asks the model to first explore **hotel** accommodation at EUR 30/night. The data contains no such hotel: hotels start at EUR 85, budget rooms at EUR 50, and Paris hostel beds cost EUR 25. The `no_results` feedback lets the model decide how to broaden the search. Rome's EUR 150/day does not trigger the heuristic.
+
+This deliberately restrictive heuristic is documented in the prompt, not hardcoded into the loop or tool. The model independently chooses revised calls. Inspect a real trace to confirm recovery: stochastic model behavior is not guaranteed. The mocked recovery test separately verifies the loop mechanics. Other errors include invalid IDs/schedules, over-budget plans, unsupported routes/destinations, missing keys, API errors and iteration exhaustion.
+
+## Project structure
+
+```text
+trip-pilot-ai/
+├── app.py, main.py             # Streamlit and CLI
+├── agent.py, prompts.py        # Manual loop and instructions
+├── schemas.py, config.py       # Contracts and settings
+├── tracing.py                 # Sanitized traces
+├── tools/                     # Five tools, helpers, registry
+├── data/                      # Four simulated JSON datasets
+├── examples/                  # Rome and Paris inputs
+├── traces/                    # Actual runtime traces, including failures
+├── tests/                     # Mocked agent, tools, budget, schemas, UI
+│   └── artifacts/             # Clearly labeled mocked reference traces
+├── .streamlit/config.toml     # Light teal theme
+├── .env.example, .gitignore
+├── requirements.txt, requirements-tested.txt
+├── VERIFICATION.md
+└── README.md
+```
+
+## Installation
+
+From this directory on macOS/Linux:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+cp .env.example .env
+```
+
+Windows PowerShell:
+
+```powershell
+py -3 -m venv .venv
+.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+Copy-Item .env.example .env
+```
+
+Only copy the example when `.env` does not already exist. Edit `.env` locally:
+
+```dotenv
+OPENAI_API_KEY=your-own-api-key
+OPENAI_MODEL=gpt-4.1-mini
+MAX_AGENT_ITERATIONS=15
+```
+
+Existing environment variables take precedence over `.env`. Configuration loads the file beside `config.py`, independent of launch directory. Never commit it. Virtual environments, generated results, IDE caches and `.env` are ignored; demonstration traces remain eligible for version control. API credentials are never shown in the interface.
+
+For the already-installed workspace environment, use `source ../.venv/bin/activate` from this project instead of creating another environment.
+
+## Launch Streamlit
+
+```bash
+streamlit run app.py
+```
+
+Open the printed URL (normally http://localhost:8501), enter a request, then select **Generate Travel Plan**. Actual tool progress appears during execution. Results persist across downloads. Tabs show itinerary, flights/accommodation, weather and budget. Download the final JSON and sanitized trace.
+
+## CLI and real demonstrations
+
+```bash
+python main.py --input examples/rome.json --output results/rome.json
+python main.py --input examples/paris.json --output results/paris.json
+```
+
+The CLI prints itinerary and budget and writes the final JSON plus timestamped trace. Exit codes: 0 success, 2 invalid/missing input, 1 other failures. Valid JSON with invalid fields produces a clarification trace; unreadable or non-JSON files exit before starting the agent.
+
+**Two genuine successful demonstration traces are pending because no API key was available.** No successful real API runs are claimed. After configuring a key, run both commands above and inspect the printed trace files:
+
+1. Confirm `execution_mode=real_llm`, `final_status=success`, all five tools and `budget_validation.valid=true`.
+2. For Paris, confirm hotel `no_results`, a changed subsequent search, vegetarian meals and builder success.
+3. If recovery is absent, inspect the actual calls; transparently adjust the documented prompt heuristic or data, run again and retain genuine trace history.
+4. Review sanitized traces for personal information before including the two successful files in your submission.
+
+`tests/artifacts/rome_mocked.json` and `paris_recovery_mocked.json` contain full successful **mocked reference runs**, labeled `mocked_unit_test`. They demonstrate dispatch, validation and recovery, and **do not fulfill the genuine LLM trace requirement**. Any missing-key trace in `traces/` also does not fulfill it.
+
+### Example input/output
+
+`examples/rome.json`:
+
+```json
+{
+  "origin": "Prague", "destination": "Rome",
+  "start_date": "2027-04-10", "end_date": "2027-04-13",
+  "budget": 600, "travelers": 1, "pace": "moderate",
+  "interests": ["architecture", "museums", "history", "local food"],
+  "dietary_preferences": []
+}
+```
+
+Unrestricted diet uses `[]`; restrictions are `vegetarian`, `vegan`, `gluten-free`, and may be combined. Supported input: 1–14 calendar days during 2026–2035, 1–20 travelers and a positive finite budget. One-day trips have zero lodging nights.
+
+Abbreviated illustrative output, not a real API execution:
+
+```json
+{
+  "status": "success",
+  "message": "Your simulated itinerary is validated.",
+  "itinerary": {
+    "trip_summary": {"origin": "Prague", "destination": "Rome"},
+    "budget_breakdown": {"flights": 70, "accommodation": 69, "food": 84,
+      "activities": 0, "local_transport": 20, "total": 243, "remaining_budget": 357}
+  },
+  "data_source": "simulated"
+}
+```
+
+Required detail fields are omitted in this illustration; the complete mocked JSON shows the full schema. Fixture budgets are Rome EUR 243 and Paris EUR 203. Real model choices can differ.
+
+## Execution traces and security
+
+`tracing.py` writes timestamp/UUID JSON files in `traces/`: request, configured model, execution mode, iteration messages, call IDs, tool arguments/results/errors, replanning, timestamps/durations, token usage when available, final response/status and successful budget validation. Budget validation is `null` on failure. Hidden chain-of-thought is neither requested nor stored.
+
+Sensitive field names, known environment keys, `sk-…` values and bearer credentials are recursively redacted. API errors record exception classes rather than raw server bodies; headers are not logged. Traces contain trip preferences, so review before sharing. `real_llm` describes the real-client path, including preflight failures; inspect iterations/status to determine whether an API call succeeded.
+
+## Tests and verification
+
+```bash
+python -m pytest -v
+```
+
+Tests use scripted SDK-shaped completions without paid calls. They cover input/schema validation; all tools; IDs/arguments; weather/diets; hostel/room/group math; budgets and schedule constraints; tool-call ID preservation; full success and hotel recovery; request tampering; retries, repetition and iteration limits; clean termination; trace generation/redaction; and Streamlit rendering. Temporary traces stay outside the production trace directory.
+
+Final result: **79 tests passed**. Ruff lint and formatting checks also passed. See `VERIFICATION.md` for actual results and startup checks. Rendering works without a key; generating real plans requires a key and network.
+
+## Limitations and future improvements
+
+All schedules, rates, availability, capacities, restaurants, ratings and seasonal weather are invented. Flights are same-day and use the shared Prague/destination local time zone. There are no real opening hours, baggage extras, routing distances, accessibility checks or booking integrations. Restaurant compatibility is illustrative and cannot be relied on for real allergies. Rain handling conservatively requires indoor attractions. The simulated free community gallery does not claim that any real museum is free.
+
+Future work could add verified API adapters, routing, opening hours, richer availability constraints and model evaluations, while retaining independent price/budget checks. Validated success does not prove optimality; an LLM can also conclude infeasibility prematurely.
+
+## Assignment checklist
+
+- [x] Native OpenAI tools and explicit inspectable agent loop.
+- [x] Five independent typed tools and structured output.
+- [x] Data for five destinations and Prague departures.
+- [x] Python arithmetic and itinerary validation.
+- [x] Feedback, replanning, bounded retries and termination.
+- [x] Streamlit, CLI, examples and automatic sanitized traces.
+- [x] Mocked automated tests, architecture and setup instructions.
+- [x] Local Git repository; no publication or remote push.
+- [ ] Two genuine successful LLM traces, including Paris recovery — requires your key.
+- [ ] Real screenshots — placeholders listed above.

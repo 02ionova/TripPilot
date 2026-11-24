@@ -1,0 +1,1714 @@
+{
+  "run_id": "092a20e1-1087-4430-ac08-2aa43e89d215",
+  "start_timestamp": "2026-11-24T18:15:37.312969+00:00",
+  "end_timestamp": "2026-11-24T18:15:37.324288+00:00",
+  "execution_mode": "mocked_unit_test",
+  "request": {
+    "origin": "Prague",
+    "destination": "Rome",
+    "start_date": "2027-04-10",
+    "end_date": "2027-04-13",
+    "budget": 600,
+    "travelers": 1,
+    "pace": "moderate",
+    "interests": [
+      "architecture",
+      "museums",
+      "history",
+      "local food"
+    ],
+    "dietary_preferences": []
+  },
+  "model": "gpt-4.1-mini",
+  "iterations": [
+    {
+      "iteration": 1,
+      "assistant_response": {
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "id": "call_get_weather_77",
+            "function": {
+              "arguments": "{\"destination\": \"Rome\", \"start_date\": \"2027-04-10\", \"end_date\": \"2027-04-13\"}",
+              "name": "get_weather"
+            },
+            "type": "function"
+          }
+        ]
+      },
+      "token_usage": {
+        "completion_tokens": 10,
+        "prompt_tokens": 10,
+        "total_tokens": 20,
+        "completion_tokens_details": null,
+        "prompt_tokens_details": null
+      },
+      "duration_seconds": 0.0024
+    },
+    {
+      "iteration": 2,
+      "assistant_response": {
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "id": "call_search_flights_120",
+            "function": {
+              "arguments": "{\"origin\": \"Prague\", \"destination\": \"Rome\", \"departure_date\": \"2027-04-10\", \"return_date\": \"2027-04-13\", \"travelers\": 1}",
+              "name": "search_flights"
+            },
+            "type": "function"
+          }
+        ]
+      },
+      "token_usage": {
+        "completion_tokens": 10,
+        "prompt_tokens": 10,
+        "total_tokens": 20,
+        "completion_tokens_details": null,
+        "prompt_tokens_details": null
+      },
+      "duration_seconds": 0.001
+    },
+    {
+      "iteration": 3,
+      "assistant_response": {
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "id": "call_search_hotels_92",
+            "function": {
+              "arguments": "{\"destination\": \"Rome\", \"check_in\": \"2027-04-10\", \"check_out\": \"2027-04-13\", \"travelers\": 1}",
+              "name": "search_hotels"
+            },
+            "type": "function"
+          }
+        ]
+      },
+      "token_usage": {
+        "completion_tokens": 10,
+        "prompt_tokens": 10,
+        "total_tokens": 20,
+        "completion_tokens_details": null,
+        "prompt_tokens_details": null
+      },
+      "duration_seconds": 0.001
+    },
+    {
+      "iteration": 4,
+      "assistant_response": {
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "id": "call_search_activities_50",
+            "function": {
+              "arguments": "{\"destination\": \"Rome\", \"dietary_preferences\": []}",
+              "name": "search_activities"
+            },
+            "type": "function"
+          }
+        ]
+      },
+      "token_usage": {
+        "completion_tokens": 10,
+        "prompt_tokens": 10,
+        "total_tokens": 20,
+        "completion_tokens_details": null,
+        "prompt_tokens_details": null
+      },
+      "duration_seconds": 0.0011
+    },
+    {
+      "iteration": 5,
+      "assistant_response": {
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "id": "call_build_itinerary_2053",
+            "function": {
+              "arguments": "{\"request\": {\"origin\": \"Prague\", \"destination\": \"Rome\", \"start_date\": \"2027-04-10\", \"end_date\": \"2027-04-13\", \"budget\": 600, \"travelers\": 1, \"pace\": \"moderate\", \"interests\": [\"architecture\", \"museums\", \"history\", \"local food\"], \"dietary_preferences\": []}, \"flight_id\": \"rom-flight-1\", \"hotel_id\": \"rom-hotel-1\", \"days\": [{\"date\": \"2027-04-10\", \"title\": \"Heritage and local flavors\", \"schedule\": [{\"activity_id\": \"rom-meal-1\", \"start_time\": \"10:30\", \"end_time\": \"11:15\", \"meal\": \"breakfast\"}, {\"activity_id\": \"rom-meal-1\", \"start_time\": \"12:00\", \"end_time\": \"12:45\", \"meal\": \"lunch\"}, {\"activity_id\": \"rom-act-11\", \"start_time\": \"13:00\", \"end_time\": \"14:00\"}, {\"activity_id\": \"rom-meal-1\", \"start_time\": \"17:00\", \"end_time\": \"17:45\", \"meal\": \"dinner\"}]}, {\"date\": \"2027-04-11\", \"title\": \"Heritage and local flavors\", \"schedule\": [{\"activity_id\": \"rom-meal-1\", \"start_time\": \"10:30\", \"end_time\": \"11:15\", \"meal\": \"breakfast\"}, {\"activity_id\": \"rom-meal-1\", \"start_time\": \"12:00\", \"end_time\": \"12:45\", \"meal\": \"lunch\"}, {\"activity_id\": \"rom-act-11\", \"start_time\": \"13:00\", \"end_time\": \"14:00\"}, {\"activity_id\": \"rom-meal-1\", \"start_time\": \"17:00\", \"end_time\": \"17:45\", \"meal\": \"dinner\"}]}, {\"date\": \"2027-04-12\", \"title\": \"Heritage and local flavors\", \"schedule\": [{\"activity_id\": \"rom-meal-1\", \"start_time\": \"10:30\", \"end_time\": \"11:15\", \"meal\": \"breakfast\"}, {\"activity_id\": \"rom-meal-1\", \"start_time\": \"12:00\", \"end_time\": \"12:45\", \"meal\": \"lunch\"}, {\"activity_id\": \"rom-act-11\", \"start_time\": \"13:00\", \"end_time\": \"14:00\"}, {\"activity_id\": \"rom-meal-1\", \"start_time\": \"17:00\", \"end_time\": \"17:45\", \"meal\": \"dinner\"}]}, {\"date\": \"2027-04-13\", \"title\": \"Heritage and local flavors\", \"schedule\": [{\"activity_id\": \"rom-meal-1\", \"start_time\": \"10:30\", \"end_time\": \"11:15\", \"meal\": \"breakfast\"}, {\"activity_id\": \"rom-meal-1\", \"start_time\": \"12:00\", \"end_time\": \"12:45\", \"meal\": \"lunch\"}, {\"activity_id\": \"rom-act-11\", \"start_time\": \"13:00\", \"end_time\": \"14:00\"}, {\"activity_id\": \"rom-meal-1\", \"start_time\": \"17:00\", \"end_time\": \"17:45\", \"meal\": \"dinner\"}]}]}",
+              "name": "build_itinerary"
+            },
+            "type": "function"
+          }
+        ]
+      },
+      "token_usage": {
+        "completion_tokens": 10,
+        "prompt_tokens": 10,
+        "total_tokens": 20,
+        "completion_tokens_details": null,
+        "prompt_tokens_details": null
+      },
+      "duration_seconds": 0.001
+    },
+    {
+      "iteration": 6,
+      "assistant_response": {
+        "content": "{\"status\": \"success\", \"message\": \"Validated simulated travel plan.\"}",
+        "role": "assistant"
+      },
+      "token_usage": {
+        "completion_tokens": 10,
+        "prompt_tokens": 10,
+        "total_tokens": 20,
+        "completion_tokens_details": null,
+        "prompt_tokens_details": null
+      },
+      "duration_seconds": 0.0012
+    }
+  ],
+  "events": [
+    {
+      "timestamp": "2026-11-24T18:15:37.313673+00:00",
+      "kind": "iteration",
+      "iteration": 1,
+      "summary": "Requesting the next observable planning action."
+    },
+    {
+      "timestamp": "2026-11-24T18:15:37.316382+00:00",
+      "kind": "tool_call",
+      "iteration": 1,
+      "tool": "get_weather",
+      "tool_call_id": "call_get_weather_77",
+      "arguments": "{\"destination\": \"Rome\", \"start_date\": \"2027-04-10\", \"end_date\": \"2027-04-13\"}",
+      "result": {
+        "status": "ok",
+        "data": [
+          {
+            "date": "2027-04-10",
+            "min_temperature": 10,
+            "max_temperature": 19,
+            "conditions": "Partly sunny",
+            "rain_probability": 0.25,
+            "recommendation": "outdoor"
+          },
+          {
+            "date": "2027-04-11",
+            "min_temperature": 10,
+            "max_temperature": 19,
+            "conditions": "Partly sunny",
+            "rain_probability": 0.25,
+            "recommendation": "outdoor"
+          },
+          {
+            "date": "2027-04-12",
+            "min_temperature": 10,
+            "max_temperature": 19,
+            "conditions": "Partly sunny",
+            "rain_probability": 0.25,
+            "recommendation": "outdoor"
+          },
+          {
+            "date": "2027-04-13",
+            "min_temperature": 10,
+            "max_temperature": 19,
+            "conditions": "Partly sunny",
+            "rain_probability": 0.25,
+            "recommendation": "outdoor"
+          }
+        ],
+        "error": null,
+        "data_source": "simulated"
+      },
+      "duration_seconds": 0.0003
+    },
+    {
+      "timestamp": "2026-11-24T18:15:37.316434+00:00",
+      "kind": "iteration",
+      "iteration": 2,
+      "summary": "Requesting the next observable planning action."
+    },
+    {
+      "timestamp": "2026-11-24T18:15:37.317781+00:00",
+      "kind": "tool_call",
+      "iteration": 2,
+      "tool": "search_flights",
+      "tool_call_id": "call_search_flights_120",
+      "arguments": "{\"origin\": \"Prague\", \"destination\": \"Rome\", \"departure_date\": \"2027-04-10\", \"return_date\": \"2027-04-13\", \"travelers\": 1}",
+      "result": {
+        "status": "ok",
+        "data": [
+          {
+            "id": "rom-flight-1",
+            "airline": "Simulated Budget Air",
+            "origin": "Prague",
+            "destination": "Rome",
+            "departure_date": "2027-04-10",
+            "return_date": "2027-04-13",
+            "departure_time": "07:00:00",
+            "arrival_time": "09:00:00",
+            "return_departure_time": "21:00:00",
+            "return_arrival_time": "23:00:00",
+            "duration_minutes": 120,
+            "price_per_traveler": 70.0,
+            "total_price": 70.0
+          },
+          {
+            "id": "rom-flight-2",
+            "airline": "Simulated Euro Air",
+            "origin": "Prague",
+            "destination": "Rome",
+            "departure_date": "2027-04-10",
+            "return_date": "2027-04-13",
+            "departure_time": "07:00:00",
+            "arrival_time": "09:00:00",
+            "return_departure_time": "21:00:00",
+            "return_arrival_time": "23:00:00",
+            "duration_minutes": 120,
+            "price_per_traveler": 125.0,
+            "total_price": 125.0
+          },
+          {
+            "id": "rom-flight-3",
+            "airline": "Simulated Flex Air",
+            "origin": "Prague",
+            "destination": "Rome",
+            "departure_date": "2027-04-10",
+            "return_date": "2027-04-13",
+            "departure_time": "07:00:00",
+            "arrival_time": "09:00:00",
+            "return_departure_time": "21:00:00",
+            "return_arrival_time": "23:00:00",
+            "duration_minutes": 120,
+            "price_per_traveler": 200.0,
+            "total_price": 200.0
+          }
+        ],
+        "error": null,
+        "data_source": "simulated"
+      },
+      "duration_seconds": 0.0003
+    },
+    {
+      "timestamp": "2026-11-24T18:15:37.317854+00:00",
+      "kind": "iteration",
+      "iteration": 3,
+      "summary": "Requesting the next observable planning action."
+    },
+    {
+      "timestamp": "2026-11-24T18:15:37.319165+00:00",
+      "kind": "tool_call",
+      "iteration": 3,
+      "tool": "search_hotels",
+      "tool_call_id": "call_search_hotels_92",
+      "arguments": "{\"destination\": \"Rome\", \"check_in\": \"2027-04-10\", \"check_out\": \"2027-04-13\", \"travelers\": 1}",
+      "result": {
+        "status": "ok",
+        "data": [
+          {
+            "id": "rom-hotel-1",
+            "name": "Rome Central Hostel",
+            "accommodation_type": "hostel",
+            "price_per_night": 23.0,
+            "nights": 3,
+            "rooms": 1,
+            "total_cost": 69.0,
+            "neighborhood": "Station district",
+            "rating": 7.8
+          },
+          {
+            "id": "rom-hotel-2",
+            "name": "Rome Budget Rooms",
+            "accommodation_type": "budget",
+            "price_per_night": 50.0,
+            "nights": 3,
+            "rooms": 1,
+            "total_cost": 150.0,
+            "neighborhood": "Outer center",
+            "rating": 8.0
+          },
+          {
+            "id": "rom-hotel-3",
+            "name": "Rome Garden Hotel",
+            "accommodation_type": "hotel",
+            "price_per_night": 85.0,
+            "nights": 3,
+            "rooms": 1,
+            "total_cost": 255.0,
+            "neighborhood": "Museum district",
+            "rating": 8.6
+          },
+          {
+            "id": "rom-hotel-4",
+            "name": "Rome Grand Hotel",
+            "accommodation_type": "hotel",
+            "price_per_night": 160.0,
+            "nights": 3,
+            "rooms": 1,
+            "total_cost": 480.0,
+            "neighborhood": "Historic center",
+            "rating": 9.1
+          }
+        ],
+        "error": null,
+        "data_source": "simulated"
+      },
+      "duration_seconds": 0.0003
+    },
+    {
+      "timestamp": "2026-11-24T18:15:37.319225+00:00",
+      "kind": "iteration",
+      "iteration": 4,
+      "summary": "Requesting the next observable planning action."
+    },
+    {
+      "timestamp": "2026-11-24T18:15:37.320707+00:00",
+      "kind": "tool_call",
+      "iteration": 4,
+      "tool": "search_activities",
+      "tool_call_id": "call_search_activities_50",
+      "arguments": "{\"destination\": \"Rome\", \"dietary_preferences\": []}",
+      "result": {
+        "status": "ok",
+        "data": [
+          {
+            "id": "rom-act-1",
+            "name": "Colosseum exterior",
+            "category": "attraction",
+            "description": "Simulated visit to Colosseum exterior; booking and access are illustrative.",
+            "interests": [
+              "architecture",
+              "photography",
+              "nature",
+              "relaxation",
+              "history"
+            ],
+            "duration_minutes": 60,
+            "price_per_person": 0.0,
+            "environment": "outdoor",
+            "dietary_compatibility": []
+          },
+          {
+            "id": "rom-act-2",
+            "name": "Vatican Museums",
+            "category": "attraction",
+            "description": "Simulated visit to Vatican Museums; booking and access are illustrative.",
+            "interests": [
+              "museums",
+              "history"
+            ],
+            "duration_minutes": 90,
+            "price_per_person": 18.0,
+            "environment": "indoor",
+            "dietary_compatibility": []
+          },
+          {
+            "id": "rom-act-3",
+            "name": "Pantheon district",
+            "category": "attraction",
+            "description": "Simulated visit to Pantheon district; booking and access are illustrative.",
+            "interests": [
+              "architecture",
+              "photography",
+              "nature",
+              "relaxation",
+              "history"
+            ],
+            "duration_minutes": 60,
+            "price_per_person": 0.0,
+            "environment": "outdoor",
+            "dietary_compatibility": []
+          },
+          {
+            "id": "rom-act-4",
+            "name": "Roman Forum overlook",
+            "category": "attraction",
+            "description": "Simulated visit to Roman Forum overlook; booking and access are illustrative.",
+            "interests": [
+              "architecture",
+              "photography",
+              "nature",
+              "relaxation",
+              "history"
+            ],
+            "duration_minutes": 60,
+            "price_per_person": 0.0,
+            "environment": "outdoor",
+            "dietary_compatibility": []
+          },
+          {
+            "id": "rom-act-5",
+            "name": "Villa Borghese gardens",
+            "category": "attraction",
+            "description": "Simulated visit to Villa Borghese gardens; booking and access are illustrative.",
+            "interests": [
+              "architecture",
+              "photography",
+              "nature",
+              "relaxation",
+              "history"
+            ],
+            "duration_minutes": 60,
+            "price_per_person": 0.0,
+            "environment": "outdoor",
+            "dietary_compatibility": []
+          },
+          {
+            "id": "rom-act-6",
+            "name": "Trastevere lanes",
+            "category": "attraction",
+            "description": "Simulated visit to Trastevere lanes; booking and access are illustrative.",
+            "interests": [
+              "architecture",
+              "photography",
+              "nature",
+              "relaxation",
+              "history"
+            ],
+            "duration_minutes": 60,
+            "price_per_person": 0.0,
+            "environment": "outdoor",
+            "dietary_compatibility": []
+          },
+          {
+            "id": "rom-act-7",
+            "name": "Capitoline Museums",
+            "category": "attraction",
+            "description": "Simulated visit to Capitoline Museums; booking and access are illustrative.",
+            "interests": [
+              "museums",
+              "history"
+            ],
+            "duration_minutes": 60,
+            "price_per_person": 8.0,
+            "environment": "indoor",
+            "dietary_compatibility": []
+          },
+          {
+            "id": "rom-act-8",
+            "name": "Tiber promenade",
+            "category": "attraction",
+            "description": "Simulated visit to Tiber promenade; booking and access are illustrative.",
+            "interests": [
+              "architecture",
+              "photography",
+              "nature",
+              "relaxation",
+              "history"
+            ],
+            "duration_minutes": 60,
+            "price_per_person": 0.0,
+            "environment": "outdoor",
+            "dietary_compatibility": []
+          },
+          {
+            "id": "rom-act-9",
+            "name": "Via del Corso",
+            "category": "attraction",
+            "description": "Simulated visit to Via del Corso; booking and access are illustrative.",
+            "interests": [
+              "museums",
+              "history"
+            ],
+            "duration_minutes": 60,
+            "price_per_person": 0.0,
+            "environment": "indoor",
+            "dietary_compatibility": []
+          },
+          {
+            "id": "rom-act-10",
+            "name": "Historic center photo walk",
+            "category": "attraction",
+            "description": "Simulated visit to Historic center photo walk; booking and access are illustrative.",
+            "interests": [
+              "architecture",
+              "photography",
+              "nature",
+              "relaxation",
+              "history"
+            ],
+            "duration_minutes": 60,
+            "price_per_person": 0.0,
+            "environment": "outdoor",
+            "dietary_compatibility": []
+          },
+          {
+            "id": "rom-act-11",
+            "name": "Rome community heritage gallery",
+            "category": "attraction",
+            "description": "Simulated free indoor local history and architecture exhibition.",
+            "interests": [
+              "architecture",
+              "history",
+              "photography",
+              "museums"
+            ],
+            "duration_minutes": 60,
+            "price_per_person": 0.0,
+            "environment": "indoor",
+            "dietary_compatibility": []
+          },
+          {
+            "id": "rom-meal-1",
+            "name": "Rome Plant kitchen",
+            "category": "meal",
+            "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+            "interests": [
+              "local food"
+            ],
+            "duration_minutes": 45,
+            "price_per_person": 7.0,
+            "environment": "indoor",
+            "dietary_compatibility": [
+              "vegetarian",
+              "vegan",
+              "gluten-free"
+            ]
+          },
+          {
+            "id": "rom-meal-2",
+            "name": "Rome Vegetarian café",
+            "category": "meal",
+            "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+            "interests": [
+              "local food"
+            ],
+            "duration_minutes": 45,
+            "price_per_person": 9.0,
+            "environment": "indoor",
+            "dietary_compatibility": [
+              "vegetarian"
+            ]
+          },
+          {
+            "id": "rom-meal-3",
+            "name": "Rome Gluten-free bistro",
+            "category": "meal",
+            "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+            "interests": [
+              "local food"
+            ],
+            "duration_minutes": 45,
+            "price_per_person": 11.0,
+            "environment": "indoor",
+            "dietary_compatibility": [
+              "gluten-free"
+            ]
+          },
+          {
+            "id": "rom-meal-4",
+            "name": "Rome Traditional table",
+            "category": "meal",
+            "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+            "interests": [
+              "local food"
+            ],
+            "duration_minutes": 45,
+            "price_per_person": 13.0,
+            "environment": "indoor",
+            "dietary_compatibility": []
+          }
+        ],
+        "error": null,
+        "data_source": "simulated"
+      },
+      "duration_seconds": 0.0004
+    },
+    {
+      "timestamp": "2026-11-24T18:15:37.320913+00:00",
+      "kind": "iteration",
+      "iteration": 5,
+      "summary": "Requesting the next observable planning action."
+    },
+    {
+      "timestamp": "2026-11-24T18:15:37.322600+00:00",
+      "kind": "tool_call",
+      "iteration": 5,
+      "tool": "build_itinerary",
+      "tool_call_id": "call_build_itinerary_2053",
+      "arguments": "{\"request\": {\"origin\": \"Prague\", \"destination\": \"Rome\", \"start_date\": \"2027-04-10\", \"end_date\": \"2027-04-13\", \"budget\": 600, \"travelers\": 1, \"pace\": \"moderate\", \"interests\": [\"architecture\", \"museums\", \"history\", \"local food\"], \"dietary_preferences\": []}, \"flight_id\": \"rom-flight-1\", \"hotel_id\": \"rom-hotel-1\", \"days\": [{\"date\": \"2027-04-10\", \"title\": \"Heritage and local flavors\", \"schedule\": [{\"activity_id\": \"rom-meal-1\", \"start_time\": \"10:30\", \"end_time\": \"11:15\", \"meal\": \"breakfast\"}, {\"activity_id\": \"rom-meal-1\", \"start_time\": \"12:00\", \"end_time\": \"12:45\", \"meal\": \"lunch\"}, {\"activity_id\": \"rom-act-11\", \"start_time\": \"13:00\", \"end_time\": \"14:00\"}, {\"activity_id\": \"rom-meal-1\", \"start_time\": \"17:00\", \"end_time\": \"17:45\", \"meal\": \"dinner\"}]}, {\"date\": \"2027-04-11\", \"title\": \"Heritage and local flavors\", \"schedule\": [{\"activity_id\": \"rom-meal-1\", \"start_time\": \"10:30\", \"end_time\": \"11:15\", \"meal\": \"breakfast\"}, {\"activity_id\": \"rom-meal-1\", \"start_time\": \"12:00\", \"end_time\": \"12:45\", \"meal\": \"lunch\"}, {\"activity_id\": \"rom-act-11\", \"start_time\": \"13:00\", \"end_time\": \"14:00\"}, {\"activity_id\": \"rom-meal-1\", \"start_time\": \"17:00\", \"end_time\": \"17:45\", \"meal\": \"dinner\"}]}, {\"date\": \"2027-04-12\", \"title\": \"Heritage and local flavors\", \"schedule\": [{\"activity_id\": \"rom-meal-1\", \"start_time\": \"10:30\", \"end_time\": \"11:15\", \"meal\": \"breakfast\"}, {\"activity_id\": \"rom-meal-1\", \"start_time\": \"12:00\", \"end_time\": \"12:45\", \"meal\": \"lunch\"}, {\"activity_id\": \"rom-act-11\", \"start_time\": \"13:00\", \"end_time\": \"14:00\"}, {\"activity_id\": \"rom-meal-1\", \"start_time\": \"17:00\", \"end_time\": \"17:45\", \"meal\": \"dinner\"}]}, {\"date\": \"2027-04-13\", \"title\": \"Heritage and local flavors\", \"schedule\": [{\"activity_id\": \"rom-meal-1\", \"start_time\": \"10:30\", \"end_time\": \"11:15\", \"meal\": \"breakfast\"}, {\"activity_id\": \"rom-meal-1\", \"start_time\": \"12:00\", \"end_time\": \"12:45\", \"meal\": \"lunch\"}, {\"activity_id\": \"rom-act-11\", \"start_time\": \"13:00\", \"end_time\": \"14:00\"}, {\"activity_id\": \"rom-meal-1\", \"start_time\": \"17:00\", \"end_time\": \"17:45\", \"meal\": \"dinner\"}]}]}",
+      "result": {
+        "status": "ok",
+        "data": {
+          "trip_summary": {
+            "origin": "Prague",
+            "destination": "Rome",
+            "start_date": "2027-04-10",
+            "end_date": "2027-04-13",
+            "travelers": 1,
+            "currency": "EUR"
+          },
+          "selected_flights": {
+            "id": "rom-flight-1",
+            "airline": "Simulated Budget Air",
+            "origin": "Prague",
+            "destination": "Rome",
+            "departure_date": "2027-04-10",
+            "return_date": "2027-04-13",
+            "departure_time": "07:00:00",
+            "arrival_time": "09:00:00",
+            "return_departure_time": "21:00:00",
+            "return_arrival_time": "23:00:00",
+            "duration_minutes": 120,
+            "price_per_traveler": 70.0,
+            "total_price": 70.0
+          },
+          "selected_accommodation": {
+            "id": "rom-hotel-1",
+            "name": "Rome Central Hostel",
+            "accommodation_type": "hostel",
+            "price_per_night": 23.0,
+            "nights": 3,
+            "rooms": 1,
+            "total_cost": 69.0,
+            "neighborhood": "Station district",
+            "rating": 7.8
+          },
+          "daily_itinerary": [
+            {
+              "date": "2027-04-10",
+              "title": "Heritage and local flavors",
+              "weather": {
+                "date": "2027-04-10",
+                "min_temperature": 10,
+                "max_temperature": 19,
+                "conditions": "Partly sunny",
+                "rain_probability": 0.25,
+                "recommendation": "outdoor"
+              },
+              "schedule": [
+                {
+                  "activity": {
+                    "id": "rom-meal-1",
+                    "name": "Rome Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "10:30:00",
+                  "end_time": "11:15:00",
+                  "meal": "breakfast",
+                  "total_cost": 7.0
+                },
+                {
+                  "activity": {
+                    "id": "rom-meal-1",
+                    "name": "Rome Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "12:00:00",
+                  "end_time": "12:45:00",
+                  "meal": "lunch",
+                  "total_cost": 7.0
+                },
+                {
+                  "activity": {
+                    "id": "rom-act-11",
+                    "name": "Rome community heritage gallery",
+                    "category": "attraction",
+                    "description": "Simulated free indoor local history and architecture exhibition.",
+                    "interests": [
+                      "architecture",
+                      "history",
+                      "photography",
+                      "museums"
+                    ],
+                    "duration_minutes": 60,
+                    "price_per_person": 0.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": []
+                  },
+                  "start_time": "13:00:00",
+                  "end_time": "14:00:00",
+                  "meal": null,
+                  "total_cost": 0.0
+                },
+                {
+                  "activity": {
+                    "id": "rom-meal-1",
+                    "name": "Rome Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "17:00:00",
+                  "end_time": "17:45:00",
+                  "meal": "dinner",
+                  "total_cost": 7.0
+                }
+              ],
+              "estimated_cost": 26.0,
+              "local_transport": 5.0,
+              "recommendations": [
+                "Allow 15 minutes between visits; airport transfers have separate buffers.",
+                "Meal compatibility is simulated; confirm with the restaurant before real travel."
+              ]
+            },
+            {
+              "date": "2027-04-11",
+              "title": "Heritage and local flavors",
+              "weather": {
+                "date": "2027-04-11",
+                "min_temperature": 10,
+                "max_temperature": 19,
+                "conditions": "Partly sunny",
+                "rain_probability": 0.25,
+                "recommendation": "outdoor"
+              },
+              "schedule": [
+                {
+                  "activity": {
+                    "id": "rom-meal-1",
+                    "name": "Rome Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "10:30:00",
+                  "end_time": "11:15:00",
+                  "meal": "breakfast",
+                  "total_cost": 7.0
+                },
+                {
+                  "activity": {
+                    "id": "rom-meal-1",
+                    "name": "Rome Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "12:00:00",
+                  "end_time": "12:45:00",
+                  "meal": "lunch",
+                  "total_cost": 7.0
+                },
+                {
+                  "activity": {
+                    "id": "rom-act-11",
+                    "name": "Rome community heritage gallery",
+                    "category": "attraction",
+                    "description": "Simulated free indoor local history and architecture exhibition.",
+                    "interests": [
+                      "architecture",
+                      "history",
+                      "photography",
+                      "museums"
+                    ],
+                    "duration_minutes": 60,
+                    "price_per_person": 0.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": []
+                  },
+                  "start_time": "13:00:00",
+                  "end_time": "14:00:00",
+                  "meal": null,
+                  "total_cost": 0.0
+                },
+                {
+                  "activity": {
+                    "id": "rom-meal-1",
+                    "name": "Rome Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "17:00:00",
+                  "end_time": "17:45:00",
+                  "meal": "dinner",
+                  "total_cost": 7.0
+                }
+              ],
+              "estimated_cost": 26.0,
+              "local_transport": 5.0,
+              "recommendations": [
+                "Allow 15 minutes between visits; airport transfers have separate buffers.",
+                "Meal compatibility is simulated; confirm with the restaurant before real travel."
+              ]
+            },
+            {
+              "date": "2027-04-12",
+              "title": "Heritage and local flavors",
+              "weather": {
+                "date": "2027-04-12",
+                "min_temperature": 10,
+                "max_temperature": 19,
+                "conditions": "Partly sunny",
+                "rain_probability": 0.25,
+                "recommendation": "outdoor"
+              },
+              "schedule": [
+                {
+                  "activity": {
+                    "id": "rom-meal-1",
+                    "name": "Rome Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "10:30:00",
+                  "end_time": "11:15:00",
+                  "meal": "breakfast",
+                  "total_cost": 7.0
+                },
+                {
+                  "activity": {
+                    "id": "rom-meal-1",
+                    "name": "Rome Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "12:00:00",
+                  "end_time": "12:45:00",
+                  "meal": "lunch",
+                  "total_cost": 7.0
+                },
+                {
+                  "activity": {
+                    "id": "rom-act-11",
+                    "name": "Rome community heritage gallery",
+                    "category": "attraction",
+                    "description": "Simulated free indoor local history and architecture exhibition.",
+                    "interests": [
+                      "architecture",
+                      "history",
+                      "photography",
+                      "museums"
+                    ],
+                    "duration_minutes": 60,
+                    "price_per_person": 0.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": []
+                  },
+                  "start_time": "13:00:00",
+                  "end_time": "14:00:00",
+                  "meal": null,
+                  "total_cost": 0.0
+                },
+                {
+                  "activity": {
+                    "id": "rom-meal-1",
+                    "name": "Rome Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "17:00:00",
+                  "end_time": "17:45:00",
+                  "meal": "dinner",
+                  "total_cost": 7.0
+                }
+              ],
+              "estimated_cost": 26.0,
+              "local_transport": 5.0,
+              "recommendations": [
+                "Allow 15 minutes between visits; airport transfers have separate buffers.",
+                "Meal compatibility is simulated; confirm with the restaurant before real travel."
+              ]
+            },
+            {
+              "date": "2027-04-13",
+              "title": "Heritage and local flavors",
+              "weather": {
+                "date": "2027-04-13",
+                "min_temperature": 10,
+                "max_temperature": 19,
+                "conditions": "Partly sunny",
+                "rain_probability": 0.25,
+                "recommendation": "outdoor"
+              },
+              "schedule": [
+                {
+                  "activity": {
+                    "id": "rom-meal-1",
+                    "name": "Rome Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "10:30:00",
+                  "end_time": "11:15:00",
+                  "meal": "breakfast",
+                  "total_cost": 7.0
+                },
+                {
+                  "activity": {
+                    "id": "rom-meal-1",
+                    "name": "Rome Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "12:00:00",
+                  "end_time": "12:45:00",
+                  "meal": "lunch",
+                  "total_cost": 7.0
+                },
+                {
+                  "activity": {
+                    "id": "rom-act-11",
+                    "name": "Rome community heritage gallery",
+                    "category": "attraction",
+                    "description": "Simulated free indoor local history and architecture exhibition.",
+                    "interests": [
+                      "architecture",
+                      "history",
+                      "photography",
+                      "museums"
+                    ],
+                    "duration_minutes": 60,
+                    "price_per_person": 0.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": []
+                  },
+                  "start_time": "13:00:00",
+                  "end_time": "14:00:00",
+                  "meal": null,
+                  "total_cost": 0.0
+                },
+                {
+                  "activity": {
+                    "id": "rom-meal-1",
+                    "name": "Rome Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "17:00:00",
+                  "end_time": "17:45:00",
+                  "meal": "dinner",
+                  "total_cost": 7.0
+                }
+              ],
+              "estimated_cost": 26.0,
+              "local_transport": 5.0,
+              "recommendations": [
+                "Allow 15 minutes between visits; airport transfers have separate buffers.",
+                "Meal compatibility is simulated; confirm with the restaurant before real travel."
+              ]
+            }
+          ],
+          "budget_breakdown": {
+            "flights": 70.0,
+            "accommodation": 69.0,
+            "food": 84.0,
+            "activities": 0.0,
+            "local_transport": 20.0,
+            "total": 243.0,
+            "remaining_budget": 357.0
+          },
+          "weather_summary": [
+            {
+              "date": "2027-04-10",
+              "min_temperature": 10,
+              "max_temperature": 19,
+              "conditions": "Partly sunny",
+              "rain_probability": 0.25,
+              "recommendation": "outdoor"
+            },
+            {
+              "date": "2027-04-11",
+              "min_temperature": 10,
+              "max_temperature": 19,
+              "conditions": "Partly sunny",
+              "rain_probability": 0.25,
+              "recommendation": "outdoor"
+            },
+            {
+              "date": "2027-04-12",
+              "min_temperature": 10,
+              "max_temperature": 19,
+              "conditions": "Partly sunny",
+              "rain_probability": 0.25,
+              "recommendation": "outdoor"
+            },
+            {
+              "date": "2027-04-13",
+              "min_temperature": 10,
+              "max_temperature": 19,
+              "conditions": "Partly sunny",
+              "rain_probability": 0.25,
+              "recommendation": "outdoor"
+            }
+          ],
+          "recommendations": [
+            "Reserve tickets only after verifying real availability."
+          ],
+          "warnings": [
+            "All prices, schedules, availability, restaurants and weather are simulated.",
+            "EUR 5 per traveler per day covers simulated local transport and airport transfers; flights include no paid extras.",
+            "Daily costs include meals, attractions and transport; flights and accommodation are charged once in the trip budget."
+          ],
+          "data_source": "simulated"
+        },
+        "error": null,
+        "data_source": "simulated"
+      },
+      "duration_seconds": 0.0006
+    },
+    {
+      "timestamp": "2026-11-24T18:15:37.323048+00:00",
+      "kind": "iteration",
+      "iteration": 6,
+      "summary": "Requesting the next observable planning action."
+    }
+  ],
+  "final_response": {
+    "status": "success",
+    "message": "Validated simulated travel plan.",
+    "itinerary": {
+      "trip_summary": {
+        "origin": "Prague",
+        "destination": "Rome",
+        "start_date": "2027-04-10",
+        "end_date": "2027-04-13",
+        "travelers": 1,
+        "currency": "EUR"
+      },
+      "selected_flights": {
+        "id": "rom-flight-1",
+        "airline": "Simulated Budget Air",
+        "origin": "Prague",
+        "destination": "Rome",
+        "departure_date": "2027-04-10",
+        "return_date": "2027-04-13",
+        "departure_time": "07:00:00",
+        "arrival_time": "09:00:00",
+        "return_departure_time": "21:00:00",
+        "return_arrival_time": "23:00:00",
+        "duration_minutes": 120,
+        "price_per_traveler": 70.0,
+        "total_price": 70.0
+      },
+      "selected_accommodation": {
+        "id": "rom-hotel-1",
+        "name": "Rome Central Hostel",
+        "accommodation_type": "hostel",
+        "price_per_night": 23.0,
+        "nights": 3,
+        "rooms": 1,
+        "total_cost": 69.0,
+        "neighborhood": "Station district",
+        "rating": 7.8
+      },
+      "daily_itinerary": [
+        {
+          "date": "2027-04-10",
+          "title": "Heritage and local flavors",
+          "weather": {
+            "date": "2027-04-10",
+            "min_temperature": 10,
+            "max_temperature": 19,
+            "conditions": "Partly sunny",
+            "rain_probability": 0.25,
+            "recommendation": "outdoor"
+          },
+          "schedule": [
+            {
+              "activity": {
+                "id": "rom-meal-1",
+                "name": "Rome Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "10:30:00",
+              "end_time": "11:15:00",
+              "meal": "breakfast",
+              "total_cost": 7.0
+            },
+            {
+              "activity": {
+                "id": "rom-meal-1",
+                "name": "Rome Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "12:00:00",
+              "end_time": "12:45:00",
+              "meal": "lunch",
+              "total_cost": 7.0
+            },
+            {
+              "activity": {
+                "id": "rom-act-11",
+                "name": "Rome community heritage gallery",
+                "category": "attraction",
+                "description": "Simulated free indoor local history and architecture exhibition.",
+                "interests": [
+                  "architecture",
+                  "history",
+                  "photography",
+                  "museums"
+                ],
+                "duration_minutes": 60,
+                "price_per_person": 0.0,
+                "environment": "indoor",
+                "dietary_compatibility": []
+              },
+              "start_time": "13:00:00",
+              "end_time": "14:00:00",
+              "meal": null,
+              "total_cost": 0.0
+            },
+            {
+              "activity": {
+                "id": "rom-meal-1",
+                "name": "Rome Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "17:00:00",
+              "end_time": "17:45:00",
+              "meal": "dinner",
+              "total_cost": 7.0
+            }
+          ],
+          "estimated_cost": 26.0,
+          "local_transport": 5.0,
+          "recommendations": [
+            "Allow 15 minutes between visits; airport transfers have separate buffers.",
+            "Meal compatibility is simulated; confirm with the restaurant before real travel."
+          ]
+        },
+        {
+          "date": "2027-04-11",
+          "title": "Heritage and local flavors",
+          "weather": {
+            "date": "2027-04-11",
+            "min_temperature": 10,
+            "max_temperature": 19,
+            "conditions": "Partly sunny",
+            "rain_probability": 0.25,
+            "recommendation": "outdoor"
+          },
+          "schedule": [
+            {
+              "activity": {
+                "id": "rom-meal-1",
+                "name": "Rome Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "10:30:00",
+              "end_time": "11:15:00",
+              "meal": "breakfast",
+              "total_cost": 7.0
+            },
+            {
+              "activity": {
+                "id": "rom-meal-1",
+                "name": "Rome Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "12:00:00",
+              "end_time": "12:45:00",
+              "meal": "lunch",
+              "total_cost": 7.0
+            },
+            {
+              "activity": {
+                "id": "rom-act-11",
+                "name": "Rome community heritage gallery",
+                "category": "attraction",
+                "description": "Simulated free indoor local history and architecture exhibition.",
+                "interests": [
+                  "architecture",
+                  "history",
+                  "photography",
+                  "museums"
+                ],
+                "duration_minutes": 60,
+                "price_per_person": 0.0,
+                "environment": "indoor",
+                "dietary_compatibility": []
+              },
+              "start_time": "13:00:00",
+              "end_time": "14:00:00",
+              "meal": null,
+              "total_cost": 0.0
+            },
+            {
+              "activity": {
+                "id": "rom-meal-1",
+                "name": "Rome Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "17:00:00",
+              "end_time": "17:45:00",
+              "meal": "dinner",
+              "total_cost": 7.0
+            }
+          ],
+          "estimated_cost": 26.0,
+          "local_transport": 5.0,
+          "recommendations": [
+            "Allow 15 minutes between visits; airport transfers have separate buffers.",
+            "Meal compatibility is simulated; confirm with the restaurant before real travel."
+          ]
+        },
+        {
+          "date": "2027-04-12",
+          "title": "Heritage and local flavors",
+          "weather": {
+            "date": "2027-04-12",
+            "min_temperature": 10,
+            "max_temperature": 19,
+            "conditions": "Partly sunny",
+            "rain_probability": 0.25,
+            "recommendation": "outdoor"
+          },
+          "schedule": [
+            {
+              "activity": {
+                "id": "rom-meal-1",
+                "name": "Rome Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "10:30:00",
+              "end_time": "11:15:00",
+              "meal": "breakfast",
+              "total_cost": 7.0
+            },
+            {
+              "activity": {
+                "id": "rom-meal-1",
+                "name": "Rome Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "12:00:00",
+              "end_time": "12:45:00",
+              "meal": "lunch",
+              "total_cost": 7.0
+            },
+            {
+              "activity": {
+                "id": "rom-act-11",
+                "name": "Rome community heritage gallery",
+                "category": "attraction",
+                "description": "Simulated free indoor local history and architecture exhibition.",
+                "interests": [
+                  "architecture",
+                  "history",
+                  "photography",
+                  "museums"
+                ],
+                "duration_minutes": 60,
+                "price_per_person": 0.0,
+                "environment": "indoor",
+                "dietary_compatibility": []
+              },
+              "start_time": "13:00:00",
+              "end_time": "14:00:00",
+              "meal": null,
+              "total_cost": 0.0
+            },
+            {
+              "activity": {
+                "id": "rom-meal-1",
+                "name": "Rome Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "17:00:00",
+              "end_time": "17:45:00",
+              "meal": "dinner",
+              "total_cost": 7.0
+            }
+          ],
+          "estimated_cost": 26.0,
+          "local_transport": 5.0,
+          "recommendations": [
+            "Allow 15 minutes between visits; airport transfers have separate buffers.",
+            "Meal compatibility is simulated; confirm with the restaurant before real travel."
+          ]
+        },
+        {
+          "date": "2027-04-13",
+          "title": "Heritage and local flavors",
+          "weather": {
+            "date": "2027-04-13",
+            "min_temperature": 10,
+            "max_temperature": 19,
+            "conditions": "Partly sunny",
+            "rain_probability": 0.25,
+            "recommendation": "outdoor"
+          },
+          "schedule": [
+            {
+              "activity": {
+                "id": "rom-meal-1",
+                "name": "Rome Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "10:30:00",
+              "end_time": "11:15:00",
+              "meal": "breakfast",
+              "total_cost": 7.0
+            },
+            {
+              "activity": {
+                "id": "rom-meal-1",
+                "name": "Rome Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "12:00:00",
+              "end_time": "12:45:00",
+              "meal": "lunch",
+              "total_cost": 7.0
+            },
+            {
+              "activity": {
+                "id": "rom-act-11",
+                "name": "Rome community heritage gallery",
+                "category": "attraction",
+                "description": "Simulated free indoor local history and architecture exhibition.",
+                "interests": [
+                  "architecture",
+                  "history",
+                  "photography",
+                  "museums"
+                ],
+                "duration_minutes": 60,
+                "price_per_person": 0.0,
+                "environment": "indoor",
+                "dietary_compatibility": []
+              },
+              "start_time": "13:00:00",
+              "end_time": "14:00:00",
+              "meal": null,
+              "total_cost": 0.0
+            },
+            {
+              "activity": {
+                "id": "rom-meal-1",
+                "name": "Rome Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "17:00:00",
+              "end_time": "17:45:00",
+              "meal": "dinner",
+              "total_cost": 7.0
+            }
+          ],
+          "estimated_cost": 26.0,
+          "local_transport": 5.0,
+          "recommendations": [
+            "Allow 15 minutes between visits; airport transfers have separate buffers.",
+            "Meal compatibility is simulated; confirm with the restaurant before real travel."
+          ]
+        }
+      ],
+      "budget_breakdown": {
+        "flights": 70.0,
+        "accommodation": 69.0,
+        "food": 84.0,
+        "activities": 0.0,
+        "local_transport": 20.0,
+        "total": 243.0,
+        "remaining_budget": 357.0
+      },
+      "weather_summary": [
+        {
+          "date": "2027-04-10",
+          "min_temperature": 10,
+          "max_temperature": 19,
+          "conditions": "Partly sunny",
+          "rain_probability": 0.25,
+          "recommendation": "outdoor"
+        },
+        {
+          "date": "2027-04-11",
+          "min_temperature": 10,
+          "max_temperature": 19,
+          "conditions": "Partly sunny",
+          "rain_probability": 0.25,
+          "recommendation": "outdoor"
+        },
+        {
+          "date": "2027-04-12",
+          "min_temperature": 10,
+          "max_temperature": 19,
+          "conditions": "Partly sunny",
+          "rain_probability": 0.25,
+          "recommendation": "outdoor"
+        },
+        {
+          "date": "2027-04-13",
+          "min_temperature": 10,
+          "max_temperature": 19,
+          "conditions": "Partly sunny",
+          "rain_probability": 0.25,
+          "recommendation": "outdoor"
+        }
+      ],
+      "recommendations": [
+        "Reserve tickets only after verifying real availability."
+      ],
+      "warnings": [
+        "All prices, schedules, availability, restaurants and weather are simulated.",
+        "EUR 5 per traveler per day covers simulated local transport and airport transfers; flights include no paid extras.",
+        "Daily costs include meals, attractions and transport; flights and accommodation are charged once in the trip budget."
+      ],
+      "data_source": "simulated"
+    },
+    "data_source": "simulated"
+  },
+  "final_status": "success",
+  "budget_validation": {
+    "valid": true,
+    "total": 243.0,
+    "remaining_budget": 357.0
+  },
+  "duration_seconds": 0.0113
+}

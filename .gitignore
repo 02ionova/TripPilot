@@ -1,0 +1,13 @@
+.env
+.venv/
+venv/
+__pycache__/
+.pytest_cache/
+.idea/
+.vscode/
+*.pyc
+*.tmp
+.DS_Store
+results/
+.ruff_cache/
+*.swp

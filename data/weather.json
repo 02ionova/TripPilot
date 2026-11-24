@@ -1,0 +1,115 @@
+{
+  "data_source": "simulated",
+  "destinations": {
+    "Rome": {
+      "winter": {
+        "min_temperature": 2,
+        "max_temperature": 9,
+        "rain_probability": 0.65
+      },
+      "spring": {
+        "min_temperature": 10,
+        "max_temperature": 19,
+        "rain_probability": 0.25
+      },
+      "summer": {
+        "min_temperature": 18,
+        "max_temperature": 28,
+        "rain_probability": 0.15
+      },
+      "autumn": {
+        "min_temperature": 9,
+        "max_temperature": 17,
+        "rain_probability": 0.55
+      }
+    },
+    "Paris": {
+      "winter": {
+        "min_temperature": 3,
+        "max_temperature": 10,
+        "rain_probability": 0.65
+      },
+      "spring": {
+        "min_temperature": 11,
+        "max_temperature": 20,
+        "rain_probability": 0.6
+      },
+      "summer": {
+        "min_temperature": 19,
+        "max_temperature": 29,
+        "rain_probability": 0.15
+      },
+      "autumn": {
+        "min_temperature": 10,
+        "max_temperature": 18,
+        "rain_probability": 0.55
+      }
+    },
+    "Barcelona": {
+      "winter": {
+        "min_temperature": 4,
+        "max_temperature": 11,
+        "rain_probability": 0.65
+      },
+      "spring": {
+        "min_temperature": 12,
+        "max_temperature": 21,
+        "rain_probability": 0.25
+      },
+      "summer": {
+        "min_temperature": 20,
+        "max_temperature": 30,
+        "rain_probability": 0.15
+      },
+      "autumn": {
+        "min_temperature": 11,
+        "max_temperature": 19,
+        "rain_probability": 0.55
+      }
+    },
+    "Vienna": {
+      "winter": {
+        "min_temperature": 5,
+        "max_temperature": 12,
+        "rain_probability": 0.65
+      },
+      "spring": {
+        "min_temperature": 13,
+        "max_temperature": 22,
+        "rain_probability": 0.25
+      },
+      "summer": {
+        "min_temperature": 21,
+        "max_temperature": 31,
+        "rain_probability": 0.15
+      },
+      "autumn": {
+        "min_temperature": 12,
+        "max_temperature": 20,
+        "rain_probability": 0.55
+      }
+    },
+    "Amsterdam": {
+      "winter": {
+        "min_temperature": 6,
+        "max_temperature": 13,
+        "rain_probability": 0.65
+      },
+      "spring": {
+        "min_temperature": 14,
+        "max_temperature": 23,
+        "rain_probability": 0.6
+      },
+      "summer": {
+        "min_temperature": 22,
+        "max_temperature": 32,
+        "rain_probability": 0.15
+      },
+      "autumn": {
+        "min_temperature": 13,
+        "max_temperature": 21,
+        "rain_probability": 0.55
+      }
+    }
+  }
+}
