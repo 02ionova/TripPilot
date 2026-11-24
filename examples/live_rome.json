@@ -1,0 +1,17 @@
+{
+  "origin": "Prague, Czechia",
+  "destination": "Rome, Italy",
+  "start_date": "2026-12-03",
+  "end_date": "2026-12-05",
+  "budget": 2000,
+  "travelers": 1,
+  "pace": "relaxed",
+  "interests": [
+    "museums",
+    "architecture",
+    "local food"
+  ],
+  "dietary_preferences": [
+    "vegetarian"
+  ]
+}

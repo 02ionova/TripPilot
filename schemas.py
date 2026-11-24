@@ -1,6 +1,6 @@
 """Validated inputs, tool contracts and final itinerary models (EUR only)."""
 
-from datetime import date, time
+from datetime import date, datetime, time
 from typing import Generic, Literal, TypeVar
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
@@ -26,7 +26,7 @@ class DateRange(Model):
         if not 0 <= (self.end_date - self.start_date).days <= 13:
             raise ValueError("Trip must last 1–14 calendar days, with end_date >= start_date.")
         if self.start_date.year < 2026 or self.end_date.year > 2035:
-            raise ValueError("Simulated dates are supported from 2026 through 2035.")
+            raise ValueError("Dates are supported from 2026 through 2035.")
         return self
 
 
@@ -42,7 +42,7 @@ class TravelRequest(DateRange):
     travelers: int = Field(default=1, gt=0, le=20, strict=True)
     pace: Literal["relaxed", "moderate", "intensive"] = "moderate"
     interests: list[str] = Field(default_factory=list)
-    dietary_preferences: list[Literal["vegetarian", "vegan", "gluten-free"]] = Field(
+    dietary_preferences: list[Literal["vegetarian", "vegan", "gluten-free", "halal"]] = Field(
         default_factory=list
     )
 
@@ -71,6 +71,13 @@ class FlightArgs(Model):
     destination: str = Field(min_length=1)
     departure_date: date
     return_date: date
+    outbound_index: int = Field(
+        default=0,
+        ge=0,
+        le=5,
+        description="Choose a different outbound candidate to explore other return options; each uncached candidate needs another request.",
+    )
+    max_stops: int | None = Field(default=None, ge=0, le=2)
     travelers: int = Field(gt=0, le=20, strict=True)
     max_price: float | None = Field(
         default=None, ge=0, description="Maximum total round-trip price for all travelers."
@@ -91,6 +98,7 @@ class HotelArgs(Model):
         default=None, ge=0, description="Maximum combined nightly cost for all travelers."
     )
     accommodation_type: Literal["hotel", "budget", "hostel"] | None = None
+    page_token: str | None = Field(default=None, max_length=2000)
 
     @model_validator(mode="after")
     def valid_dates(self):
@@ -100,21 +108,69 @@ class HotelArgs(Model):
 
 class ActivityArgs(Model):
     destination: str = Field(min_length=1)
+    query: str | None = Field(default=None, max_length=200)
     interests: list[str] = Field(default_factory=list)
-    dietary_preferences: list[Literal["vegetarian", "vegan", "gluten-free"]] = Field(
+    dietary_preferences: list[Literal["vegetarian", "vegan", "gluten-free", "halal"]] = Field(
         default_factory=list
     )
     environment: Literal["indoor", "outdoor", "any"] = "any"
     max_price: float | None = Field(default=None, ge=0, description="Maximum price per person.")
 
 
+class SourceInfo(Model):
+    provider: str
+    retrieved_at: datetime
+    url: str | None = None
+
+
+class PriceInfo(Model):
+    amount: float = Field(ge=0)
+    currency: Literal["EUR"] = "EUR"
+    kind: Literal["retrieved", "estimated"]
+    basis: str
+    notes: list[str] = Field(default_factory=list)
+
+
+class Coordinates(Model):
+    latitude: float = Field(ge=-90, le=90)
+    longitude: float = Field(ge=-180, le=180)
+
+
+class FlightSegment(Model):
+    airline: str
+    flight_number: str | None = None
+    departure_airport: str
+    arrival_airport: str
+    departure: datetime
+    arrival: datetime
+    duration_minutes: int | None = None
+
+
+class RestaurantArgs(Model):
+    destination: str = Field(min_length=1)
+    dietary_preferences: list[Literal["vegetarian", "vegan", "gluten-free", "halal"]] = Field(
+        default_factory=list
+    )
+    query: str | None = Field(default=None, max_length=200)
+    near: Coordinates | None = None
+    max_price: float | None = Field(default=None, ge=0)
+
+
 class WeatherDay(Model):
     date: date
-    min_temperature: int
-    max_temperature: int
+    min_temperature: float
+    max_temperature: float
     conditions: str
-    rain_probability: float = Field(ge=0, le=1)
+    rain_probability: float | None = Field(default=None, ge=0, le=1)
     recommendation: Literal["indoor", "outdoor"]
+    information_type: Literal["simulated", "Weather forecast", "Historical climate estimate"] = (
+        "simulated"
+    )
+    wind_speed_kmh: float | None = None
+    historical_years: list[int] = Field(default_factory=list)
+    historical_wet_day_frequency: float | None = Field(default=None, ge=0, le=1)
+    source: SourceInfo | None = None
+    notes: list[str] = Field(default_factory=list)
 
 
 class Flight(Model):
@@ -131,6 +187,16 @@ class Flight(Model):
     duration_minutes: int
     price_per_traveler: float
     total_price: float
+    outbound_segments: list[FlightSegment] = Field(default_factory=list)
+    return_segments: list[FlightSegment] = Field(default_factory=list)
+    outbound_arrival: datetime | None = None
+    return_departure: datetime | None = None
+    stops: int = 0
+    return_stops: int = 0
+    price_info: PriceInfo | None = None
+    source: SourceInfo | None = None
+    search_url: str | None = None
+    notes: list[str] = Field(default_factory=list)
 
 
 class Hotel(Model):
@@ -142,7 +208,17 @@ class Hotel(Model):
     rooms: int
     total_cost: float
     neighborhood: str
-    rating: float
+    rating: float | None
+    reviews: int | None = None
+    address: str | None = None
+    coordinates: Coordinates | None = None
+    image_url: str | None = None
+    url: str | None = None
+    price_info: PriceInfo | None = None
+    taxes_included: bool | None = None
+    quoted_adults_per_room: int | None = None
+    source: SourceInfo | None = None
+    notes: list[str] = Field(default_factory=list)
 
 
 class Activity(Model):
@@ -153,8 +229,22 @@ class Activity(Model):
     interests: list[str]
     duration_minutes: int
     price_per_person: float
-    environment: Literal["indoor", "outdoor"]
+    environment: Literal["indoor", "outdoor", "unknown"]
     dietary_compatibility: list[str]
+    address: str | None = None
+    coordinates: Coordinates | None = None
+    rating: float | None = None
+    reviews: int | None = None
+    opening_hours: dict[str, str] = Field(default_factory=dict)
+    permanently_closed: bool = False
+    temporarily_closed: bool = False
+    source_category: str | None = None
+    url: str | None = None
+    website: str | None = None
+    price_info: PriceInfo | None = None
+    dietary_status: Literal["simulated", "provider_indication", "unverified"] = "simulated"
+    source: SourceInfo | None = None
+    notes: list[str] = Field(default_factory=list)
 
 
 class ToolError(Model):
@@ -170,7 +260,10 @@ class ToolResult(Model, Generic[T]):
     status: Literal["ok", "error"]
     data: T | None = None
     error: ToolError | None = None
-    data_source: Literal["simulated"] = "simulated"
+    data_source: Literal["simulated", "live"] = "simulated"
+    notes: list[str] = Field(default_factory=list)
+    retrieved_at: datetime | None = None
+    next_page_token: str | None = None
 
 
 class ScheduledSelection(Model):
@@ -187,10 +280,18 @@ class DaySelection(Model):
 
 
 class BuildArgs(Model):
+    auto_schedule: bool = False
     request: TravelRequest
     flight_id: str
-    hotel_id: str
+    hotel_id: str | None = None
     days: list[DaySelection]
+
+
+class LiveBuildArgs(BuildArgs):
+    auto_schedule: bool = Field(
+        default=True,
+        description="Let Python arrange the selected attraction IDs and fill required meals from retrieved restaurants. Proposed slot times are suggestions only in this mode. All final times, opening hours, transfers and prices are validated. Set false for strict validation of exact proposed times.",
+    )
 
 
 class ScheduledActivity(Model):
@@ -199,6 +300,8 @@ class ScheduledActivity(Model):
     end_time: time
     meal: Literal["breakfast", "lunch", "dinner"] | None
     total_cost: float
+    transfer_minutes: int = 0
+    transfer_note: str | None = None
 
 
 class ItineraryDay(Model):
@@ -239,16 +342,26 @@ class TripSummary(Model):
     currency: Literal["EUR"] = "EUR"
 
 
+class CostItem(Model):
+    category: Literal["flights", "accommodation", "food", "activities", "local_transport"]
+    label: str
+    amount: float = Field(ge=0)
+    kind: Literal["retrieved", "estimated"]
+    source: SourceInfo | None = None
+    notes: list[str] = Field(default_factory=list)
+
+
 class Itinerary(Model):
     trip_summary: TripSummary
     selected_flights: Flight
-    selected_accommodation: Hotel
+    selected_accommodation: Hotel | None
     daily_itinerary: list[ItineraryDay]
     budget_breakdown: BudgetBreakdown
     weather_summary: list[WeatherDay]
     recommendations: list[str]
     warnings: list[str]
-    data_source: Literal["simulated"] = "simulated"
+    cost_items: list[CostItem] = Field(default_factory=list)
+    data_source: Literal["simulated", "live"] = "simulated"
 
 
 class FinalDecision(Model):
@@ -276,7 +389,10 @@ class FinalResponse(Model):
     message: str
     itinerary: Itinerary | None = None
     budget_estimate: BudgetEstimate | None = None
-    data_source: Literal["simulated"] = "simulated"
+    serpapi_requests: int = 0
+    provider_cache_hits: int = 0
+    retrieved_at: datetime | None = None
+    data_source: Literal["simulated", "live"] = "simulated"
 
     @model_validator(mode="after")
     def success_requires_itinerary(self):

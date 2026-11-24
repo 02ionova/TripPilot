@@ -19,14 +19,15 @@ from openai import (
 )
 from pydantic import ValidationError
 
+from cities import bind_city_label
 from config import Settings
 from planning import estimate_minimum_budget
-from prompts import DEMONSTRATION_POLICY, SYSTEM_PROMPT
-from schemas import BuildArgs, FinalDecision, FinalResponse, Itinerary, TravelRequest
+from prompts import DEMONSTRATION_POLICY, LIVE_SYSTEM_PROMPT, SYSTEM_PROMPT
+from schemas import BuildArgs, FinalDecision, FinalResponse, Itinerary, LiveBuildArgs, TravelRequest
 from tools.catalog import simulation_notes
 from tools.common import ToolFailure
-from tools.registry import REGISTRY, execute_tool, tool_definitions
-from tracing import Trace, redact
+from tools.registry import LIVE_REGISTRY, REGISTRY, execute_tool, tool_definitions
+from tracing import Trace, now, redact
 
 
 class TravelAgent:
@@ -37,7 +38,12 @@ class TravelAgent:
         trace_directory: Path | None = None,
         on_event: Callable | None = None,
         demonstrate_recovery: bool = False,
+        http_client=None,
+        cache_path: Path | None = None,
     ):
+        self.http_client = http_client
+        self.cache_path = cache_path
+        self.runtime = None
         self.demonstrate_recovery = demonstrate_recovery
         self.settings = settings or Settings()
         self.client = client
@@ -46,6 +52,8 @@ class TravelAgent:
         self.trace = None
 
     def event(self, kind, **values):
+        if self.runtime:
+            self.trace.data["provider_stats"] = self.runtime.client.stats()
         event = self.trace.event(kind, **values)
         if self.on_event:
             self.on_event(event)
@@ -58,12 +66,21 @@ class TravelAgent:
             if self.trace is None:
                 raise
             self.trace.event("unexpected_error", error=type(exc).__name__)
-            return self.trace.finish(
+            stats = self.runtime.client.stats() if self.runtime else {}
+            self.trace.data["provider_stats"] = stats
+            self.trace.data["serpapi_requests"] = stats.get("serpapi_requests", 0)
+            result = self.trace.finish(
                 FinalResponse(
                     status="error",
                     message="Unexpected planning error. Inspect the sanitized trace and retry.",
+                    data_source="live" if self.settings.data_mode == "live" else "simulated",
+                    serpapi_requests=stats.get("serpapi_requests", 0),
+                    provider_cache_hits=stats.get("provider_cache_hits", 0),
                 )
             )
+            if self.runtime:
+                self.runtime.client.close()
+            return result
 
     def _run(self, raw_request: TravelRequest | dict) -> FinalResponse:
         raw = (
@@ -80,38 +97,63 @@ class TravelAgent:
             else "real_llm",
         )
 
+        self.runtime = None
+        live = self.settings.data_mode == "live"
+        self.trace.data["data_mode"] = self.settings.data_mode
         budget_estimate = None
 
         def finish(status, message, itinerary=None):
-            return self.trace.finish(
+            stats = self.runtime.client.stats() if self.runtime else {}
+            self.trace.data["provider_stats"] = stats
+            self.trace.data["serpapi_requests"] = stats.get("serpapi_requests", 0)
+            result = self.trace.finish(
                 FinalResponse(
                     status=status,
                     message=message,
                     itinerary=itinerary,
                     budget_estimate=budget_estimate,
+                    data_source="live" if live else "simulated",
+                    serpapi_requests=stats.get("serpapi_requests", 0),
+                    provider_cache_hits=stats.get("provider_cache_hits", 0),
+                    retrieved_at=now() if live else None,
                 )
             )
+            if self.runtime:
+                self.runtime.client.close()
+            return result
 
         try:
             request = TravelRequest.model_validate(raw)
         except ValidationError as exc:
             details = "; ".join(error["msg"] for error in exc.errors(include_input=False))
             return finish("needs_clarification", "Please correct your request: " + details)
-        try:
-            budget_estimate = estimate_minimum_budget(request)
-        except ToolFailure as exc:
-            self.event("precheck_error", error=exc.error.model_dump())
-            return finish("needs_clarification", exc.error.message)
-        self.event(
-            "budget_precheck",
-            estimate=budget_estimate.model_dump(),
-            summary="Checked the minimum required simulated costs before contacting the model.",
-        )
-        if budget_estimate.shortfall > 0:
-            return finish(
-                "infeasible",
-                f"This trip needs at least EUR {budget_estimate.minimum_total:.2f} under the simulated prices. Your total budget is EUR {request.budget:.2f}, a shortfall of EUR {budget_estimate.shortfall:.2f}. Increase the budget, shorten the trip, or reduce the traveler count. No model requests were needed.",
+        if live:
+            if not self.settings.serpapi_api_key:
+                return finish(
+                    "error",
+                    "SERPAPI_API_KEY is missing. Configure it in .env and restart. Live Mode never switches to simulated data automatically.",
+                )
+            from providers.runtime import LiveTools
+
+            self.runtime = LiveTools(
+                request, self.settings, self.event, self.http_client, self.cache_path
             )
+        else:
+            try:
+                budget_estimate = estimate_minimum_budget(request)
+            except ToolFailure as exc:
+                self.event("precheck_error", error=exc.error.model_dump())
+                return finish("needs_clarification", exc.error.message)
+            self.event(
+                "budget_precheck",
+                estimate=budget_estimate.model_dump(),
+                summary="Checked the minimum required simulated costs before contacting the model.",
+            )
+            if budget_estimate.shortfall > 0:
+                return finish(
+                    "infeasible",
+                    f"This trip needs at least EUR {budget_estimate.minimum_total:.2f} under the simulated prices. Your total budget is EUR {request.budget:.2f}, a shortfall of EUR {budget_estimate.shortfall:.2f}. Increase the budget, shorten the trip, or reduce the traveler count. No model requests were needed.",
+                )
         if self.client is None:
             if not self.settings.api_key:
                 return finish(
@@ -124,19 +166,35 @@ class TravelAgent:
         messages = [
             {
                 "role": "system",
-                "content": SYSTEM_PROMPT
+                "content": LIVE_SYSTEM_PROMPT
+                + (
+                    "\nFor this explicitly requested recovery demonstration, first search hotels with max_nightly_price=10. If no priced options meet that limit, independently broaden the filter using the already cached provider results. This is a demonstration constraint, not a claim about actual hotel prices."
+                    if self.demonstrate_recovery
+                    else ""
+                )
+                if live
+                else SYSTEM_PROMPT
                 + ("\n" + DEMONSTRATION_POLICY if self.demonstrate_recovery else ""),
             },
             {"role": "user", "content": request.model_dump_json()},
-            {
-                "role": "user",
-                "content": "Python catalogue cost lower bound (not a finished plan or guarantee of feasibility): "
-                + budget_estimate.model_dump_json()
-                + " Simulation notes: "
-                + json.dumps(simulation_notes(request.origin, request.destination))
-                + ". Prefer the cheapest compatible meals and accommodation if the budget is close to this bound. All five tools and final schedule validation are still required.",
-            },
         ]
+        if live:
+            messages.append(
+                {
+                    "role": "user",
+                    "content": f"Live Mode. SerpApi request cap: {self.settings.max_serpapi_requests}. Prefer broad searches and reuse cached results. Account/autocomplete/return-selection accounting is enforced by Python. No simulated catalogue or mathematical minimum-cost proof is available for this live trip.",
+                }
+            )
+        else:
+            messages.append(
+                {
+                    "role": "user",
+                    "content": "Python simulated catalogue lower bound: "
+                    + budget_estimate.model_dump_json()
+                    + ". Simulation notes: "
+                    + json.dumps(simulation_notes(request.origin, request.destination)),
+                }
+            )
         calls = Counter()
         failures = Counter()
         searched = set()
@@ -156,7 +214,7 @@ class TravelAgent:
                     response = self.client.chat.completions.create(
                         model=self.settings.model,
                         messages=messages,
-                        tools=tool_definitions(),
+                        tools=tool_definitions(self.settings.data_mode, self.runtime),
                         response_format={
                             "type": "json_schema",
                             "json_schema": {
@@ -234,16 +292,39 @@ class TravelAgent:
                                     "Choose different arguments or return infeasible/error."
                                 ],
                             },
-                            "data_source": "simulated",
+                            "data_source": "live" if live else "simulated",
                         }
                     else:
                         # Bind build requests to the original user input, preventing budget/date tampering.
                         try:
+                            dispatch_arguments = arguments
                             if name == "build_itinerary":
-                                selected = BuildArgs.model_validate_json(arguments)
+                                selected = (
+                                    LiveBuildArgs if live else BuildArgs
+                                ).model_validate_json(arguments)
+                                if live:
+                                    selected.request = selected.request.model_copy(
+                                        update={
+                                            "origin": bind_city_label(
+                                                selected.request.origin, request.origin
+                                            ),
+                                            "destination": bind_city_label(
+                                                selected.request.destination, request.destination
+                                            ),
+                                        }
+                                    )
+                                    dispatch_arguments = selected.model_dump_json()
+                                    if dispatch_arguments != arguments:
+                                        self.event(
+                                            "bound_request_arguments",
+                                            tool=name,
+                                            summary="Validated builder input against the original request; restored only user-supplied city qualifiers where omitted.",
+                                        )
                                 if selected.request != request:
                                     raise ValueError("Changed request")
-                            result = execute_tool(name, arguments)
+                            result = execute_tool(
+                                name, dispatch_arguments, self.runtime, mode=self.settings.data_mode
+                            )
                         except (ValidationError, ValueError):
                             result = {
                                 "status": "error",
@@ -282,19 +363,31 @@ class TravelAgent:
                     messages.append(
                         {"role": "tool", "tool_call_id": call.id, "content": json.dumps(result)}
                     )
+                    if live and result.get("error") and result["error"]["code"] == "ambiguous_city":
+                        clarification = (
+                            result["error"]["message"]
+                            + " Please specify city and country. Options: "
+                            + "; ".join(result["error"].get("suggestions", []))
+                        )
+                        self.event("clarification_required", summary=clarification)
+                        return finish("needs_clarification", clarification)
                 continue
             if message.refusal:
                 return finish("error", "The model refused the planning request.")
             try:
                 decision = FinalDecision.model_validate_json(message.content or "")
                 if decision.status == "success":
-                    if validated_itinerary is None or searched != set(REGISTRY):
+                    if validated_itinerary is None or searched != set(
+                        LIVE_REGISTRY if live else REGISTRY
+                    ):
                         raise ValueError(
-                            "Success requires all five tools and a successful builder result."
+                            "Success requires every planning tool and a successful builder result."
                         )
                     return finish(
                         "success",
-                        "Your simulated travel plan is ready. The schedule and total budget have been validated. No bookings have been made.",
+                        "Your travel plan is ready. The schedule and total estimated budget have been validated. Prices may change; no bookings have been made."
+                        if live
+                        else "Your simulated travel plan is ready. The schedule and total budget have been validated. No bookings have been made.",
                         validated_itinerary,
                     )
                 if (

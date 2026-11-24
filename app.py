@@ -1,6 +1,7 @@
 """English Streamlit UI; business rules remain in the tools and agent."""
 
 import json
+from dataclasses import replace
 from datetime import date, timedelta
 
 import streamlit as st
@@ -8,17 +9,39 @@ from pydantic import ValidationError
 
 from agent import TravelAgent
 from city_suggestions import city_label, city_options
+from config import Settings
 from schemas import TravelRequest, current_date
+from ui import render_live_plan
 
 st.set_page_config(page_title="TripPilot AI", page_icon="✈️", layout="wide")
 st.title("TripPilot AI")
 st.subheader("Your intelligent travel planning assistant")
-st.info(
-    "Educational simulation: all travel prices, schedules, availability and weather are simulated. This application does not make bookings."
+settings = Settings()
+mode_label = st.sidebar.radio(
+    "Data mode", ["Live Mode", "Demo Mode"], index=0 if settings.data_mode == "live" else 1
 )
-st.caption(
-    "Enter any departure and destination city. Locations outside the sample dataset use generic fictional options, not verified local places or routes."
-)
+mode = "live" if mode_label == "Live Mode" else "demo"
+settings = replace(settings, data_mode=mode)
+if st.session_state.get("selected_data_mode", mode) != mode or (
+    st.session_state.get("result") is not None
+    and (st.session_state["result"].data_source == "live") != (mode == "live")
+):
+    st.session_state.pop("result", None)
+    st.session_state.pop("trace", None)
+st.session_state["selected_data_mode"] = mode
+if mode == "live":
+    st.info(
+        "Travel information is retrieved from external data providers. Prices and availability may change. Estimated expenses are clearly marked."
+    )
+    st.caption(
+        "Enter a city and country when names may be ambiguous. The city suggestions are optional, not a restriction on destinations."
+    )
+    st.sidebar.caption(f"SerpApi search cap per run: {settings.max_serpapi_requests}")
+else:
+    st.warning(
+        "Demo Mode — all travel prices, schedules, availability, places and weather are simulated. No bookings are made."
+    )
+quota_status = st.sidebar.empty()
 with st.form("travel_request", enter_to_submit=False):
     a, b, c = st.columns(3)
     cities = city_options()
@@ -40,7 +63,7 @@ with st.form("travel_request", enter_to_submit=False):
         accept_new_options=True,
         key="destination_city",
         placeholder="Search or enter a destination city",
-        help="Type to filter city suggestions. If your city is not listed, enter it as a new option.",
+        help="Type to filter city suggestions. If your city is not listed, enter City, Country as a new option.",
     )
     travelers = c.number_input("Number of travelers", 1, 20, 1)
     a, b, c = st.columns(3)
@@ -67,16 +90,26 @@ with st.form("travel_request", enter_to_submit=False):
         ],
         default=["Architecture", "History", "Local food"],
     )
-    diets = c.multiselect("Dietary preferences", ["vegetarian", "vegan", "gluten-free"])
-    submitted = st.form_submit_button(
-        "Generate Travel Plan", type="primary", use_container_width=True
+    dietary_selection = c.multiselect(
+        "Dietary preferences",
+        ["none", "vegetarian", "vegan", "gluten-free", "halal"],
+        default=["none"],
+        format_func=lambda value: {
+            "none": "No restrictions",
+            "vegetarian": "Vegetarian",
+            "vegan": "Vegan",
+            "gluten-free": "Gluten-free",
+            "halal": "Halal",
+        }[value],
     )
+    diets = [value for value in dietary_selection if value != "none"]
+    submitted = st.form_submit_button("Generate Travel Plan", type="primary", width="stretch")
 
 if submitted:
     try:
         request = TravelRequest(
-            origin=origin,
-            destination=destination,
+            origin=city_label(origin) if mode == "live" else origin,
+            destination=city_label(destination) if mode == "live" else destination,
             start_date=start,
             end_date=end,
             budget=budget,
@@ -101,9 +134,16 @@ if submitted:
                     "search_flights": "Comparing round-trip flights…",
                     "get_weather": "Checking the weather…",
                     "search_hotels": "Comparing accommodation…",
-                    "search_activities": "Finding activities and suitable meals…",
+                    "search_activities": "Finding places to explore…",
+                    "search_restaurants": "Finding restaurants and cafes…",
                     "build_itinerary": "Checking the schedule and total cost…",
                 }
+                if event["kind"] == "provider_request":
+                    count = event.get("counters", {}).get("serpapi_requests", 0)
+                    quota_status.caption(
+                        f"SerpApi searches used: {count} / {settings.max_serpapi_requests}"
+                    )
+                    return
                 if event["kind"] == "budget_precheck":
                     text = "Minimum costs checked. Preparing your itinerary…"
                 elif event["kind"] == "tool_started":
@@ -118,7 +158,7 @@ if submitted:
                 activity.update(label=text)
                 current_step.caption(text)
 
-            agent = TravelAgent(on_event=progress)
+            agent = TravelAgent(settings=settings, on_event=progress)
             result = agent.run(request)
             st.session_state["result"] = result
             st.session_state["trace"] = agent.trace.data
@@ -137,7 +177,9 @@ if submitted:
 if "result" in st.session_state:
     result = st.session_state["result"]
     trace = st.session_state["trace"]
-    if result.status == "success":
+    if result.status == "success" and result.data_source == "live":
+        render_live_plan(result)
+    elif result.status == "success":
         st.success(result.message)
         plan = result.itinerary
         summary = plan.trip_summary
@@ -184,7 +226,7 @@ if "result" in st.session_state:
             st.dataframe(
                 [w.model_dump(mode="json") for w in plan.weather_summary],
                 hide_index=True,
-                use_container_width=True,
+                width="stretch",
             )
         with costs:
             components = {
@@ -234,6 +276,10 @@ if "result" in st.session_state:
         st.warning(result.message)
     else:
         st.error(result.message)
+    if result.data_source == "live" and result.status != "success":
+        st.caption(
+            f"SerpApi searches used: {result.serpapi_requests} · Provider cache hits: {result.provider_cache_hits}"
+        )
     a, b = st.columns(2)
     a.download_button(
         "Download itinerary JSON" if result.status == "success" else "Download result JSON",

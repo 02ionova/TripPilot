@@ -2,14 +2,16 @@
 
 import argparse
 import json
+from dataclasses import replace
 from pathlib import Path
 
 from agent import TravelAgent
-from config import ROOT
+from config import ROOT, Settings
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="TripPilot AI — simulated travel planning")
+    parser = argparse.ArgumentParser(description="TripPilot AI — live travel planning")
+    parser.add_argument("--mode", choices=["live", "demo"], default=None)
     parser.add_argument("--input", required=True, type=Path)
     parser.add_argument("--output", type=Path, default=None)
     parser.add_argument(
@@ -23,12 +25,16 @@ def main() -> int:
     except (OSError, json.JSONDecodeError):
         print("Cannot read input: provide an existing, valid JSON file.")
         return 2
-    agent = TravelAgent(demonstrate_recovery=args.demonstrate_recovery)
+    settings = Settings()
+    if args.mode:
+        settings = replace(settings, data_mode=args.mode)
+    agent = TravelAgent(settings=settings, demonstrate_recovery=args.demonstrate_recovery)
     result = agent.run(raw)
     output = args.output or ROOT / "results" / f"{agent.trace.data['run_id']}.json"
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(result.model_dump_json(indent=2) + "\n")
-    print(f"[{result.status}] {result.message}")
+    print(f"[{result.status}] [{settings.data_mode}] {result.message}")
+    print(f"SerpApi searches: {result.serpapi_requests}; cache hits: {result.provider_cache_hits}")
     if result.budget_estimate and result.status == "infeasible":
         print("Minimum simulated costs:")
         for name in ["flights", "accommodation", "food", "activities", "local_transport"]:

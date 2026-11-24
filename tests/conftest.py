@@ -72,4 +72,16 @@ def fixed_application_date(monkeypatch):
     """Keep historical example-based tests deterministic as real time advances."""
     from datetime import date
 
+    monkeypatch.setenv("DATA_MODE", "demo")
     monkeypatch.setattr("schemas.current_date", lambda: date(2026, 11, 24))
+
+
+@pytest.fixture(autouse=True)
+def no_external_http_in_unit_tests(monkeypatch):
+    """Enforce that pytest cannot consume API credits, even after a regression."""
+    import httpx
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError("External HTTP is forbidden in unit tests; use MockTransport.")
+
+    monkeypatch.setattr(httpx.HTTPTransport, "handle_request", forbidden)

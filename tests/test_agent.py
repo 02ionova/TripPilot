@@ -95,7 +95,9 @@ def flow(raw, recover=False):
 def run(tmp_path, raw, responses, iterations=15):
     client = MockClient(responses)
     agent = TravelAgent(
-        Settings(max_iterations=iterations, api_key=""), client=client, trace_directory=tmp_path
+        Settings(max_iterations=iterations, api_key="", data_mode="demo"),
+        client=client,
+        trace_directory=tmp_path,
     )
     return agent, client, agent.run(raw)
 
@@ -291,3 +293,13 @@ def test_recoverable_build_error_cannot_end_run_prematurely(tmp_path, request_da
     assert any(
         "Correct the actual schedule" in json.dumps(call["messages"]) for call in client.requests
     )
+
+
+def test_explicit_demo_mode_overrides_live_environment(tmp_path, request_data, monkeypatch):
+    """CLI/sidebar Demo choice must reach dispatch even with the Live default."""
+    monkeypatch.setenv("DATA_MODE", "live")
+    agent, _, result = run(tmp_path, request_data, flow(request_data))
+    assert result.status == "success"
+    assert result.data_source == "simulated"
+    assert agent.trace.data["data_mode"] == "demo"
+    assert not agent.runtime

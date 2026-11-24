@@ -29,9 +29,12 @@ def redact(value):
     if isinstance(value, list):
         return [redact(x) for x in value]
     if isinstance(value, str):
-        for key in (os.getenv("OPENAI_API_KEY", ""),):
+        for key in (os.getenv("OPENAI_API_KEY", ""), os.getenv("SERPAPI_API_KEY", "")):
             if key:
                 value = value.replace(key, "[REDACTED]")
+        value = re.sub(
+            r"(?i)(api_key|access_token|authorization)=([^&\s]+)", r"\1=[REDACTED]", value
+        )
         return re.sub(r'(?i)(sk-[A-Za-z0-9_-]+|bearer\s+[^\s"\']+)', "[REDACTED]", value)
     return value
 

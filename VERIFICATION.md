@@ -1,68 +1,84 @@
-# Verification record
+# Verification record — Live provider migration
 
-Verified on 24 November 2026, macOS, Python 3.14.0, OpenAI SDK 2.54.0, Pydantic 2.14.4, Streamlit 1.67.0, pytest 9.2.0.
+Verified on **24 November 2026**, macOS, Python 3.14.0, OpenAI SDK 2.54.0, Pydantic 2.14.4, Streamlit 1.67.0, pytest 9.2.0. The project targets Python 3.11+; this record describes the actual installed environment.
 
-- Ruff lint and formatting checks passed for all 24 Python files.
-- Dependencies installed successfully into the existing workspace `.venv`.
-- `python -m pytest -v`: **109 passed in 1.77 seconds (after searchable cities and explicit button submission)**.
-- Tests include full mocked five-tool success, hotel `no_results` → revised search → successful Paris build, trace generation, secret redaction, request tampering rejection, bounded API retry/iteration behavior, and real Streamlit rendering through AppTest.
-- Streamlit launched at `http://127.0.0.1:8501`; `/_stcore/health` returned **HTTP 200**, body `ok`.
-- Streamlit AppTest rendered the input form, a complete successful result (three budget metrics), and an error result without exceptions.
-- `python main.py --input examples/rome.json --output results/rome.json` exited with code **1**, correctly explaining that `OPENAI_API_KEY` is missing and writing a final error JSON plus a timestamped trace.
-- Deterministic mocked reference executions were generated through the actual agent loop and tools: Rome **EUR 243**, Paris **EUR 203**, both within budget. Paris includes one hotel no-results response and subsequent revised search. These are **mocked unit-test artifacts**, not real LLM demonstrations.
-- Source, runtime traces and reference artifacts were reviewed for credentials. The API key is stored locally in ignored configuration and is not committed. Redaction tests use deliberately fake credential strings.
-- The local Git repository is on `main`; the user subsequently authorized synchronization with the designated GitHub remote.
+## Automated verification
 
-## Genuine demonstration status
+- `python -m pytest -v`: **142 passed in 2.90 seconds**. All SDK responses and provider HTTP responses are mocked in automated tests. The autouse HTTP transport guard prevents accidental real network calls. No test consumes SerpApi or OpenAI credits.
+- HTTP-shaped fixtures cover complete round-trip return selection/group pricing, hotel totals/nightly prices/taxes/rooms, missing prices, null coordinates, restaurants/diets, forecasts and three-season archives, opening hours and transfers, cache reuse/isolation, no-results memoization, request limits, invalid credentials, quota exhaustion and bounded timeouts.
+- Agent regressions cover all six Live tools, hotel error recovery, trusted IDs, request binding, unsupported/ambiguous locations, provider/key failures, termination, structured final output, traces/redaction and Streamlit results. Original Demo tests are retained with explicit Demo settings.
+- Both final genuine Live responses were parsed again with Pydantic. Cost-item sums were independently recomputed using Decimal and matched the Python budget breakdown; each was within the original user budget. Both saved schedules were also replayed through the current strict live builder using only their traced provider offers (no HTTP/model calls); all timing, opening-hour, geographic, pace and budget checks passed again.
+- `python -m pip check`: **No broken requirements found**. Required httpx was already installed; no additional paid API/library/service was enabled.
+- Streamlit was launched headlessly on a temporary local port 8502. `/_stcore/health` returned **HTTP 200**, body `ok`. Only that verification process was stopped afterward.
+- Streamlit AppTest rendered the actual saved Rome and Paris Live results without exceptions. Each showed three correct budget metrics. These rendering checks reused saved results and made no provider searches.
+- Ruff lint and formatting checks passed for all 43 Python files. `git diff --check` passed.
 
-An API key became available after initial implementation. Two genuine successful runs were executed with `gpt-4.1-mini` on 24 November 2026:
+## Actual successful Live demonstrations
 
-- Rome: 7 model iterations, all five tools, **EUR 341 total / EUR 600 budget**, EUR 259 remaining.
-- Paris: 11 model iterations, all five tools, **EUR 209 total / EUR 350 budget**, EUR 141 remaining. Hotel search at EUR 30/night returned `no_results`, followed by a successful hostel search. All scheduled meals are vegetarian-compatible.
+These runs used the real `gpt-4.1-mini` OpenAI API client and genuine SerpApi/Open-Meteo responses. No mock transport or scripted model was used. Provider cache hits refer to actual responses retrieved earlier during integration verification, not test data.
 
-Both full final responses were revalidated with Pydantic. Component totals and daily costs plus flights/accommodation matched the total budget calculations. All successful tool names and Paris recovery events were verified from the genuine traces. All travel data remains simulated; no bookings occurred, regardless of model conversational wording.
+| Property | Rome | Paris recovery |
+| --- | --- | --- |
+| Input | `examples/live_rome.json` | `examples/live_paris.json` |
+| Origin | Prague, Czechia | Prague, Czechia |
+| Destination | Rome, Italy | Paris, France |
+| Dates | 3–5 December 2026 | 3–5 December 2026 |
+| Travelers / budget | 1 / EUR 2,000 | 1 / EUR 2,000 |
+| Pace / diet | Relaxed / vegetarian | Relaxed / vegetarian |
+| Model iterations | 8 | 8 |
+| Successful tools | All six Live tools | All six Live tools |
+| New SerpApi search attempts | 3 | 2 |
+| Provider cache hits | 9 | 10 |
+| Retrieved flights | EUR 175 | EUR 152 |
+| Retrieved accommodation | EUR 32 | EUR 45 |
+| Estimated food | EUR 75 | EUR 135 |
+| Estimated activities | EUR 30 | EUR 75 |
+| Estimated local transport | EUR 48 | EUR 48 |
+| Total / remaining | EUR 360 / EUR 1,640 | EUR 455 / EUR 1,545 |
 
-Earlier real runs stopped on schedule errors or concluded infeasibility prematurely. These exposed incomplete meal planning and ineffective corrections. The updated prompt explicitly requires per-day meal/time audits and affordable alternatives; the loop gives one bounded corrective opportunity before accepting an error/infeasible decision after a recoverable builder failure. A regression test covers this behavior.
+Full sanitized traces, including requests, model actions, provider results, sources, timestamps, tool feedback and final budget validation:
 
-The screenshot's failed run used `gpt-5.1-mini` and returned `NotFoundError`. Separate actionable diagnostics now distinguish model-not-found, authentication, permissions and unsupported requests, recording only class and HTTP status. Past dates and invalid city labels are rejected before API calls. The earlier Prague-only restriction was subsequently replaced with arbitrary-city support. The date picker starts at the current date, and tests use a fixed clock for reproducibility.
+- [Rome Live trace](traces/20261124T205633_19e1ba5b-0276-4169-b7f3-4944c8c82099.json)
+- [Paris Live recovery trace](traces/20261124T205633_30127e40-3f4e-4b19-9f70-b3131cb94ac1.json)
 
-The repository is connected to the user-authorized remote `https://github.com/02ionova/TripPilot`. Source changes and the two reviewed genuine successful traces are committed for synchronization there. Keys and incidental user traces remain local.
+The Paris CLI run explicitly enabled `--demonstrate-recovery`. The real model first called `search_hotels` with `max_nightly_price=10`. The actual priced results did not meet that filter, producing `no_priced_hotels`. The model removed the restrictive filter; the broader search reused the cached provider response, succeeded and led to a validated itinerary. This is a disclosed demonstration constraint, not a hardcoded fake provider failure. Ordinary planning does not force this filter.
 
-## Included artifacts
+Rome also demonstrates genuine replanning: an initial relaxed day selected three attractions. Python returned `pace_limit`; the model reduced that day to two retrieved attractions and rebuilt successfully.
 
-- `traces/20261124T182657_e85c4d77-3850-4df6-8ad1-af5326f86d7f.json`: genuine successful Rome trace, EUR 341.
-- `traces/20261124T182658_1bc27b17-5ca7-4ca0-b721-f697a70fcf60.json`: genuine successful Paris recovery trace, EUR 209.
-- `traces/20261124T181356_315c663a-d2fc-4876-892d-74052a31ed87.json`: actual CLI missing-key failure trace, zero API iterations.
-- `tests/artifacts/rome_mocked.json`: full mocked successful reference trace.
-- `tests/artifacts/paris_recovery_mocked.json`: full mocked successful recovery reference trace.
-- `requirements-tested.txt`: exact installed package versions.
+Rome's selected flight arrived at 19:40 on the first day and departed at 06:10 on the last day. Those days contain travel allowances rather than impossible destination sightseeing. The actual full sightseeing day uses retrieved venues and meal options. The program never manufactures destination visits to make a travel-only day appear full.
 
-Regenerate mocked artifacts with `python tests/generate_mock_traces.py`. This command never contacts OpenAI.
+Flight and hotel figures are quotes retrieved on the trace timestamps, not promises of current inventory. In these two runs, their combined retrieved costs were EUR 207 and EUR 197 respectively. The remaining EUR 153 and EUR 258 were explicitly estimated. Restaurant names/dietary search indications are real provider data, but dietary compliance is not guaranteed. No bookings occurred.
 
-Screenshots remain manual placeholders in the README. Capture the form, genuine Rome itinerary and budget, and genuine Paris recovery with the trace expanded from the running application.
+## Real provider and quota verification
 
-## Budget-screening and progress regression
+The user's existing `.env` had working OpenAI and SerpApi keys; it was not overwritten. Official documentation was reviewed for Flights, return-selection results, autocomplete, Hotels, Maps, Search, Account, and Open-Meteo forecast/geocoding/archive.
 
-The two subsequent Vienna runs shown in the user screenshot attempted an unaffordable trip repeatedly. The request was 24–29 November 2026, two travelers, EUR 600. Independent catalogue arithmetic establishes a EUR 712 minimum (170 flights + 230 hostel + 252 meals + 60 transport). New early screening returns an explained EUR 112 shortfall before creating the OpenAI client, with no model iterations.
+- Initial free Account API check: active account, **250 searches remaining**.
+- Final fresh free Account API check at **2026-11-24T21:09:43 UTC**: active account, **228 searches remaining**.
+- **22 SerpApi search requests in total** during integration/debugging, including the two final successful runs. Earlier failed integration runs account for 17 requests; the final successful runs used 5 new searches. Failures exposed location qualification, request binding and unreliable model-generated times, which were corrected before the final demonstrations.
+- Account API checks do not consume search credits. No plan/subscription changes were requested or made. The remaining-quota value inside an individual trace is a per-run snapshot, not an account-wide reconciliation across simultaneous runs; the fresh final Account API result is authoritative for this verification.
+- Real Flights autocomplete/outbound/return-selection, Hotels, Maps attractions and Maps restaurants were exercised. Both successful runs have real forecast data.
+- A separate Open-Meteo historical check for Rome, 10–13 April 2027, returned four correctly labeled **Historical climate estimate** days using 2025, 2024 and 2023 seasonal observations. This used three archive requests (plus cached geocoding), zero SerpApi searches. Historical wet-day frequency was kept separate from forecast rain probability.
 
-The actual CLI regression completed with `infeasible`, zero model requests and the expected component breakdown. Streamlit AppTest submitted the same form and rendered EUR 600 / EUR 712 / EUR 112 metrics with an informative warning and no application errors. A separate deterministic builder test proves that a complete valid schedule is attainable at exactly EUR 712 for this dataset. Passing the general lower-bound check alone does not guarantee a valid schedule.
+The 15-search cap is enforced per run, including all search attempts/retries, airport autocomplete, return selections and pagination. A cold cache may require more searches than these warm-cache final runs. Unit tests never use production caches.
 
-The main progress area now replaces one status message instead of appending technical logs. Full results/errors remain in the expandable trace and downloaded JSON. Artificial restrictive hotel searches are disabled for ordinary planning and available only through the explicit `--demonstrate-recovery` CLI flag. The successful final message is generated by Python and never claims actual bookings.
+## Security review and artifact distinctions
 
-A genuine OpenAI run of the same six-day, two-traveler Vienna request with an affordable EUR 900 budget completed successfully: **EUR 816 total, EUR 84 remaining**, all five tools, 9 model iterations. Trace: `traces/20261124T183529_19030e95-2daf-4660-a1d2-409348da8511.json`. The normal planning mode did not deliberately force restrictive hotel filters.
+- `.env`, `.cache/`, temporary results and virtual environments are ignored. The existing `.env` was preserved.
+- Known configured keys are checked against source and selected commit artifacts without printing their values. Sensitive account fields and credential-bearing URLs are redacted before cache/trace persistence. HTTP wire logging is suppressed; raw provider exception bodies are not recorded.
+- Only the two new selected successful Live traces are added for this migration. Incidental failed/user traces remain local; they are not represented as successful demonstrations.
+- Older already tracked genuine OpenAI traces used simulated travel tools. They remain historical **Demo** artifacts and do not prove real travel-data integration.
+- `tests/artifacts/rome_mocked.json` and `paris_recovery_mocked.json` are **mocked unit-test artifacts**, not genuine API demonstrations. Their generator explicitly selects Demo settings and uses a scripted SDK.
 
-## Arbitrary-city verification
+## Reproduction and remaining manual work
 
-Both city dropdowns were replaced with free-text inputs. The catalogue preserves the original five destinations and Prague route fixtures, and creates repeatable generic synthetic fixtures for other routes and destinations. Budget screening and itinerary building use the same route-specific flight source. Extra warnings explicitly identify generic flights, fictional venues and neutral climate placeholders. No geocoding or external travel APIs were added.
+```bash
+python -m pytest -v
+streamlit run app.py
+python main.py --mode live --input examples/live_rome.json --output results/live_rome.json
+python main.py --mode live --input examples/live_paris.json --demonstrate-recovery --output results/live_paris.json
+```
 
-Tests cover Berlin to Lisbon through all five mocked tools, shared search/precheck/builder costs, Unicode/global city labels, stable catalogue IDs, route ID rejection for a different origin, input normalization, identical-city rejection and actual free-text form submission. Existing Rome, Paris and Vienna budget regressions continue to pass.
+Update example dates after their departure date. Keep keys in your own `.env`; no source changes are required. Repeated real runs spend OpenAI tokens and may consume SerpApi credits after cache expiry, so they are not part of automated testing.
 
-A genuine `gpt-4.1-mini` run with `examples/berlin_lisbon.json` completed successfully: **EUR 338 / EUR 600**, EUR 262 remaining. Full trace: `traces/20261124T190154_dd0222c2-6ab2-43a6-960e-9e18fc077252.json`. This is a genuine LLM execution over synthetic travel data, not a real-world Lisbon recommendation.
-
-## Searchable-city and submission verification
-
-Both city inputs are now searchable selectors over 168 local suggestions with country labels. Unlisted city names remain accepted through the native new-option behavior. Searching/filtering is handled in the widget without travel API or LLM requests.
-
-The form disables implicit Enter submission with `enter_to_submit=False`. AppTest verifies the serialized form setting, both selectors' new-option settings and displayed country labels. Another test changes city selections and reruns without clicking, proving the agent is not called, then clicks the Generate Travel Plan button and verifies exactly one call with the selected cities. Existing arbitrary-city and Vienna form tests now exercise the searchable selectors. These checks use Streamlit's test harness; browser-level keyboard events were not simulated.
-
-Ruff lint and formatting checks pass. No paid API execution was needed for this interface-only change.
+Manual submission screenshots remain to be captured: Live input form, actual daily plan and budget, flights/hotel sources, and Paris recovery trace. Source hours/prices, room inventory, actual transfer routes and dietary suitability must be rechecked before travel; this application plans trips but does not reserve or certify offers.
