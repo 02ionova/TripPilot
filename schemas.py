@@ -254,10 +254,24 @@ class FinalDecision(Model):
     message: str
 
 
+class BudgetEstimate(Model):
+    """Necessary minimum catalogue costs; not a proposed or booked itinerary."""
+
+    flights: float = Field(ge=0)
+    accommodation: float = Field(ge=0)
+    food: float = Field(ge=0)
+    activities: float = Field(ge=0)
+    local_transport: float = Field(ge=0)
+    minimum_total: float = Field(ge=0)
+    available_budget: float = Field(gt=0)
+    shortfall: float = Field(ge=0)
+
+
 class FinalResponse(Model):
     status: Literal["success", "needs_clarification", "infeasible", "error", "iteration_limit"]
     message: str
     itinerary: Itinerary | None = None
+    budget_estimate: BudgetEstimate | None = None
     data_source: Literal["simulated"] = "simulated"
 
     @model_validator(mode="after")

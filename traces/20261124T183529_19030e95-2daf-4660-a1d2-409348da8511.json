@@ -1,0 +1,2594 @@
+{
+  "run_id": "19030e95-2daf-4660-a1d2-409348da8511",
+  "start_timestamp": "2026-11-24T18:35:29.605176+00:00",
+  "end_timestamp": "2026-11-24T18:35:57.338781+00:00",
+  "execution_mode": "real_llm",
+  "request": {
+    "origin": "Prague",
+    "destination": "Vienna",
+    "start_date": "2026-11-24",
+    "end_date": "2026-11-29",
+    "budget": 900,
+    "travelers": 2,
+    "pace": "intensive",
+    "interests": [
+      "architecture",
+      "history",
+      "local food"
+    ],
+    "dietary_preferences": []
+  },
+  "model": "gpt-4.1-mini",
+  "iterations": [
+    {
+      "iteration": 1,
+      "assistant_response": {
+        "role": "assistant",
+        "annotations": [],
+        "tool_calls": [
+          {
+            "id": "call_VyNLg9GqPwGRhLx6Zn308yOQ",
+            "function": {
+              "arguments": "{\"start_date\":\"2026-11-24\",\"end_date\":\"2026-11-29\",\"destination\":\"Vienna\"}",
+              "name": "get_weather"
+            },
+            "type": "function"
+          }
+        ]
+      },
+      "token_usage": {
+        "completion_tokens": 35,
+        "prompt_tokens": 1867,
+        "total_tokens": 1902,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": null,
+          "cached_tokens": 0
+        }
+      },
+      "duration_seconds": 1.2702
+    },
+    {
+      "iteration": 2,
+      "assistant_response": {
+        "role": "assistant",
+        "annotations": [],
+        "tool_calls": [
+          {
+            "id": "call_C6c9CeYLtHW6vGhCxBnfuGVp",
+            "function": {
+              "arguments": "{\"origin\":\"Prague\",\"destination\":\"Vienna\",\"departure_date\":\"2026-11-24\",\"return_date\":\"2026-11-29\",\"travelers\":2,\"max_price\":900}",
+              "name": "search_flights"
+            },
+            "type": "function"
+          }
+        ]
+      },
+      "token_usage": {
+        "completion_tokens": 51,
+        "prompt_tokens": 2227,
+        "total_tokens": 2278,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": null,
+          "cached_tokens": 1664
+        }
+      },
+      "duration_seconds": 1.3421
+    },
+    {
+      "iteration": 3,
+      "assistant_response": {
+        "role": "assistant",
+        "annotations": [],
+        "tool_calls": [
+          {
+            "id": "call_DfkxxAoOmWUutSyjuuXFcpuD",
+            "function": {
+              "arguments": "{\"destination\":\"Vienna\",\"check_in\":\"2026-11-24\",\"check_out\":\"2026-11-29\",\"travelers\":2,\"max_nightly_price\":46,\"accommodation_type\":\"budget\"}",
+              "name": "search_hotels"
+            },
+            "type": "function"
+          }
+        ]
+      },
+      "token_usage": {
+        "completion_tokens": 54,
+        "prompt_tokens": 2708,
+        "total_tokens": 2762,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": null,
+          "cached_tokens": 2048
+        }
+      },
+      "duration_seconds": 1.1986
+    },
+    {
+      "iteration": 4,
+      "assistant_response": {
+        "role": "assistant",
+        "annotations": [],
+        "tool_calls": [
+          {
+            "id": "call_2cB6WbqIrnJ9eVAiB340uASf",
+            "function": {
+              "arguments": "{\"destination\":\"Vienna\",\"check_in\":\"2026-11-24\",\"check_out\":\"2026-11-29\",\"travelers\":2,\"max_nightly_price\":50,\"accommodation_type\":\"hostel\"}",
+              "name": "search_hotels"
+            },
+            "type": "function"
+          }
+        ]
+      },
+      "token_usage": {
+        "completion_tokens": 55,
+        "prompt_tokens": 2861,
+        "total_tokens": 2916,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": null,
+          "cached_tokens": 2560
+        }
+      },
+      "duration_seconds": 1.3733
+    },
+    {
+      "iteration": 5,
+      "assistant_response": {
+        "role": "assistant",
+        "annotations": [],
+        "tool_calls": [
+          {
+            "id": "call_6DqPzsDgrqSuHcn6zjG0rIuw",
+            "function": {
+              "arguments": "{\"destination\":\"Vienna\",\"interests\":[\"architecture\",\"history\",\"local food\"],\"dietary_preferences\":[],\"environment\":\"indoor\",\"max_price\":10}",
+              "name": "search_activities"
+            },
+            "type": "function"
+          }
+        ]
+      },
+      "token_usage": {
+        "completion_tokens": 42,
+        "prompt_tokens": 3024,
+        "total_tokens": 3066,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": null,
+          "cached_tokens": 2688
+        }
+      },
+      "duration_seconds": 1.0826
+    },
+    {
+      "iteration": 6,
+      "assistant_response": {
+        "role": "assistant",
+        "annotations": [],
+        "tool_calls": [
+          {
+            "id": "call_bXHwnU9FLzh9mEhNNgr4pW9Y",
+            "function": {
+              "arguments": "{\"request\":{\"start_date\":\"2026-11-24\",\"end_date\":\"2026-11-29\",\"origin\":\"Prague\",\"destination\":\"Vienna\",\"budget\":900,\"travelers\":2,\"pace\":\"intensive\",\"interests\":[\"architecture\",\"history\",\"local food\"],\"dietary_preferences\":[]},\"flight_id\":\"vie-flight-1\",\"hotel_id\":\"vie-hotel-1\",\"days\":[{\"date\":\"2026-11-24\",\"title\":\"Arrival and exploration\",\"schedule\":[{\"activity_id\":\"vie-meal-1\",\"start_time\":\"10:30\",\"end_time\":\"11:15\",\"meal\":\"breakfast\"},{\"activity_id\":\"vie-act-9\",\"start_time\":\"11:30\",\"end_time\":\"12:30\"},{\"activity_id\":\"vie-meal-2\",\"start_time\":\"12:45\",\"end_time\":\"13:30\",\"meal\":\"lunch\"},{\"activity_id\":\"vie-act-7\",\"start_time\":\"14:00\",\"end_time\":\"15:00\"},{\"activity_id\":\"vie-meal-1\",\"start_time\":\"17:00\",\"end_time\":\"17:45\",\"meal\":\"dinner\"}]},{\"date\":\"2026-11-25\",\"title\":\"Museums and history day\",\"schedule\":[{\"activity_id\":\"vie-meal-1\",\"start_time\":\"08:00\",\"end_time\":\"08:45\",\"meal\":\"breakfast\"},{\"activity_id\":\"vie-act-11\",\"start_time\":\"09:00\",\"end_time\":\"10:00\"},{\"activity_id\":\"vie-meal-2\",\"start_time\":\"12:00\",\"end_time\":\"12:45\",\"meal\":\"lunch\"},{\"activity_id\":\"vie-act-7\",\"start_time\":\"14:00\",\"end_time\":\"15:00\"},{\"activity_id\":\"vie-meal-1\",\"start_time\":\"18:00\",\"end_time\":\"18:45\",\"meal\":\"dinner\"}]},{\"date\":\"2026-11-26\",\"title\":\"Heritage and food sampling\",\"schedule\":[{\"activity_id\":\"vie-meal-1\",\"start_time\":\"08:00\",\"end_time\":\"08:45\",\"meal\":\"breakfast\"},{\"activity_id\":\"vie-act-9\",\"start_time\":\"09:00\",\"end_time\":\"10:00\"},{\"activity_id\":\"vie-meal-2\",\"start_time\":\"12:00\",\"end_time\":\"12:45\",\"meal\":\"lunch\"},{\"activity_id\":\"vie-act-11\",\"start_time\":\"14:00\",\"end_time\":\"15:00\"},{\"activity_id\":\"vie-meal-1\",\"start_time\":\"17:00\",\"end_time\":\"17:45\",\"meal\":\"dinner\"}]},{\"date\":\"2026-11-27\",\"title\":\"Architecture and browsing\",\"schedule\":[{\"activity_id\":\"vie-meal-1\",\"start_time\":\"08:00\",\"end_time\":\"08:45\",\"meal\":\"breakfast\"},{\"activity_id\":\"vie-act-7\",\"start_time\":\"09:00\",\"end_time\":\"10:00\"},{\"activity_id\":\"vie-meal-2\",\"start_time\":\"12:00\",\"end_time\":\"12:45\",\"meal\":\"lunch\"},{\"activity_id\":\"vie-act-9\",\"start_time\":\"14:00\",\"end_time\":\"15:00\"},{\"activity_id\":\"vie-meal-1\",\"start_time\":\"17:00\",\"end_time\":\"17:45\",\"meal\":\"dinner\"}]},{\"date\":\"2026-11-28\",\"title\":\"Cultural immersion day\",\"schedule\":[{\"activity_id\":\"vie-meal-1\",\"start_time\":\"08:00\",\"end_time\":\"08:45\",\"meal\":\"breakfast\"},{\"activity_id\":\"vie-act-11\",\"start_time\":\"09:00\",\"end_time\":\"10:00\"},{\"activity_id\":\"vie-meal-2\",\"start_time\":\"12:00\",\"end_time\":\"12:45\",\"meal\":\"lunch\"},{\"activity_id\":\"vie-act-7\",\"start_time\":\"14:00\",\"end_time\":\"15:00\"},{\"activity_id\":\"vie-meal-1\",\"start_time\":\"18:00\",\"end_time\":\"18:45\",\"meal\":\"dinner\"}]},{\"date\":\"2026-11-29\",\"title\":\"Departure day\",\"schedule\":[{\"activity_id\":\"vie-meal-1\",\"start_time\":\"08:00\",\"end_time\":\"08:45\",\"meal\":\"breakfast\"},{\"activity_id\":\"vie-meal-2\",\"start_time\":\"12:00\",\"end_time\":\"12:45\",\"meal\":\"lunch\"},{\"activity_id\":\"vie-meal-1\",\"start_time\":\"17:00\",\"end_time\":\"17:45\",\"meal\":\"dinner\"}]}]}",
+              "name": "build_itinerary"
+            },
+            "type": "function"
+          }
+        ]
+      },
+      "token_usage": {
+        "completion_tokens": 942,
+        "prompt_tokens": 3559,
+        "total_tokens": 4501,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": null,
+          "cached_tokens": 2944
+        }
+      },
+      "duration_seconds": 8.8036
+    },
+    {
+      "iteration": 7,
+      "assistant_response": {
+        "role": "assistant",
+        "annotations": [],
+        "tool_calls": [
+          {
+            "id": "call_36lI3WCiw4PBePOzEc1srekw",
+            "function": {
+              "arguments": "{\"destination\":\"Vienna\",\"interests\":[\"architecture\",\"history\",\"local food\"],\"dietary_preferences\":[],\"environment\":\"indoor\",\"max_price\":10}",
+              "name": "search_activities"
+            },
+            "type": "function"
+          }
+        ]
+      },
+      "token_usage": {
+        "completion_tokens": 42,
+        "prompt_tokens": 4610,
+        "total_tokens": 4652,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": null,
+          "cached_tokens": 4352
+        }
+      },
+      "duration_seconds": 1.229
+    },
+    {
+      "iteration": 8,
+      "assistant_response": {
+        "role": "assistant",
+        "annotations": [],
+        "tool_calls": [
+          {
+            "id": "call_Vb27OpynG6Lh1uC8Agw2Nmpv",
+            "function": {
+              "arguments": "{\"request\":{\"start_date\":\"2026-11-24\",\"end_date\":\"2026-11-29\",\"origin\":\"Prague\",\"destination\":\"Vienna\",\"budget\":900,\"travelers\":2,\"pace\":\"intensive\",\"interests\":[\"architecture\",\"history\",\"local food\"],\"dietary_preferences\":[]},\"flight_id\":\"vie-flight-1\",\"hotel_id\":\"vie-hotel-1\",\"days\":[{\"date\":\"2026-11-24\",\"title\":\"Arrival and exploration\",\"schedule\":[{\"activity_id\":\"vie-meal-1\",\"start_time\":\"10:30\",\"end_time\":\"11:15\",\"meal\":\"breakfast\"},{\"activity_id\":\"vie-act-9\",\"start_time\":\"11:30\",\"end_time\":\"12:30\"},{\"activity_id\":\"vie-meal-2\",\"start_time\":\"12:45\",\"end_time\":\"13:30\",\"meal\":\"lunch\"},{\"activity_id\":\"vie-act-7\",\"start_time\":\"14:00\",\"end_time\":\"15:00\"},{\"activity_id\":\"vie-meal-1\",\"start_time\":\"17:00\",\"end_time\":\"17:45\",\"meal\":\"dinner\"}]},{\"date\":\"2026-11-25\",\"title\":\"Museums and history day\",\"schedule\":[{\"activity_id\":\"vie-meal-1\",\"start_time\":\"08:00\",\"end_time\":\"08:45\",\"meal\":\"breakfast\"},{\"activity_id\":\"vie-act-11\",\"start_time\":\"09:00\",\"end_time\":\"10:00\"},{\"activity_id\":\"vie-meal-2\",\"start_time\":\"12:00\",\"end_time\":\"12:45\",\"meal\":\"lunch\"},{\"activity_id\":\"vie-act-7\",\"start_time\":\"14:00\",\"end_time\":\"15:00\"},{\"activity_id\":\"vie-meal-1\",\"start_time\":\"18:00\",\"end_time\":\"18:45\",\"meal\":\"dinner\"}]},{\"date\":\"2026-11-26\",\"title\":\"Heritage and food sampling\",\"schedule\":[{\"activity_id\":\"vie-meal-1\",\"start_time\":\"08:00\",\"end_time\":\"08:45\",\"meal\":\"breakfast\"},{\"activity_id\":\"vie-act-9\",\"start_time\":\"09:00\",\"end_time\":\"10:00\"},{\"activity_id\":\"vie-meal-2\",\"start_time\":\"12:00\",\"end_time\":\"12:45\",\"meal\":\"lunch\"},{\"activity_id\":\"vie-act-11\",\"start_time\":\"14:00\",\"end_time\":\"15:00\"},{\"activity_id\":\"vie-meal-1\",\"start_time\":\"17:00\",\"end_time\":\"17:45\",\"meal\":\"dinner\"}]},{\"date\":\"2026-11-27\",\"title\":\"Architecture and browsing\",\"schedule\":[{\"activity_id\":\"vie-meal-1\",\"start_time\":\"08:00\",\"end_time\":\"08:45\",\"meal\":\"breakfast\"},{\"activity_id\":\"vie-act-7\",\"start_time\":\"09:00\",\"end_time\":\"10:00\"},{\"activity_id\":\"vie-meal-2\",\"start_time\":\"12:00\",\"end_time\":\"12:45\",\"meal\":\"lunch\"},{\"activity_id\":\"vie-act-9\",\"start_time\":\"14:00\",\"end_time\":\"15:00\"},{\"activity_id\":\"vie-meal-1\",\"start_time\":\"17:00\",\"end_time\":\"17:45\",\"meal\":\"dinner\"}]},{\"date\":\"2026-11-28\",\"title\":\"Cultural immersion day\",\"schedule\":[{\"activity_id\":\"vie-meal-1\",\"start_time\":\"08:00\",\"end_time\":\"08:45\",\"meal\":\"breakfast\"},{\"activity_id\":\"vie-act-11\",\"start_time\":\"09:00\",\"end_time\":\"10:00\"},{\"activity_id\":\"vie-meal-2\",\"start_time\":\"12:00\",\"end_time\":\"12:45\",\"meal\":\"lunch\"},{\"activity_id\":\"vie-act-7\",\"start_time\":\"14:00\",\"end_time\":\"15:00\"},{\"activity_id\":\"vie-meal-1\",\"start_time\":\"18:00\",\"end_time\":\"18:45\",\"meal\":\"dinner\"}]},{\"date\":\"2026-11-29\",\"title\":\"Departure day\",\"schedule\":[{\"activity_id\":\"vie-meal-1\",\"start_time\":\"08:00\",\"end_time\":\"08:45\",\"meal\":\"breakfast\"},{\"activity_id\":\"vie-act-7\",\"start_time\":\"09:00\",\"end_time\":\"10:00\"},{\"activity_id\":\"vie-meal-2\",\"start_time\":\"12:00\",\"end_time\":\"12:45\",\"meal\":\"lunch\"},{\"activity_id\":\"vie-meal-1\",\"start_time\":\"17:00\",\"end_time\":\"17:45\",\"meal\":\"dinner\"}]}]}",
+              "name": "build_itinerary"
+            },
+            "type": "function"
+          }
+        ]
+      },
+      "token_usage": {
+        "completion_tokens": 964,
+        "prompt_tokens": 5145,
+        "total_tokens": 6109,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": null,
+          "cached_tokens": 4480
+        }
+      },
+      "duration_seconds": 9.2147
+    },
+    {
+      "iteration": 9,
+      "assistant_response": {
+        "content": "{\"status\":\"success\",\"message\":\"Intensive paced 6-day Prague to Vienna trip with rainy weather indoor attractions, budget hostel, budget flights, and local food meals planned successfully within budget of EUR 900 for 2 travelers. Itinerary includes indoor architecture, history, and local food visits each day and valid meal scheduling.\"}",
+        "role": "assistant",
+        "annotations": []
+      },
+      "token_usage": {
+        "completion_tokens": 72,
+        "prompt_tokens": 11537,
+        "total_tokens": 11609,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": null,
+          "cached_tokens": 5888
+        }
+      },
+      "duration_seconds": 2.1771
+    }
+  ],
+  "events": [
+    {
+      "timestamp": "2026-11-24T18:35:29.605902+00:00",
+      "kind": "budget_precheck",
+      "estimate": {
+        "flights": 170.0,
+        "accommodation": 230.0,
+        "food": 252.0,
+        "activities": 0.0,
+        "local_transport": 60.0,
+        "minimum_total": 712.0,
+        "available_budget": 900.0,
+        "shortfall": 0.0
+      },
+      "summary": "Checked the minimum required simulated costs before contacting the model."
+    },
+    {
+      "timestamp": "2026-11-24T18:35:29.632623+00:00",
+      "kind": "iteration",
+      "iteration": 1,
+      "summary": "Requesting the next observable planning action."
+    },
+    {
+      "timestamp": "2026-11-24T18:35:30.902896+00:00",
+      "kind": "tool_started",
+      "iteration": 1,
+      "tool": "get_weather"
+    },
+    {
+      "timestamp": "2026-11-24T18:35:30.903168+00:00",
+      "kind": "tool_call",
+      "iteration": 1,
+      "tool": "get_weather",
+      "tool_call_id": "call_VyNLg9GqPwGRhLx6Zn308yOQ",
+      "arguments": "{\"start_date\":\"2026-11-24\",\"end_date\":\"2026-11-29\",\"destination\":\"Vienna\"}",
+      "result": {
+        "status": "ok",
+        "data": [
+          {
+            "date": "2026-11-24",
+            "min_temperature": 12,
+            "max_temperature": 20,
+            "conditions": "Rain likely",
+            "rain_probability": 0.55,
+            "recommendation": "indoor"
+          },
+          {
+            "date": "2026-11-25",
+            "min_temperature": 12,
+            "max_temperature": 20,
+            "conditions": "Rain likely",
+            "rain_probability": 0.55,
+            "recommendation": "indoor"
+          },
+          {
+            "date": "2026-11-26",
+            "min_temperature": 12,
+            "max_temperature": 20,
+            "conditions": "Rain likely",
+            "rain_probability": 0.55,
+            "recommendation": "indoor"
+          },
+          {
+            "date": "2026-11-27",
+            "min_temperature": 12,
+            "max_temperature": 20,
+            "conditions": "Rain likely",
+            "rain_probability": 0.55,
+            "recommendation": "indoor"
+          },
+          {
+            "date": "2026-11-28",
+            "min_temperature": 12,
+            "max_temperature": 20,
+            "conditions": "Rain likely",
+            "rain_probability": 0.55,
+            "recommendation": "indoor"
+          },
+          {
+            "date": "2026-11-29",
+            "min_temperature": 12,
+            "max_temperature": 20,
+            "conditions": "Rain likely",
+            "rain_probability": 0.55,
+            "recommendation": "indoor"
+          }
+        ],
+        "error": null,
+        "data_source": "simulated"
+      },
+      "duration_seconds": 0.0003
+    },
+    {
+      "timestamp": "2026-11-24T18:35:30.903268+00:00",
+      "kind": "iteration",
+      "iteration": 2,
+      "summary": "Requesting the next observable planning action."
+    },
+    {
+      "timestamp": "2026-11-24T18:35:32.245467+00:00",
+      "kind": "tool_started",
+      "iteration": 2,
+      "tool": "search_flights"
+    },
+    {
+      "timestamp": "2026-11-24T18:35:32.245779+00:00",
+      "kind": "tool_call",
+      "iteration": 2,
+      "tool": "search_flights",
+      "tool_call_id": "call_C6c9CeYLtHW6vGhCxBnfuGVp",
+      "arguments": "{\"origin\":\"Prague\",\"destination\":\"Vienna\",\"departure_date\":\"2026-11-24\",\"return_date\":\"2026-11-29\",\"travelers\":2,\"max_price\":900}",
+      "result": {
+        "status": "ok",
+        "data": [
+          {
+            "id": "vie-flight-1",
+            "airline": "Simulated Budget Air",
+            "origin": "Prague",
+            "destination": "Vienna",
+            "departure_date": "2026-11-24",
+            "return_date": "2026-11-29",
+            "departure_time": "07:00:00",
+            "arrival_time": "09:00:00",
+            "return_departure_time": "21:00:00",
+            "return_arrival_time": "23:00:00",
+            "duration_minutes": 120,
+            "price_per_traveler": 85.0,
+            "total_price": 170.0
+          },
+          {
+            "id": "vie-flight-2",
+            "airline": "Simulated Euro Air",
+            "origin": "Prague",
+            "destination": "Vienna",
+            "departure_date": "2026-11-24",
+            "return_date": "2026-11-29",
+            "departure_time": "07:00:00",
+            "arrival_time": "09:00:00",
+            "return_departure_time": "21:00:00",
+            "return_arrival_time": "23:00:00",
+            "duration_minutes": 120,
+            "price_per_traveler": 140.0,
+            "total_price": 280.0
+          },
+          {
+            "id": "vie-flight-3",
+            "airline": "Simulated Flex Air",
+            "origin": "Prague",
+            "destination": "Vienna",
+            "departure_date": "2026-11-24",
+            "return_date": "2026-11-29",
+            "departure_time": "07:00:00",
+            "arrival_time": "09:00:00",
+            "return_departure_time": "21:00:00",
+            "return_arrival_time": "23:00:00",
+            "duration_minutes": 120,
+            "price_per_traveler": 215.0,
+            "total_price": 430.0
+          }
+        ],
+        "error": null,
+        "data_source": "simulated"
+      },
+      "duration_seconds": 0.0003
+    },
+    {
+      "timestamp": "2026-11-24T18:35:32.245898+00:00",
+      "kind": "iteration",
+      "iteration": 3,
+      "summary": "Requesting the next observable planning action."
+    },
+    {
+      "timestamp": "2026-11-24T18:35:33.444570+00:00",
+      "kind": "tool_started",
+      "iteration": 3,
+      "tool": "search_hotels"
+    },
+    {
+      "timestamp": "2026-11-24T18:35:33.444835+00:00",
+      "kind": "replanning",
+      "iteration": 3,
+      "tool": "search_hotels",
+      "summary": "Tool returned an error; feedback sent to model.",
+      "error": {
+        "code": "no_results",
+        "message": "No accommodation matches the nightly limit and type. Hostels start at EUR 23–25 per bed; hotel rooms start at EUR 85.",
+        "suggestions": [
+          "Increase the price limit.",
+          "Remove type or environment filters.",
+          "Try hostel accommodation or free activities."
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-11-24T18:35:33.444879+00:00",
+      "kind": "tool_call",
+      "iteration": 3,
+      "tool": "search_hotels",
+      "tool_call_id": "call_DfkxxAoOmWUutSyjuuXFcpuD",
+      "arguments": "{\"destination\":\"Vienna\",\"check_in\":\"2026-11-24\",\"check_out\":\"2026-11-29\",\"travelers\":2,\"max_nightly_price\":46,\"accommodation_type\":\"budget\"}",
+      "result": {
+        "status": "error",
+        "data": null,
+        "error": {
+          "code": "no_results",
+          "message": "No accommodation matches the nightly limit and type. Hostels start at EUR 23–25 per bed; hotel rooms start at EUR 85.",
+          "suggestions": [
+            "Increase the price limit.",
+            "Remove type or environment filters.",
+            "Try hostel accommodation or free activities."
+          ]
+        },
+        "data_source": "simulated"
+      },
+      "duration_seconds": 0.0003
+    },
+    {
+      "timestamp": "2026-11-24T18:35:33.444928+00:00",
+      "kind": "iteration",
+      "iteration": 4,
+      "summary": "Requesting the next observable planning action."
+    },
+    {
+      "timestamp": "2026-11-24T18:35:34.818305+00:00",
+      "kind": "tool_started",
+      "iteration": 4,
+      "tool": "search_hotels"
+    },
+    {
+      "timestamp": "2026-11-24T18:35:34.818577+00:00",
+      "kind": "tool_call",
+      "iteration": 4,
+      "tool": "search_hotels",
+      "tool_call_id": "call_2cB6WbqIrnJ9eVAiB340uASf",
+      "arguments": "{\"destination\":\"Vienna\",\"check_in\":\"2026-11-24\",\"check_out\":\"2026-11-29\",\"travelers\":2,\"max_nightly_price\":50,\"accommodation_type\":\"hostel\"}",
+      "result": {
+        "status": "ok",
+        "data": [
+          {
+            "id": "vie-hotel-1",
+            "name": "Vienna Central Hostel",
+            "accommodation_type": "hostel",
+            "price_per_night": 23.0,
+            "nights": 5,
+            "rooms": 2,
+            "total_cost": 230.0,
+            "neighborhood": "Station district",
+            "rating": 7.8
+          }
+        ],
+        "error": null,
+        "data_source": "simulated"
+      },
+      "duration_seconds": 0.0003
+    },
+    {
+      "timestamp": "2026-11-24T18:35:34.818659+00:00",
+      "kind": "iteration",
+      "iteration": 5,
+      "summary": "Requesting the next observable planning action."
+    },
+    {
+      "timestamp": "2026-11-24T18:35:35.901283+00:00",
+      "kind": "tool_started",
+      "iteration": 5,
+      "tool": "search_activities"
+    },
+    {
+      "timestamp": "2026-11-24T18:35:35.901718+00:00",
+      "kind": "tool_call",
+      "iteration": 5,
+      "tool": "search_activities",
+      "tool_call_id": "call_6DqPzsDgrqSuHcn6zjG0rIuw",
+      "arguments": "{\"destination\":\"Vienna\",\"interests\":[\"architecture\",\"history\",\"local food\"],\"dietary_preferences\":[],\"environment\":\"indoor\",\"max_price\":10}",
+      "result": {
+        "status": "ok",
+        "data": [
+          {
+            "id": "vie-act-7",
+            "name": "Vienna Museum",
+            "category": "attraction",
+            "description": "Simulated visit to Vienna Museum; booking and access are illustrative.",
+            "interests": [
+              "museums",
+              "history"
+            ],
+            "duration_minutes": 60,
+            "price_per_person": 8.0,
+            "environment": "indoor",
+            "dietary_compatibility": []
+          },
+          {
+            "id": "vie-act-9",
+            "name": "Naschmarkt browsing",
+            "category": "attraction",
+            "description": "Simulated visit to Naschmarkt browsing; booking and access are illustrative.",
+            "interests": [
+              "museums",
+              "history"
+            ],
+            "duration_minutes": 60,
+            "price_per_person": 0.0,
+            "environment": "indoor",
+            "dietary_compatibility": []
+          },
+          {
+            "id": "vie-act-11",
+            "name": "Vienna community heritage gallery",
+            "category": "attraction",
+            "description": "Simulated free indoor local history and architecture exhibition.",
+            "interests": [
+              "architecture",
+              "history",
+              "photography",
+              "museums"
+            ],
+            "duration_minutes": 60,
+            "price_per_person": 0.0,
+            "environment": "indoor",
+            "dietary_compatibility": []
+          },
+          {
+            "id": "vie-meal-1",
+            "name": "Vienna Plant kitchen",
+            "category": "meal",
+            "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+            "interests": [
+              "local food"
+            ],
+            "duration_minutes": 45,
+            "price_per_person": 7.0,
+            "environment": "indoor",
+            "dietary_compatibility": [
+              "vegetarian",
+              "vegan",
+              "gluten-free"
+            ]
+          },
+          {
+            "id": "vie-meal-2",
+            "name": "Vienna Vegetarian café",
+            "category": "meal",
+            "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+            "interests": [
+              "local food"
+            ],
+            "duration_minutes": 45,
+            "price_per_person": 9.0,
+            "environment": "indoor",
+            "dietary_compatibility": [
+              "vegetarian"
+            ]
+          }
+        ],
+        "error": null,
+        "data_source": "simulated"
+      },
+      "duration_seconds": 0.0004
+    },
+    {
+      "timestamp": "2026-11-24T18:35:35.901858+00:00",
+      "kind": "iteration",
+      "iteration": 6,
+      "summary": "Requesting the next observable planning action."
+    },
+    {
+      "timestamp": "2026-11-24T18:35:44.705644+00:00",
+      "kind": "tool_started",
+      "iteration": 6,
+      "tool": "build_itinerary"
+    },
+    {
+      "timestamp": "2026-11-24T18:35:44.709185+00:00",
+      "kind": "replanning",
+      "iteration": 6,
+      "tool": "build_itinerary",
+      "summary": "Tool returned an error; feedback sent to model.",
+      "error": {
+        "code": "invalid_itinerary",
+        "message": "2026-11-29: intensive pace requires 1–6 attractions and at most 540 attraction minutes per day; received 0 attractions spanning 0 minutes. Shorten the attraction slots or remove excess attractions on this date.",
+        "suggestions": [
+          "Revise the schedule and call build_itinerary again."
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-11-24T18:35:44.709269+00:00",
+      "kind": "tool_call",
+      "iteration": 6,
+      "tool": "build_itinerary",
+      "tool_call_id": "call_bXHwnU9FLzh9mEhNNgr4pW9Y",
+      "arguments": "{\"request\":{\"start_date\":\"2026-11-24\",\"end_date\":\"2026-11-29\",\"origin\":\"Prague\",\"destination\":\"Vienna\",\"budget\":900,\"travelers\":2,\"pace\":\"intensive\",\"interests\":[\"architecture\",\"history\",\"local food\"],\"dietary_preferences\":[]},\"flight_id\":\"vie-flight-1\",\"hotel_id\":\"vie-hotel-1\",\"days\":[{\"date\":\"2026-11-24\",\"title\":\"Arrival and exploration\",\"schedule\":[{\"activity_id\":\"vie-meal-1\",\"start_time\":\"10:30\",\"end_time\":\"11:15\",\"meal\":\"breakfast\"},{\"activity_id\":\"vie-act-9\",\"start_time\":\"11:30\",\"end_time\":\"12:30\"},{\"activity_id\":\"vie-meal-2\",\"start_time\":\"12:45\",\"end_time\":\"13:30\",\"meal\":\"lunch\"},{\"activity_id\":\"vie-act-7\",\"start_time\":\"14:00\",\"end_time\":\"15:00\"},{\"activity_id\":\"vie-meal-1\",\"start_time\":\"17:00\",\"end_time\":\"17:45\",\"meal\":\"dinner\"}]},{\"date\":\"2026-11-25\",\"title\":\"Museums and history day\",\"schedule\":[{\"activity_id\":\"vie-meal-1\",\"start_time\":\"08:00\",\"end_time\":\"08:45\",\"meal\":\"breakfast\"},{\"activity_id\":\"vie-act-11\",\"start_time\":\"09:00\",\"end_time\":\"10:00\"},{\"activity_id\":\"vie-meal-2\",\"start_time\":\"12:00\",\"end_time\":\"12:45\",\"meal\":\"lunch\"},{\"activity_id\":\"vie-act-7\",\"start_time\":\"14:00\",\"end_time\":\"15:00\"},{\"activity_id\":\"vie-meal-1\",\"start_time\":\"18:00\",\"end_time\":\"18:45\",\"meal\":\"dinner\"}]},{\"date\":\"2026-11-26\",\"title\":\"Heritage and food sampling\",\"schedule\":[{\"activity_id\":\"vie-meal-1\",\"start_time\":\"08:00\",\"end_time\":\"08:45\",\"meal\":\"breakfast\"},{\"activity_id\":\"vie-act-9\",\"start_time\":\"09:00\",\"end_time\":\"10:00\"},{\"activity_id\":\"vie-meal-2\",\"start_time\":\"12:00\",\"end_time\":\"12:45\",\"meal\":\"lunch\"},{\"activity_id\":\"vie-act-11\",\"start_time\":\"14:00\",\"end_time\":\"15:00\"},{\"activity_id\":\"vie-meal-1\",\"start_time\":\"17:00\",\"end_time\":\"17:45\",\"meal\":\"dinner\"}]},{\"date\":\"2026-11-27\",\"title\":\"Architecture and browsing\",\"schedule\":[{\"activity_id\":\"vie-meal-1\",\"start_time\":\"08:00\",\"end_time\":\"08:45\",\"meal\":\"breakfast\"},{\"activity_id\":\"vie-act-7\",\"start_time\":\"09:00\",\"end_time\":\"10:00\"},{\"activity_id\":\"vie-meal-2\",\"start_time\":\"12:00\",\"end_time\":\"12:45\",\"meal\":\"lunch\"},{\"activity_id\":\"vie-act-9\",\"start_time\":\"14:00\",\"end_time\":\"15:00\"},{\"activity_id\":\"vie-meal-1\",\"start_time\":\"17:00\",\"end_time\":\"17:45\",\"meal\":\"dinner\"}]},{\"date\":\"2026-11-28\",\"title\":\"Cultural immersion day\",\"schedule\":[{\"activity_id\":\"vie-meal-1\",\"start_time\":\"08:00\",\"end_time\":\"08:45\",\"meal\":\"breakfast\"},{\"activity_id\":\"vie-act-11\",\"start_time\":\"09:00\",\"end_time\":\"10:00\"},{\"activity_id\":\"vie-meal-2\",\"start_time\":\"12:00\",\"end_time\":\"12:45\",\"meal\":\"lunch\"},{\"activity_id\":\"vie-act-7\",\"start_time\":\"14:00\",\"end_time\":\"15:00\"},{\"activity_id\":\"vie-meal-1\",\"start_time\":\"18:00\",\"end_time\":\"18:45\",\"meal\":\"dinner\"}]},{\"date\":\"2026-11-29\",\"title\":\"Departure day\",\"schedule\":[{\"activity_id\":\"vie-meal-1\",\"start_time\":\"08:00\",\"end_time\":\"08:45\",\"meal\":\"breakfast\"},{\"activity_id\":\"vie-meal-2\",\"start_time\":\"12:00\",\"end_time\":\"12:45\",\"meal\":\"lunch\"},{\"activity_id\":\"vie-meal-1\",\"start_time\":\"17:00\",\"end_time\":\"17:45\",\"meal\":\"dinner\"}]}]}",
+      "result": {
+        "status": "error",
+        "data": null,
+        "error": {
+          "code": "invalid_itinerary",
+          "message": "2026-11-29: intensive pace requires 1–6 attractions and at most 540 attraction minutes per day; received 0 attractions spanning 0 minutes. Shorten the attraction slots or remove excess attractions on this date.",
+          "suggestions": [
+            "Revise the schedule and call build_itinerary again."
+          ]
+        },
+        "data_source": "simulated"
+      },
+      "duration_seconds": 0.0036
+    },
+    {
+      "timestamp": "2026-11-24T18:35:44.709472+00:00",
+      "kind": "iteration",
+      "iteration": 7,
+      "summary": "Requesting the next observable planning action."
+    },
+    {
+      "timestamp": "2026-11-24T18:35:45.938671+00:00",
+      "kind": "tool_started",
+      "iteration": 7,
+      "tool": "search_activities"
+    },
+    {
+      "timestamp": "2026-11-24T18:35:45.940146+00:00",
+      "kind": "tool_call",
+      "iteration": 7,
+      "tool": "search_activities",
+      "tool_call_id": "call_36lI3WCiw4PBePOzEc1srekw",
+      "arguments": "{\"destination\":\"Vienna\",\"interests\":[\"architecture\",\"history\",\"local food\"],\"dietary_preferences\":[],\"environment\":\"indoor\",\"max_price\":10}",
+      "result": {
+        "status": "ok",
+        "data": [
+          {
+            "id": "vie-act-7",
+            "name": "Vienna Museum",
+            "category": "attraction",
+            "description": "Simulated visit to Vienna Museum; booking and access are illustrative.",
+            "interests": [
+              "museums",
+              "history"
+            ],
+            "duration_minutes": 60,
+            "price_per_person": 8.0,
+            "environment": "indoor",
+            "dietary_compatibility": []
+          },
+          {
+            "id": "vie-act-9",
+            "name": "Naschmarkt browsing",
+            "category": "attraction",
+            "description": "Simulated visit to Naschmarkt browsing; booking and access are illustrative.",
+            "interests": [
+              "museums",
+              "history"
+            ],
+            "duration_minutes": 60,
+            "price_per_person": 0.0,
+            "environment": "indoor",
+            "dietary_compatibility": []
+          },
+          {
+            "id": "vie-act-11",
+            "name": "Vienna community heritage gallery",
+            "category": "attraction",
+            "description": "Simulated free indoor local history and architecture exhibition.",
+            "interests": [
+              "architecture",
+              "history",
+              "photography",
+              "museums"
+            ],
+            "duration_minutes": 60,
+            "price_per_person": 0.0,
+            "environment": "indoor",
+            "dietary_compatibility": []
+          },
+          {
+            "id": "vie-meal-1",
+            "name": "Vienna Plant kitchen",
+            "category": "meal",
+            "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+            "interests": [
+              "local food"
+            ],
+            "duration_minutes": 45,
+            "price_per_person": 7.0,
+            "environment": "indoor",
+            "dietary_compatibility": [
+              "vegetarian",
+              "vegan",
+              "gluten-free"
+            ]
+          },
+          {
+            "id": "vie-meal-2",
+            "name": "Vienna Vegetarian café",
+            "category": "meal",
+            "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+            "interests": [
+              "local food"
+            ],
+            "duration_minutes": 45,
+            "price_per_person": 9.0,
+            "environment": "indoor",
+            "dietary_compatibility": [
+              "vegetarian"
+            ]
+          }
+        ],
+        "error": null,
+        "data_source": "simulated"
+      },
+      "duration_seconds": 0.0014
+    },
+    {
+      "timestamp": "2026-11-24T18:35:45.940516+00:00",
+      "kind": "iteration",
+      "iteration": 8,
+      "summary": "Requesting the next observable planning action."
+    },
+    {
+      "timestamp": "2026-11-24T18:35:55.155342+00:00",
+      "kind": "tool_started",
+      "iteration": 8,
+      "tool": "build_itinerary"
+    },
+    {
+      "timestamp": "2026-11-24T18:35:55.159426+00:00",
+      "kind": "tool_call",
+      "iteration": 8,
+      "tool": "build_itinerary",
+      "tool_call_id": "call_Vb27OpynG6Lh1uC8Agw2Nmpv",
+      "arguments": "{\"request\":{\"start_date\":\"2026-11-24\",\"end_date\":\"2026-11-29\",\"origin\":\"Prague\",\"destination\":\"Vienna\",\"budget\":900,\"travelers\":2,\"pace\":\"intensive\",\"interests\":[\"architecture\",\"history\",\"local food\"],\"dietary_preferences\":[]},\"flight_id\":\"vie-flight-1\",\"hotel_id\":\"vie-hotel-1\",\"days\":[{\"date\":\"2026-11-24\",\"title\":\"Arrival and exploration\",\"schedule\":[{\"activity_id\":\"vie-meal-1\",\"start_time\":\"10:30\",\"end_time\":\"11:15\",\"meal\":\"breakfast\"},{\"activity_id\":\"vie-act-9\",\"start_time\":\"11:30\",\"end_time\":\"12:30\"},{\"activity_id\":\"vie-meal-2\",\"start_time\":\"12:45\",\"end_time\":\"13:30\",\"meal\":\"lunch\"},{\"activity_id\":\"vie-act-7\",\"start_time\":\"14:00\",\"end_time\":\"15:00\"},{\"activity_id\":\"vie-meal-1\",\"start_time\":\"17:00\",\"end_time\":\"17:45\",\"meal\":\"dinner\"}]},{\"date\":\"2026-11-25\",\"title\":\"Museums and history day\",\"schedule\":[{\"activity_id\":\"vie-meal-1\",\"start_time\":\"08:00\",\"end_time\":\"08:45\",\"meal\":\"breakfast\"},{\"activity_id\":\"vie-act-11\",\"start_time\":\"09:00\",\"end_time\":\"10:00\"},{\"activity_id\":\"vie-meal-2\",\"start_time\":\"12:00\",\"end_time\":\"12:45\",\"meal\":\"lunch\"},{\"activity_id\":\"vie-act-7\",\"start_time\":\"14:00\",\"end_time\":\"15:00\"},{\"activity_id\":\"vie-meal-1\",\"start_time\":\"18:00\",\"end_time\":\"18:45\",\"meal\":\"dinner\"}]},{\"date\":\"2026-11-26\",\"title\":\"Heritage and food sampling\",\"schedule\":[{\"activity_id\":\"vie-meal-1\",\"start_time\":\"08:00\",\"end_time\":\"08:45\",\"meal\":\"breakfast\"},{\"activity_id\":\"vie-act-9\",\"start_time\":\"09:00\",\"end_time\":\"10:00\"},{\"activity_id\":\"vie-meal-2\",\"start_time\":\"12:00\",\"end_time\":\"12:45\",\"meal\":\"lunch\"},{\"activity_id\":\"vie-act-11\",\"start_time\":\"14:00\",\"end_time\":\"15:00\"},{\"activity_id\":\"vie-meal-1\",\"start_time\":\"17:00\",\"end_time\":\"17:45\",\"meal\":\"dinner\"}]},{\"date\":\"2026-11-27\",\"title\":\"Architecture and browsing\",\"schedule\":[{\"activity_id\":\"vie-meal-1\",\"start_time\":\"08:00\",\"end_time\":\"08:45\",\"meal\":\"breakfast\"},{\"activity_id\":\"vie-act-7\",\"start_time\":\"09:00\",\"end_time\":\"10:00\"},{\"activity_id\":\"vie-meal-2\",\"start_time\":\"12:00\",\"end_time\":\"12:45\",\"meal\":\"lunch\"},{\"activity_id\":\"vie-act-9\",\"start_time\":\"14:00\",\"end_time\":\"15:00\"},{\"activity_id\":\"vie-meal-1\",\"start_time\":\"17:00\",\"end_time\":\"17:45\",\"meal\":\"dinner\"}]},{\"date\":\"2026-11-28\",\"title\":\"Cultural immersion day\",\"schedule\":[{\"activity_id\":\"vie-meal-1\",\"start_time\":\"08:00\",\"end_time\":\"08:45\",\"meal\":\"breakfast\"},{\"activity_id\":\"vie-act-11\",\"start_time\":\"09:00\",\"end_time\":\"10:00\"},{\"activity_id\":\"vie-meal-2\",\"start_time\":\"12:00\",\"end_time\":\"12:45\",\"meal\":\"lunch\"},{\"activity_id\":\"vie-act-7\",\"start_time\":\"14:00\",\"end_time\":\"15:00\"},{\"activity_id\":\"vie-meal-1\",\"start_time\":\"18:00\",\"end_time\":\"18:45\",\"meal\":\"dinner\"}]},{\"date\":\"2026-11-29\",\"title\":\"Departure day\",\"schedule\":[{\"activity_id\":\"vie-meal-1\",\"start_time\":\"08:00\",\"end_time\":\"08:45\",\"meal\":\"breakfast\"},{\"activity_id\":\"vie-act-7\",\"start_time\":\"09:00\",\"end_time\":\"10:00\"},{\"activity_id\":\"vie-meal-2\",\"start_time\":\"12:00\",\"end_time\":\"12:45\",\"meal\":\"lunch\"},{\"activity_id\":\"vie-meal-1\",\"start_time\":\"17:00\",\"end_time\":\"17:45\",\"meal\":\"dinner\"}]}]}",
+      "result": {
+        "status": "ok",
+        "data": {
+          "trip_summary": {
+            "origin": "Prague",
+            "destination": "Vienna",
+            "start_date": "2026-11-24",
+            "end_date": "2026-11-29",
+            "travelers": 2,
+            "currency": "EUR"
+          },
+          "selected_flights": {
+            "id": "vie-flight-1",
+            "airline": "Simulated Budget Air",
+            "origin": "Prague",
+            "destination": "Vienna",
+            "departure_date": "2026-11-24",
+            "return_date": "2026-11-29",
+            "departure_time": "07:00:00",
+            "arrival_time": "09:00:00",
+            "return_departure_time": "21:00:00",
+            "return_arrival_time": "23:00:00",
+            "duration_minutes": 120,
+            "price_per_traveler": 85.0,
+            "total_price": 170.0
+          },
+          "selected_accommodation": {
+            "id": "vie-hotel-1",
+            "name": "Vienna Central Hostel",
+            "accommodation_type": "hostel",
+            "price_per_night": 23.0,
+            "nights": 5,
+            "rooms": 2,
+            "total_cost": 230.0,
+            "neighborhood": "Station district",
+            "rating": 7.8
+          },
+          "daily_itinerary": [
+            {
+              "date": "2026-11-24",
+              "title": "Arrival and exploration",
+              "weather": {
+                "date": "2026-11-24",
+                "min_temperature": 12,
+                "max_temperature": 20,
+                "conditions": "Rain likely",
+                "rain_probability": 0.55,
+                "recommendation": "indoor"
+              },
+              "schedule": [
+                {
+                  "activity": {
+                    "id": "vie-meal-1",
+                    "name": "Vienna Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "10:30:00",
+                  "end_time": "11:15:00",
+                  "meal": "breakfast",
+                  "total_cost": 14.0
+                },
+                {
+                  "activity": {
+                    "id": "vie-act-9",
+                    "name": "Naschmarkt browsing",
+                    "category": "attraction",
+                    "description": "Simulated visit to Naschmarkt browsing; booking and access are illustrative.",
+                    "interests": [
+                      "museums",
+                      "history"
+                    ],
+                    "duration_minutes": 60,
+                    "price_per_person": 0.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": []
+                  },
+                  "start_time": "11:30:00",
+                  "end_time": "12:30:00",
+                  "meal": null,
+                  "total_cost": 0.0
+                },
+                {
+                  "activity": {
+                    "id": "vie-meal-2",
+                    "name": "Vienna Vegetarian café",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 9.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian"
+                    ]
+                  },
+                  "start_time": "12:45:00",
+                  "end_time": "13:30:00",
+                  "meal": "lunch",
+                  "total_cost": 18.0
+                },
+                {
+                  "activity": {
+                    "id": "vie-act-7",
+                    "name": "Vienna Museum",
+                    "category": "attraction",
+                    "description": "Simulated visit to Vienna Museum; booking and access are illustrative.",
+                    "interests": [
+                      "museums",
+                      "history"
+                    ],
+                    "duration_minutes": 60,
+                    "price_per_person": 8.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": []
+                  },
+                  "start_time": "14:00:00",
+                  "end_time": "15:00:00",
+                  "meal": null,
+                  "total_cost": 16.0
+                },
+                {
+                  "activity": {
+                    "id": "vie-meal-1",
+                    "name": "Vienna Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "17:00:00",
+                  "end_time": "17:45:00",
+                  "meal": "dinner",
+                  "total_cost": 14.0
+                }
+              ],
+              "estimated_cost": 72.0,
+              "local_transport": 10.0,
+              "recommendations": [
+                "Allow 15 minutes between visits; airport transfers have separate buffers.",
+                "Meal compatibility is simulated; confirm with the restaurant before real travel."
+              ]
+            },
+            {
+              "date": "2026-11-25",
+              "title": "Museums and history day",
+              "weather": {
+                "date": "2026-11-25",
+                "min_temperature": 12,
+                "max_temperature": 20,
+                "conditions": "Rain likely",
+                "rain_probability": 0.55,
+                "recommendation": "indoor"
+              },
+              "schedule": [
+                {
+                  "activity": {
+                    "id": "vie-meal-1",
+                    "name": "Vienna Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "08:00:00",
+                  "end_time": "08:45:00",
+                  "meal": "breakfast",
+                  "total_cost": 14.0
+                },
+                {
+                  "activity": {
+                    "id": "vie-act-11",
+                    "name": "Vienna community heritage gallery",
+                    "category": "attraction",
+                    "description": "Simulated free indoor local history and architecture exhibition.",
+                    "interests": [
+                      "architecture",
+                      "history",
+                      "photography",
+                      "museums"
+                    ],
+                    "duration_minutes": 60,
+                    "price_per_person": 0.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": []
+                  },
+                  "start_time": "09:00:00",
+                  "end_time": "10:00:00",
+                  "meal": null,
+                  "total_cost": 0.0
+                },
+                {
+                  "activity": {
+                    "id": "vie-meal-2",
+                    "name": "Vienna Vegetarian café",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 9.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian"
+                    ]
+                  },
+                  "start_time": "12:00:00",
+                  "end_time": "12:45:00",
+                  "meal": "lunch",
+                  "total_cost": 18.0
+                },
+                {
+                  "activity": {
+                    "id": "vie-act-7",
+                    "name": "Vienna Museum",
+                    "category": "attraction",
+                    "description": "Simulated visit to Vienna Museum; booking and access are illustrative.",
+                    "interests": [
+                      "museums",
+                      "history"
+                    ],
+                    "duration_minutes": 60,
+                    "price_per_person": 8.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": []
+                  },
+                  "start_time": "14:00:00",
+                  "end_time": "15:00:00",
+                  "meal": null,
+                  "total_cost": 16.0
+                },
+                {
+                  "activity": {
+                    "id": "vie-meal-1",
+                    "name": "Vienna Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "18:00:00",
+                  "end_time": "18:45:00",
+                  "meal": "dinner",
+                  "total_cost": 14.0
+                }
+              ],
+              "estimated_cost": 72.0,
+              "local_transport": 10.0,
+              "recommendations": [
+                "Allow 15 minutes between visits; airport transfers have separate buffers.",
+                "Meal compatibility is simulated; confirm with the restaurant before real travel."
+              ]
+            },
+            {
+              "date": "2026-11-26",
+              "title": "Heritage and food sampling",
+              "weather": {
+                "date": "2026-11-26",
+                "min_temperature": 12,
+                "max_temperature": 20,
+                "conditions": "Rain likely",
+                "rain_probability": 0.55,
+                "recommendation": "indoor"
+              },
+              "schedule": [
+                {
+                  "activity": {
+                    "id": "vie-meal-1",
+                    "name": "Vienna Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "08:00:00",
+                  "end_time": "08:45:00",
+                  "meal": "breakfast",
+                  "total_cost": 14.0
+                },
+                {
+                  "activity": {
+                    "id": "vie-act-9",
+                    "name": "Naschmarkt browsing",
+                    "category": "attraction",
+                    "description": "Simulated visit to Naschmarkt browsing; booking and access are illustrative.",
+                    "interests": [
+                      "museums",
+                      "history"
+                    ],
+                    "duration_minutes": 60,
+                    "price_per_person": 0.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": []
+                  },
+                  "start_time": "09:00:00",
+                  "end_time": "10:00:00",
+                  "meal": null,
+                  "total_cost": 0.0
+                },
+                {
+                  "activity": {
+                    "id": "vie-meal-2",
+                    "name": "Vienna Vegetarian café",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 9.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian"
+                    ]
+                  },
+                  "start_time": "12:00:00",
+                  "end_time": "12:45:00",
+                  "meal": "lunch",
+                  "total_cost": 18.0
+                },
+                {
+                  "activity": {
+                    "id": "vie-act-11",
+                    "name": "Vienna community heritage gallery",
+                    "category": "attraction",
+                    "description": "Simulated free indoor local history and architecture exhibition.",
+                    "interests": [
+                      "architecture",
+                      "history",
+                      "photography",
+                      "museums"
+                    ],
+                    "duration_minutes": 60,
+                    "price_per_person": 0.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": []
+                  },
+                  "start_time": "14:00:00",
+                  "end_time": "15:00:00",
+                  "meal": null,
+                  "total_cost": 0.0
+                },
+                {
+                  "activity": {
+                    "id": "vie-meal-1",
+                    "name": "Vienna Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "17:00:00",
+                  "end_time": "17:45:00",
+                  "meal": "dinner",
+                  "total_cost": 14.0
+                }
+              ],
+              "estimated_cost": 56.0,
+              "local_transport": 10.0,
+              "recommendations": [
+                "Allow 15 minutes between visits; airport transfers have separate buffers.",
+                "Meal compatibility is simulated; confirm with the restaurant before real travel."
+              ]
+            },
+            {
+              "date": "2026-11-27",
+              "title": "Architecture and browsing",
+              "weather": {
+                "date": "2026-11-27",
+                "min_temperature": 12,
+                "max_temperature": 20,
+                "conditions": "Rain likely",
+                "rain_probability": 0.55,
+                "recommendation": "indoor"
+              },
+              "schedule": [
+                {
+                  "activity": {
+                    "id": "vie-meal-1",
+                    "name": "Vienna Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "08:00:00",
+                  "end_time": "08:45:00",
+                  "meal": "breakfast",
+                  "total_cost": 14.0
+                },
+                {
+                  "activity": {
+                    "id": "vie-act-7",
+                    "name": "Vienna Museum",
+                    "category": "attraction",
+                    "description": "Simulated visit to Vienna Museum; booking and access are illustrative.",
+                    "interests": [
+                      "museums",
+                      "history"
+                    ],
+                    "duration_minutes": 60,
+                    "price_per_person": 8.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": []
+                  },
+                  "start_time": "09:00:00",
+                  "end_time": "10:00:00",
+                  "meal": null,
+                  "total_cost": 16.0
+                },
+                {
+                  "activity": {
+                    "id": "vie-meal-2",
+                    "name": "Vienna Vegetarian café",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 9.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian"
+                    ]
+                  },
+                  "start_time": "12:00:00",
+                  "end_time": "12:45:00",
+                  "meal": "lunch",
+                  "total_cost": 18.0
+                },
+                {
+                  "activity": {
+                    "id": "vie-act-9",
+                    "name": "Naschmarkt browsing",
+                    "category": "attraction",
+                    "description": "Simulated visit to Naschmarkt browsing; booking and access are illustrative.",
+                    "interests": [
+                      "museums",
+                      "history"
+                    ],
+                    "duration_minutes": 60,
+                    "price_per_person": 0.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": []
+                  },
+                  "start_time": "14:00:00",
+                  "end_time": "15:00:00",
+                  "meal": null,
+                  "total_cost": 0.0
+                },
+                {
+                  "activity": {
+                    "id": "vie-meal-1",
+                    "name": "Vienna Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "17:00:00",
+                  "end_time": "17:45:00",
+                  "meal": "dinner",
+                  "total_cost": 14.0
+                }
+              ],
+              "estimated_cost": 72.0,
+              "local_transport": 10.0,
+              "recommendations": [
+                "Allow 15 minutes between visits; airport transfers have separate buffers.",
+                "Meal compatibility is simulated; confirm with the restaurant before real travel."
+              ]
+            },
+            {
+              "date": "2026-11-28",
+              "title": "Cultural immersion day",
+              "weather": {
+                "date": "2026-11-28",
+                "min_temperature": 12,
+                "max_temperature": 20,
+                "conditions": "Rain likely",
+                "rain_probability": 0.55,
+                "recommendation": "indoor"
+              },
+              "schedule": [
+                {
+                  "activity": {
+                    "id": "vie-meal-1",
+                    "name": "Vienna Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "08:00:00",
+                  "end_time": "08:45:00",
+                  "meal": "breakfast",
+                  "total_cost": 14.0
+                },
+                {
+                  "activity": {
+                    "id": "vie-act-11",
+                    "name": "Vienna community heritage gallery",
+                    "category": "attraction",
+                    "description": "Simulated free indoor local history and architecture exhibition.",
+                    "interests": [
+                      "architecture",
+                      "history",
+                      "photography",
+                      "museums"
+                    ],
+                    "duration_minutes": 60,
+                    "price_per_person": 0.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": []
+                  },
+                  "start_time": "09:00:00",
+                  "end_time": "10:00:00",
+                  "meal": null,
+                  "total_cost": 0.0
+                },
+                {
+                  "activity": {
+                    "id": "vie-meal-2",
+                    "name": "Vienna Vegetarian café",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 9.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian"
+                    ]
+                  },
+                  "start_time": "12:00:00",
+                  "end_time": "12:45:00",
+                  "meal": "lunch",
+                  "total_cost": 18.0
+                },
+                {
+                  "activity": {
+                    "id": "vie-act-7",
+                    "name": "Vienna Museum",
+                    "category": "attraction",
+                    "description": "Simulated visit to Vienna Museum; booking and access are illustrative.",
+                    "interests": [
+                      "museums",
+                      "history"
+                    ],
+                    "duration_minutes": 60,
+                    "price_per_person": 8.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": []
+                  },
+                  "start_time": "14:00:00",
+                  "end_time": "15:00:00",
+                  "meal": null,
+                  "total_cost": 16.0
+                },
+                {
+                  "activity": {
+                    "id": "vie-meal-1",
+                    "name": "Vienna Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "18:00:00",
+                  "end_time": "18:45:00",
+                  "meal": "dinner",
+                  "total_cost": 14.0
+                }
+              ],
+              "estimated_cost": 72.0,
+              "local_transport": 10.0,
+              "recommendations": [
+                "Allow 15 minutes between visits; airport transfers have separate buffers.",
+                "Meal compatibility is simulated; confirm with the restaurant before real travel."
+              ]
+            },
+            {
+              "date": "2026-11-29",
+              "title": "Departure day",
+              "weather": {
+                "date": "2026-11-29",
+                "min_temperature": 12,
+                "max_temperature": 20,
+                "conditions": "Rain likely",
+                "rain_probability": 0.55,
+                "recommendation": "indoor"
+              },
+              "schedule": [
+                {
+                  "activity": {
+                    "id": "vie-meal-1",
+                    "name": "Vienna Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "08:00:00",
+                  "end_time": "08:45:00",
+                  "meal": "breakfast",
+                  "total_cost": 14.0
+                },
+                {
+                  "activity": {
+                    "id": "vie-act-7",
+                    "name": "Vienna Museum",
+                    "category": "attraction",
+                    "description": "Simulated visit to Vienna Museum; booking and access are illustrative.",
+                    "interests": [
+                      "museums",
+                      "history"
+                    ],
+                    "duration_minutes": 60,
+                    "price_per_person": 8.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": []
+                  },
+                  "start_time": "09:00:00",
+                  "end_time": "10:00:00",
+                  "meal": null,
+                  "total_cost": 16.0
+                },
+                {
+                  "activity": {
+                    "id": "vie-meal-2",
+                    "name": "Vienna Vegetarian café",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 9.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian"
+                    ]
+                  },
+                  "start_time": "12:00:00",
+                  "end_time": "12:45:00",
+                  "meal": "lunch",
+                  "total_cost": 18.0
+                },
+                {
+                  "activity": {
+                    "id": "vie-meal-1",
+                    "name": "Vienna Plant kitchen",
+                    "category": "meal",
+                    "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                    "interests": [
+                      "local food"
+                    ],
+                    "duration_minutes": 45,
+                    "price_per_person": 7.0,
+                    "environment": "indoor",
+                    "dietary_compatibility": [
+                      "vegetarian",
+                      "vegan",
+                      "gluten-free"
+                    ]
+                  },
+                  "start_time": "17:00:00",
+                  "end_time": "17:45:00",
+                  "meal": "dinner",
+                  "total_cost": 14.0
+                }
+              ],
+              "estimated_cost": 72.0,
+              "local_transport": 10.0,
+              "recommendations": [
+                "Allow 15 minutes between visits; airport transfers have separate buffers.",
+                "Meal compatibility is simulated; confirm with the restaurant before real travel."
+              ]
+            }
+          ],
+          "budget_breakdown": {
+            "flights": 170.0,
+            "accommodation": 230.0,
+            "food": 276.0,
+            "activities": 80.0,
+            "local_transport": 60.0,
+            "total": 816.0,
+            "remaining_budget": 84.0
+          },
+          "weather_summary": [
+            {
+              "date": "2026-11-24",
+              "min_temperature": 12,
+              "max_temperature": 20,
+              "conditions": "Rain likely",
+              "rain_probability": 0.55,
+              "recommendation": "indoor"
+            },
+            {
+              "date": "2026-11-25",
+              "min_temperature": 12,
+              "max_temperature": 20,
+              "conditions": "Rain likely",
+              "rain_probability": 0.55,
+              "recommendation": "indoor"
+            },
+            {
+              "date": "2026-11-26",
+              "min_temperature": 12,
+              "max_temperature": 20,
+              "conditions": "Rain likely",
+              "rain_probability": 0.55,
+              "recommendation": "indoor"
+            },
+            {
+              "date": "2026-11-27",
+              "min_temperature": 12,
+              "max_temperature": 20,
+              "conditions": "Rain likely",
+              "rain_probability": 0.55,
+              "recommendation": "indoor"
+            },
+            {
+              "date": "2026-11-28",
+              "min_temperature": 12,
+              "max_temperature": 20,
+              "conditions": "Rain likely",
+              "rain_probability": 0.55,
+              "recommendation": "indoor"
+            },
+            {
+              "date": "2026-11-29",
+              "min_temperature": 12,
+              "max_temperature": 20,
+              "conditions": "Rain likely",
+              "rain_probability": 0.55,
+              "recommendation": "indoor"
+            }
+          ],
+          "recommendations": [
+            "Reserve tickets only after verifying real availability."
+          ],
+          "warnings": [
+            "All prices, schedules, availability, restaurants and weather are simulated.",
+            "EUR 5 per traveler per day covers simulated local transport and airport transfers; flights include no paid extras.",
+            "Daily costs include meals, attractions and transport; flights and accommodation are charged once in the trip budget."
+          ],
+          "data_source": "simulated"
+        },
+        "error": null,
+        "data_source": "simulated"
+      },
+      "duration_seconds": 0.004
+    },
+    {
+      "timestamp": "2026-11-24T18:35:55.161511+00:00",
+      "kind": "iteration",
+      "iteration": 9,
+      "summary": "Requesting the next observable planning action."
+    }
+  ],
+  "final_response": {
+    "status": "success",
+    "message": "Your simulated travel plan is ready. The schedule and total budget have been validated. No bookings have been made.",
+    "itinerary": {
+      "trip_summary": {
+        "origin": "Prague",
+        "destination": "Vienna",
+        "start_date": "2026-11-24",
+        "end_date": "2026-11-29",
+        "travelers": 2,
+        "currency": "EUR"
+      },
+      "selected_flights": {
+        "id": "vie-flight-1",
+        "airline": "Simulated Budget Air",
+        "origin": "Prague",
+        "destination": "Vienna",
+        "departure_date": "2026-11-24",
+        "return_date": "2026-11-29",
+        "departure_time": "07:00:00",
+        "arrival_time": "09:00:00",
+        "return_departure_time": "21:00:00",
+        "return_arrival_time": "23:00:00",
+        "duration_minutes": 120,
+        "price_per_traveler": 85.0,
+        "total_price": 170.0
+      },
+      "selected_accommodation": {
+        "id": "vie-hotel-1",
+        "name": "Vienna Central Hostel",
+        "accommodation_type": "hostel",
+        "price_per_night": 23.0,
+        "nights": 5,
+        "rooms": 2,
+        "total_cost": 230.0,
+        "neighborhood": "Station district",
+        "rating": 7.8
+      },
+      "daily_itinerary": [
+        {
+          "date": "2026-11-24",
+          "title": "Arrival and exploration",
+          "weather": {
+            "date": "2026-11-24",
+            "min_temperature": 12,
+            "max_temperature": 20,
+            "conditions": "Rain likely",
+            "rain_probability": 0.55,
+            "recommendation": "indoor"
+          },
+          "schedule": [
+            {
+              "activity": {
+                "id": "vie-meal-1",
+                "name": "Vienna Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "10:30:00",
+              "end_time": "11:15:00",
+              "meal": "breakfast",
+              "total_cost": 14.0
+            },
+            {
+              "activity": {
+                "id": "vie-act-9",
+                "name": "Naschmarkt browsing",
+                "category": "attraction",
+                "description": "Simulated visit to Naschmarkt browsing; booking and access are illustrative.",
+                "interests": [
+                  "museums",
+                  "history"
+                ],
+                "duration_minutes": 60,
+                "price_per_person": 0.0,
+                "environment": "indoor",
+                "dietary_compatibility": []
+              },
+              "start_time": "11:30:00",
+              "end_time": "12:30:00",
+              "meal": null,
+              "total_cost": 0.0
+            },
+            {
+              "activity": {
+                "id": "vie-meal-2",
+                "name": "Vienna Vegetarian café",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 9.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian"
+                ]
+              },
+              "start_time": "12:45:00",
+              "end_time": "13:30:00",
+              "meal": "lunch",
+              "total_cost": 18.0
+            },
+            {
+              "activity": {
+                "id": "vie-act-7",
+                "name": "Vienna Museum",
+                "category": "attraction",
+                "description": "Simulated visit to Vienna Museum; booking and access are illustrative.",
+                "interests": [
+                  "museums",
+                  "history"
+                ],
+                "duration_minutes": 60,
+                "price_per_person": 8.0,
+                "environment": "indoor",
+                "dietary_compatibility": []
+              },
+              "start_time": "14:00:00",
+              "end_time": "15:00:00",
+              "meal": null,
+              "total_cost": 16.0
+            },
+            {
+              "activity": {
+                "id": "vie-meal-1",
+                "name": "Vienna Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "17:00:00",
+              "end_time": "17:45:00",
+              "meal": "dinner",
+              "total_cost": 14.0
+            }
+          ],
+          "estimated_cost": 72.0,
+          "local_transport": 10.0,
+          "recommendations": [
+            "Allow 15 minutes between visits; airport transfers have separate buffers.",
+            "Meal compatibility is simulated; confirm with the restaurant before real travel."
+          ]
+        },
+        {
+          "date": "2026-11-25",
+          "title": "Museums and history day",
+          "weather": {
+            "date": "2026-11-25",
+            "min_temperature": 12,
+            "max_temperature": 20,
+            "conditions": "Rain likely",
+            "rain_probability": 0.55,
+            "recommendation": "indoor"
+          },
+          "schedule": [
+            {
+              "activity": {
+                "id": "vie-meal-1",
+                "name": "Vienna Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "08:00:00",
+              "end_time": "08:45:00",
+              "meal": "breakfast",
+              "total_cost": 14.0
+            },
+            {
+              "activity": {
+                "id": "vie-act-11",
+                "name": "Vienna community heritage gallery",
+                "category": "attraction",
+                "description": "Simulated free indoor local history and architecture exhibition.",
+                "interests": [
+                  "architecture",
+                  "history",
+                  "photography",
+                  "museums"
+                ],
+                "duration_minutes": 60,
+                "price_per_person": 0.0,
+                "environment": "indoor",
+                "dietary_compatibility": []
+              },
+              "start_time": "09:00:00",
+              "end_time": "10:00:00",
+              "meal": null,
+              "total_cost": 0.0
+            },
+            {
+              "activity": {
+                "id": "vie-meal-2",
+                "name": "Vienna Vegetarian café",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 9.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian"
+                ]
+              },
+              "start_time": "12:00:00",
+              "end_time": "12:45:00",
+              "meal": "lunch",
+              "total_cost": 18.0
+            },
+            {
+              "activity": {
+                "id": "vie-act-7",
+                "name": "Vienna Museum",
+                "category": "attraction",
+                "description": "Simulated visit to Vienna Museum; booking and access are illustrative.",
+                "interests": [
+                  "museums",
+                  "history"
+                ],
+                "duration_minutes": 60,
+                "price_per_person": 8.0,
+                "environment": "indoor",
+                "dietary_compatibility": []
+              },
+              "start_time": "14:00:00",
+              "end_time": "15:00:00",
+              "meal": null,
+              "total_cost": 16.0
+            },
+            {
+              "activity": {
+                "id": "vie-meal-1",
+                "name": "Vienna Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "18:00:00",
+              "end_time": "18:45:00",
+              "meal": "dinner",
+              "total_cost": 14.0
+            }
+          ],
+          "estimated_cost": 72.0,
+          "local_transport": 10.0,
+          "recommendations": [
+            "Allow 15 minutes between visits; airport transfers have separate buffers.",
+            "Meal compatibility is simulated; confirm with the restaurant before real travel."
+          ]
+        },
+        {
+          "date": "2026-11-26",
+          "title": "Heritage and food sampling",
+          "weather": {
+            "date": "2026-11-26",
+            "min_temperature": 12,
+            "max_temperature": 20,
+            "conditions": "Rain likely",
+            "rain_probability": 0.55,
+            "recommendation": "indoor"
+          },
+          "schedule": [
+            {
+              "activity": {
+                "id": "vie-meal-1",
+                "name": "Vienna Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "08:00:00",
+              "end_time": "08:45:00",
+              "meal": "breakfast",
+              "total_cost": 14.0
+            },
+            {
+              "activity": {
+                "id": "vie-act-9",
+                "name": "Naschmarkt browsing",
+                "category": "attraction",
+                "description": "Simulated visit to Naschmarkt browsing; booking and access are illustrative.",
+                "interests": [
+                  "museums",
+                  "history"
+                ],
+                "duration_minutes": 60,
+                "price_per_person": 0.0,
+                "environment": "indoor",
+                "dietary_compatibility": []
+              },
+              "start_time": "09:00:00",
+              "end_time": "10:00:00",
+              "meal": null,
+              "total_cost": 0.0
+            },
+            {
+              "activity": {
+                "id": "vie-meal-2",
+                "name": "Vienna Vegetarian café",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 9.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian"
+                ]
+              },
+              "start_time": "12:00:00",
+              "end_time": "12:45:00",
+              "meal": "lunch",
+              "total_cost": 18.0
+            },
+            {
+              "activity": {
+                "id": "vie-act-11",
+                "name": "Vienna community heritage gallery",
+                "category": "attraction",
+                "description": "Simulated free indoor local history and architecture exhibition.",
+                "interests": [
+                  "architecture",
+                  "history",
+                  "photography",
+                  "museums"
+                ],
+                "duration_minutes": 60,
+                "price_per_person": 0.0,
+                "environment": "indoor",
+                "dietary_compatibility": []
+              },
+              "start_time": "14:00:00",
+              "end_time": "15:00:00",
+              "meal": null,
+              "total_cost": 0.0
+            },
+            {
+              "activity": {
+                "id": "vie-meal-1",
+                "name": "Vienna Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "17:00:00",
+              "end_time": "17:45:00",
+              "meal": "dinner",
+              "total_cost": 14.0
+            }
+          ],
+          "estimated_cost": 56.0,
+          "local_transport": 10.0,
+          "recommendations": [
+            "Allow 15 minutes between visits; airport transfers have separate buffers.",
+            "Meal compatibility is simulated; confirm with the restaurant before real travel."
+          ]
+        },
+        {
+          "date": "2026-11-27",
+          "title": "Architecture and browsing",
+          "weather": {
+            "date": "2026-11-27",
+            "min_temperature": 12,
+            "max_temperature": 20,
+            "conditions": "Rain likely",
+            "rain_probability": 0.55,
+            "recommendation": "indoor"
+          },
+          "schedule": [
+            {
+              "activity": {
+                "id": "vie-meal-1",
+                "name": "Vienna Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "08:00:00",
+              "end_time": "08:45:00",
+              "meal": "breakfast",
+              "total_cost": 14.0
+            },
+            {
+              "activity": {
+                "id": "vie-act-7",
+                "name": "Vienna Museum",
+                "category": "attraction",
+                "description": "Simulated visit to Vienna Museum; booking and access are illustrative.",
+                "interests": [
+                  "museums",
+                  "history"
+                ],
+                "duration_minutes": 60,
+                "price_per_person": 8.0,
+                "environment": "indoor",
+                "dietary_compatibility": []
+              },
+              "start_time": "09:00:00",
+              "end_time": "10:00:00",
+              "meal": null,
+              "total_cost": 16.0
+            },
+            {
+              "activity": {
+                "id": "vie-meal-2",
+                "name": "Vienna Vegetarian café",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 9.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian"
+                ]
+              },
+              "start_time": "12:00:00",
+              "end_time": "12:45:00",
+              "meal": "lunch",
+              "total_cost": 18.0
+            },
+            {
+              "activity": {
+                "id": "vie-act-9",
+                "name": "Naschmarkt browsing",
+                "category": "attraction",
+                "description": "Simulated visit to Naschmarkt browsing; booking and access are illustrative.",
+                "interests": [
+                  "museums",
+                  "history"
+                ],
+                "duration_minutes": 60,
+                "price_per_person": 0.0,
+                "environment": "indoor",
+                "dietary_compatibility": []
+              },
+              "start_time": "14:00:00",
+              "end_time": "15:00:00",
+              "meal": null,
+              "total_cost": 0.0
+            },
+            {
+              "activity": {
+                "id": "vie-meal-1",
+                "name": "Vienna Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "17:00:00",
+              "end_time": "17:45:00",
+              "meal": "dinner",
+              "total_cost": 14.0
+            }
+          ],
+          "estimated_cost": 72.0,
+          "local_transport": 10.0,
+          "recommendations": [
+            "Allow 15 minutes between visits; airport transfers have separate buffers.",
+            "Meal compatibility is simulated; confirm with the restaurant before real travel."
+          ]
+        },
+        {
+          "date": "2026-11-28",
+          "title": "Cultural immersion day",
+          "weather": {
+            "date": "2026-11-28",
+            "min_temperature": 12,
+            "max_temperature": 20,
+            "conditions": "Rain likely",
+            "rain_probability": 0.55,
+            "recommendation": "indoor"
+          },
+          "schedule": [
+            {
+              "activity": {
+                "id": "vie-meal-1",
+                "name": "Vienna Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "08:00:00",
+              "end_time": "08:45:00",
+              "meal": "breakfast",
+              "total_cost": 14.0
+            },
+            {
+              "activity": {
+                "id": "vie-act-11",
+                "name": "Vienna community heritage gallery",
+                "category": "attraction",
+                "description": "Simulated free indoor local history and architecture exhibition.",
+                "interests": [
+                  "architecture",
+                  "history",
+                  "photography",
+                  "museums"
+                ],
+                "duration_minutes": 60,
+                "price_per_person": 0.0,
+                "environment": "indoor",
+                "dietary_compatibility": []
+              },
+              "start_time": "09:00:00",
+              "end_time": "10:00:00",
+              "meal": null,
+              "total_cost": 0.0
+            },
+            {
+              "activity": {
+                "id": "vie-meal-2",
+                "name": "Vienna Vegetarian café",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 9.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian"
+                ]
+              },
+              "start_time": "12:00:00",
+              "end_time": "12:45:00",
+              "meal": "lunch",
+              "total_cost": 18.0
+            },
+            {
+              "activity": {
+                "id": "vie-act-7",
+                "name": "Vienna Museum",
+                "category": "attraction",
+                "description": "Simulated visit to Vienna Museum; booking and access are illustrative.",
+                "interests": [
+                  "museums",
+                  "history"
+                ],
+                "duration_minutes": 60,
+                "price_per_person": 8.0,
+                "environment": "indoor",
+                "dietary_compatibility": []
+              },
+              "start_time": "14:00:00",
+              "end_time": "15:00:00",
+              "meal": null,
+              "total_cost": 16.0
+            },
+            {
+              "activity": {
+                "id": "vie-meal-1",
+                "name": "Vienna Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "18:00:00",
+              "end_time": "18:45:00",
+              "meal": "dinner",
+              "total_cost": 14.0
+            }
+          ],
+          "estimated_cost": 72.0,
+          "local_transport": 10.0,
+          "recommendations": [
+            "Allow 15 minutes between visits; airport transfers have separate buffers.",
+            "Meal compatibility is simulated; confirm with the restaurant before real travel."
+          ]
+        },
+        {
+          "date": "2026-11-29",
+          "title": "Departure day",
+          "weather": {
+            "date": "2026-11-29",
+            "min_temperature": 12,
+            "max_temperature": 20,
+            "conditions": "Rain likely",
+            "rain_probability": 0.55,
+            "recommendation": "indoor"
+          },
+          "schedule": [
+            {
+              "activity": {
+                "id": "vie-meal-1",
+                "name": "Vienna Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "08:00:00",
+              "end_time": "08:45:00",
+              "meal": "breakfast",
+              "total_cost": 14.0
+            },
+            {
+              "activity": {
+                "id": "vie-act-7",
+                "name": "Vienna Museum",
+                "category": "attraction",
+                "description": "Simulated visit to Vienna Museum; booking and access are illustrative.",
+                "interests": [
+                  "museums",
+                  "history"
+                ],
+                "duration_minutes": 60,
+                "price_per_person": 8.0,
+                "environment": "indoor",
+                "dietary_compatibility": []
+              },
+              "start_time": "09:00:00",
+              "end_time": "10:00:00",
+              "meal": null,
+              "total_cost": 16.0
+            },
+            {
+              "activity": {
+                "id": "vie-meal-2",
+                "name": "Vienna Vegetarian café",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 9.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian"
+                ]
+              },
+              "start_time": "12:00:00",
+              "end_time": "12:45:00",
+              "meal": "lunch",
+              "total_cost": 18.0
+            },
+            {
+              "activity": {
+                "id": "vie-meal-1",
+                "name": "Vienna Plant kitchen",
+                "category": "meal",
+                "description": "Simulated breakfast, lunch or dinner portion; same price per meal. Compatibility is illustrative.",
+                "interests": [
+                  "local food"
+                ],
+                "duration_minutes": 45,
+                "price_per_person": 7.0,
+                "environment": "indoor",
+                "dietary_compatibility": [
+                  "vegetarian",
+                  "vegan",
+                  "gluten-free"
+                ]
+              },
+              "start_time": "17:00:00",
+              "end_time": "17:45:00",
+              "meal": "dinner",
+              "total_cost": 14.0
+            }
+          ],
+          "estimated_cost": 72.0,
+          "local_transport": 10.0,
+          "recommendations": [
+            "Allow 15 minutes between visits; airport transfers have separate buffers.",
+            "Meal compatibility is simulated; confirm with the restaurant before real travel."
+          ]
+        }
+      ],
+      "budget_breakdown": {
+        "flights": 170.0,
+        "accommodation": 230.0,
+        "food": 276.0,
+        "activities": 80.0,
+        "local_transport": 60.0,
+        "total": 816.0,
+        "remaining_budget": 84.0
+      },
+      "weather_summary": [
+        {
+          "date": "2026-11-24",
+          "min_temperature": 12,
+          "max_temperature": 20,
+          "conditions": "Rain likely",
+          "rain_probability": 0.55,
+          "recommendation": "indoor"
+        },
+        {
+          "date": "2026-11-25",
+          "min_temperature": 12,
+          "max_temperature": 20,
+          "conditions": "Rain likely",
+          "rain_probability": 0.55,
+          "recommendation": "indoor"
+        },
+        {
+          "date": "2026-11-26",
+          "min_temperature": 12,
+          "max_temperature": 20,
+          "conditions": "Rain likely",
+          "rain_probability": 0.55,
+          "recommendation": "indoor"
+        },
+        {
+          "date": "2026-11-27",
+          "min_temperature": 12,
+          "max_temperature": 20,
+          "conditions": "Rain likely",
+          "rain_probability": 0.55,
+          "recommendation": "indoor"
+        },
+        {
+          "date": "2026-11-28",
+          "min_temperature": 12,
+          "max_temperature": 20,
+          "conditions": "Rain likely",
+          "rain_probability": 0.55,
+          "recommendation": "indoor"
+        },
+        {
+          "date": "2026-11-29",
+          "min_temperature": 12,
+          "max_temperature": 20,
+          "conditions": "Rain likely",
+          "rain_probability": 0.55,
+          "recommendation": "indoor"
+        }
+      ],
+      "recommendations": [
+        "Reserve tickets only after verifying real availability."
+      ],
+      "warnings": [
+        "All prices, schedules, availability, restaurants and weather are simulated.",
+        "EUR 5 per traveler per day covers simulated local transport and airport transfers; flights include no paid extras.",
+        "Daily costs include meals, attractions and transport; flights and accommodation are charged once in the trip budget."
+      ],
+      "data_source": "simulated"
+    },
+    "budget_estimate": {
+      "flights": 170.0,
+      "accommodation": 230.0,
+      "food": 252.0,
+      "activities": 0.0,
+      "local_transport": 60.0,
+      "minimum_total": 712.0,
+      "available_budget": 900.0,
+      "shortfall": 0.0
+    },
+    "data_source": "simulated"
+  },
+  "final_status": "success",
+  "budget_validation": {
+    "valid": true,
+    "total": 816.0,
+    "remaining_budget": 84.0
+  },
+  "duration_seconds": 27.734
+}

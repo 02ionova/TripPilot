@@ -1,0 +1,59 @@
+{
+  "run_id": "eba76b94-b973-4f37-83c4-36364158bebe",
+  "start_timestamp": "2026-11-24T18:35:26.394136+00:00",
+  "end_timestamp": "2026-11-24T18:35:26.395684+00:00",
+  "execution_mode": "real_llm",
+  "request": {
+    "origin": "Prague",
+    "destination": "Vienna",
+    "start_date": "2026-11-24",
+    "end_date": "2026-11-29",
+    "budget": 600,
+    "travelers": 2,
+    "pace": "intensive",
+    "interests": [
+      "architecture",
+      "history",
+      "local food"
+    ],
+    "dietary_preferences": []
+  },
+  "model": "gpt-4.1-mini",
+  "iterations": [],
+  "events": [
+    {
+      "timestamp": "2026-11-24T18:35:26.395653+00:00",
+      "kind": "budget_precheck",
+      "estimate": {
+        "flights": 170.0,
+        "accommodation": 230.0,
+        "food": 252.0,
+        "activities": 0.0,
+        "local_transport": 60.0,
+        "minimum_total": 712.0,
+        "available_budget": 600.0,
+        "shortfall": 112.0
+      },
+      "summary": "Checked the minimum required simulated costs before contacting the model."
+    }
+  ],
+  "final_response": {
+    "status": "infeasible",
+    "message": "This trip needs at least EUR 712.00 under the simulated prices. Your total budget is EUR 600.00, a shortfall of EUR 112.00. Increase the budget, shorten the trip, or reduce the traveler count. No model requests were needed.",
+    "itinerary": null,
+    "budget_estimate": {
+      "flights": 170.0,
+      "accommodation": 230.0,
+      "food": 252.0,
+      "activities": 0.0,
+      "local_transport": 60.0,
+      "minimum_total": 712.0,
+      "available_budget": 600.0,
+      "shortfall": 112.0
+    },
+    "data_source": "simulated"
+  },
+  "final_status": "infeasible",
+  "budget_validation": null,
+  "duration_seconds": 0.0016
+}

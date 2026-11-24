@@ -93,9 +93,23 @@ The builder enforces every trip date exactly once and at least one attraction pe
 
 ### Error handling and recovery demonstration
 
-Paris has EUR 350 for three days. The prompt's general budget-conscious heuristic (under EUR 125 per traveler per day) asks the model to first explore **hotel** accommodation at EUR 30/night. The data contains no such hotel: hotels start at EUR 85, budget rooms at EUR 50, and Paris hostel beds cost EUR 25. The `no_results` feedback lets the model decide how to broaden the search. Rome's EUR 150/day does not trigger the heuristic.
+Ordinary planning starts with realistic searches and never deliberately triggers a hotel failure. The UI shows one current progress message that updates in place; technical errors, arguments and full results remain available in the expandable trace.
 
-This deliberately restrictive heuristic is documented in the prompt, not hardcoded into the loop or tool. The model independently chooses revised calls. Inspect a real trace to confirm recovery: stochastic model behavior is not guaranteed. The mocked recovery test separately verifies the loop mechanics. Other errors include invalid IDs/schedules, over-budget plans, unsupported routes/destinations, missing keys, API errors and iteration exhaustion.
+The course recovery demonstration is explicitly opt-in:
+
+```bash
+python main.py --input examples/paris.json --demonstrate-recovery --output results/paris.json
+```
+
+That flag adds the documented prompt heuristic: for a budget below EUR 125 per traveler per day, first explore hotel accommodation at EUR 30/night. No such hotel exists in the data, so the model receives `no_results` and independently revises its search. This behavior is isolated from the ordinary web and CLI experience. Genuine historical Paris traces below were produced with that same heuristic enabled before it was moved to the explicit demonstration flag.
+
+### Early budget screening
+
+`planning.py` computes a conservative catalogue cost lower bound before any paid model request. It uses group flight costs, required room/bed counts and nights, compatible mandatory meals, one cheapest weather-compatible attraction per day, and transport. Shared meal and airport-time rules live in `scheduling.py`. If even these costs exceed the budget, the agent returns `infeasible` immediately with a typed `budget_estimate` and a saved trace. The UI explains the minimum required, available budget and shortfall with a category breakdown. Infeasibility is a planning outcome, not an application error.
+
+For example, Vienna on 24–29 November 2026 for two travelers requires at least EUR 712: flights 170, hostel 230, meals 252 and transport 60. A EUR 600 request is rejected with a EUR 112 gap and zero API calls. Regression tests freeze the current date to reproduce this historical example.
+
+Passing the screen does not prove schedule feasibility. Interests and detailed scheduling are deliberately relaxed for a safe lower bound; the real LLM still selects all five tools and the builder validates the complete plan. The estimate is not a ready itinerary and cannot be returned as a successful plan. Error responses distinguish invalid input, API/configuration failures and exhausted planning attempts.
 
 ## Project structure
 
@@ -104,6 +118,7 @@ trip-pilot-ai/
 ├── app.py, main.py             # Streamlit and CLI
 ├── agent.py, prompts.py        # Manual loop and instructions
 ├── schemas.py, config.py       # Contracts and settings
+├── planning.py, scheduling.py  # Cost lower bound and shared time rules
 ├── tracing.py                 # Sanitized traces
 ├── tools/                     # Five tools, helpers, registry
 ├── data/                      # Four simulated JSON datasets
@@ -156,13 +171,13 @@ For the already-installed workspace environment, use `source ../.venv/bin/activa
 streamlit run app.py
 ```
 
-Open the printed URL (normally http://localhost:8501), enter a request, then select **Generate Travel Plan**. Actual tool progress appears during execution. Results persist across downloads. Tabs show itinerary, flights/accommodation, weather and budget. Download the final JSON and sanitized trace.
+Open the printed URL (normally http://localhost:8501), enter a request, then select **Generate Travel Plan**. One compact progress message updates during execution; detailed observable actions are available in the execution trace. Results persist across downloads. Tabs show itinerary, flights/accommodation, weather and budget. Download the final JSON and sanitized trace.
 
 ## CLI and real demonstrations
 
 ```bash
 python main.py --input examples/rome.json --output results/rome.json
-python main.py --input examples/paris.json --output results/paris.json
+python main.py --input examples/paris.json --demonstrate-recovery --output results/paris.json
 ```
 
 The CLI prints itinerary and budget and writes the final JSON plus timestamped trace. Exit codes: 0 success, 2 invalid/missing input, 1 other failures. Valid JSON with invalid fields produces a clarification trace; unreadable or non-JSON files exit before starting the agent.
@@ -232,7 +247,7 @@ python -m pytest -v
 
 Tests use scripted SDK-shaped completions without paid calls. They cover input/schema validation; all tools; IDs/arguments; weather/diets; hostel/room/group math; budgets and schedule constraints; tool-call ID preservation; full success and hotel recovery; request tampering; retries, repetition and iteration limits; clean termination; trace generation/redaction; and Streamlit rendering. Temporary traces stay outside the production trace directory.
 
-Final result: **87 tests passed**. Ruff lint and formatting checks also passed. See `VERIFICATION.md` for actual results and startup checks. Rendering works without a key; generating real plans requires a key and network.
+Final result: **93 tests passed**. Ruff lint and formatting checks also passed. See `VERIFICATION.md` for actual results and startup checks. Rendering works without a key; generating real plans requires a key and network.
 
 ## Limitations and future improvements
 

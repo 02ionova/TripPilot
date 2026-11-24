@@ -70,32 +70,46 @@ if submitted:
             + "; ".join(e["msg"] for e in exc.errors(include_input=False))
         )
     else:
-        with st.status("Agent activity", expanded=True) as activity:
+        st.session_state.pop("result", None)
+        st.session_state.pop("trace", None)
+        with st.status("Checking your trip budget…", expanded=False) as activity:
+            current_step = st.empty()
 
             def progress(event):
-                if event["kind"] == "tool_call":
-                    labels = {
-                        "search_flights": "Searching for flights",
-                        "get_weather": "Checking weather",
-                        "search_hotels": "Searching accommodation",
-                        "search_activities": "Finding activities",
-                        "build_itinerary": "Validating the itinerary and budget",
-                    }
-                    st.write(
-                        f"{labels.get(event['tool'], event['tool'])} — {event['result']['status']}"
-                    )
+                labels = {
+                    "search_flights": "Comparing round-trip flights…",
+                    "get_weather": "Checking the weather…",
+                    "search_hotels": "Comparing accommodation…",
+                    "search_activities": "Finding activities and suitable meals…",
+                    "build_itinerary": "Checking the schedule and total cost…",
+                }
+                if event["kind"] == "budget_precheck":
+                    text = "Minimum costs checked. Preparing your itinerary…"
+                elif event["kind"] == "tool_started":
+                    text = labels.get(event["tool"], "Planning your trip…")
                 elif event["kind"] == "replanning":
-                    st.write("Handling tool feedback and revising the plan.")
+                    text = "Adjusting the plan to your requirements…"
                 elif event["kind"] == "api_retry":
-                    st.write("Retrying a temporary API failure.")
+                    text = "The planning service is temporarily busy. Retrying…"
+                else:
+                    return
+                # Replace one message instead of appending a long technical log.
+                activity.update(label=text)
+                current_step.caption(text)
 
             agent = TravelAgent(on_event=progress)
             result = agent.run(request)
             st.session_state["result"] = result
             st.session_state["trace"] = agent.trace.data
+            final_label = {
+                "success": "Your travel plan is ready",
+                "infeasible": "Your trip needs a budget adjustment",
+                "needs_clarification": "Please review your trip details",
+            }.get(result.status, "Planning could not be completed")
+            current_step.empty()
             activity.update(
-                label=f"Agent finished: {result.status}",
-                state="complete" if result.status == "success" else "error",
+                label=final_label,
+                state="error" if result.status in {"error", "iteration_limit"} else "complete",
                 expanded=False,
             )
 
@@ -163,11 +177,45 @@ if "result" in st.session_state:
             st.write(text)
         for text in plan.warnings:
             st.warning(text)
+    elif result.status == "infeasible":
+        st.warning(result.message)
+        estimate = result.budget_estimate
+        if estimate and estimate.shortfall > 0:
+            a, b, c = st.columns(3)
+            a.metric("Your total budget", f"€{estimate.available_budget:.2f}")
+            b.metric("Minimum required", f"€{estimate.minimum_total:.2f}")
+            c.metric("Budget shortfall", f"€{estimate.shortfall:.2f}")
+            st.caption(
+                "Minimum costs for all travelers using the cheapest compatible simulated options. No bookings have been made."
+            )
+            st.table(
+                {
+                    "Category": [
+                        "Round-trip flights",
+                        "Accommodation",
+                        "Meals",
+                        "Attractions",
+                        "Local transport",
+                    ],
+                    "Minimum cost (EUR)": [
+                        estimate.flights,
+                        estimate.accommodation,
+                        estimate.food,
+                        estimate.activities,
+                        estimate.local_transport,
+                    ],
+                }
+            )
+            st.info(
+                "Try a shorter trip, fewer travelers, or a higher total budget, then generate a new plan."
+            )
+    elif result.status == "needs_clarification":
+        st.warning(result.message)
     else:
-        st.error(f"{result.status}: {result.message}")
+        st.error(result.message)
     a, b = st.columns(2)
     a.download_button(
-        "Download itinerary JSON",
+        "Download itinerary JSON" if result.status == "success" else "Download result JSON",
         result.model_dump_json(indent=2),
         "itinerary.json",
         "application/json",

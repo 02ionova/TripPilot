@@ -20,8 +20,10 @@ from openai import (
 from pydantic import ValidationError
 
 from config import Settings
-from prompts import SYSTEM_PROMPT
+from planning import estimate_minimum_budget
+from prompts import DEMONSTRATION_POLICY, SYSTEM_PROMPT
 from schemas import BuildArgs, FinalDecision, FinalResponse, Itinerary, TravelRequest
+from tools.common import ToolFailure
 from tools.registry import REGISTRY, execute_tool, tool_definitions
 from tracing import Trace, redact
 
@@ -33,7 +35,9 @@ class TravelAgent:
         client=None,
         trace_directory: Path | None = None,
         on_event: Callable | None = None,
+        demonstrate_recovery: bool = False,
     ):
+        self.demonstrate_recovery = demonstrate_recovery
         self.settings = settings or Settings()
         self.client = client
         self.trace_directory = trace_directory
@@ -75,9 +79,16 @@ class TravelAgent:
             else "real_llm",
         )
 
+        budget_estimate = None
+
         def finish(status, message, itinerary=None):
             return self.trace.finish(
-                FinalResponse(status=status, message=message, itinerary=itinerary)
+                FinalResponse(
+                    status=status,
+                    message=message,
+                    itinerary=itinerary,
+                    budget_estimate=budget_estimate,
+                )
             )
 
         try:
@@ -90,6 +101,21 @@ class TravelAgent:
                 "needs_clarification",
                 "Simulated flights currently depart from Prague only. Please select Prague as your departure city.",
             )
+        try:
+            budget_estimate = estimate_minimum_budget(request)
+        except ToolFailure as exc:
+            self.event("precheck_error", error=exc.error.model_dump())
+            return finish("needs_clarification", exc.error.message)
+        self.event(
+            "budget_precheck",
+            estimate=budget_estimate.model_dump(),
+            summary="Checked the minimum required simulated costs before contacting the model.",
+        )
+        if budget_estimate.shortfall > 0:
+            return finish(
+                "infeasible",
+                f"This trip needs at least EUR {budget_estimate.minimum_total:.2f} under the simulated prices. Your total budget is EUR {request.budget:.2f}, a shortfall of EUR {budget_estimate.shortfall:.2f}. Increase the budget, shorten the trip, or reduce the traveler count. No model requests were needed.",
+            )
         if self.client is None:
             if not self.settings.api_key:
                 return finish(
@@ -100,8 +126,18 @@ class TravelAgent:
                 api_key=self.settings.api_key, timeout=self.settings.timeout, max_retries=0
             )
         messages = [
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {
+                "role": "system",
+                "content": SYSTEM_PROMPT
+                + ("\n" + DEMONSTRATION_POLICY if self.demonstrate_recovery else ""),
+            },
             {"role": "user", "content": request.model_dump_json()},
+            {
+                "role": "user",
+                "content": "Python catalogue cost lower bound (not a finished plan or guarantee of feasibility): "
+                + budget_estimate.model_dump_json()
+                + ". Prefer the cheapest compatible meals and accommodation if the budget is close to this bound. All five tools and final schedule validation are still required.",
+            },
         ]
         calls = Counter()
         failures = Counter()
@@ -185,6 +221,7 @@ class TravelAgent:
             if message.tool_calls:
                 for call in message.tool_calls:
                     name, arguments = call.function.name, call.function.arguments
+                    self.event("tool_started", iteration=iteration, tool=name)
                     tick = perf_counter()
                     signature = (name, arguments)
                     calls[signature] += 1
@@ -257,7 +294,11 @@ class TravelAgent:
                         raise ValueError(
                             "Success requires all five tools and a successful builder result."
                         )
-                    return finish("success", decision.message, validated_itinerary)
+                    return finish(
+                        "success",
+                        "Your simulated travel plan is ready. The schedule and total budget have been validated. No bookings have been made.",
+                        validated_itinerary,
+                    )
                 if (
                     decision.status in {"error", "infeasible"}
                     and last_build_error

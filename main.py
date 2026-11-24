@@ -12,18 +12,29 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="TripPilot AI — simulated travel planning")
     parser.add_argument("--input", required=True, type=Path)
     parser.add_argument("--output", type=Path, default=None)
+    parser.add_argument(
+        "--demonstrate-recovery",
+        action="store_true",
+        help="Enable a deliberately restrictive initial hotel search for the course recovery demonstration.",
+    )
     args = parser.parse_args()
     try:
         raw = json.loads(args.input.read_text())
     except (OSError, json.JSONDecodeError):
         print("Cannot read input: provide an existing, valid JSON file.")
         return 2
-    agent = TravelAgent()
+    agent = TravelAgent(demonstrate_recovery=args.demonstrate_recovery)
     result = agent.run(raw)
     output = args.output or ROOT / "results" / f"{agent.trace.data['run_id']}.json"
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(result.model_dump_json(indent=2) + "\n")
     print(f"[{result.status}] {result.message}")
+    if result.budget_estimate and result.status == "infeasible":
+        print("Minimum simulated costs:")
+        for name in ["flights", "accommodation", "food", "activities", "local_transport"]:
+            print(
+                f"  {name.replace('_', ' ').title()}: EUR {getattr(result.budget_estimate, name):.2f}"
+            )
     if result.itinerary:
         plan = result.itinerary
         summary = plan.trip_summary

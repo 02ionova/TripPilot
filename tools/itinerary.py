@@ -2,6 +2,7 @@
 
 from decimal import Decimal
 
+from scheduling import required_meals, site_window
 from schemas import (
     Activity,
     BudgetBreakdown,
@@ -75,13 +76,12 @@ def build_itinerary(args: BuildArgs):
     output_days = []
     max_count, max_minutes = PACE_LIMIT[request.pace]
     for selection, forecast in zip(args.days, weather):
-        earliest = (
-            minutes(flight.arrival_time) + 90 if selection.date == request.start_date else 8 * 60
-        )
-        latest = (
-            minutes(flight.return_departure_time) - 120
-            if selection.date == request.end_date
-            else 22 * 60
+        earliest, latest = site_window(
+            selection.date,
+            request.start_date,
+            request.end_date,
+            flight.arrival_time,
+            flight.return_departure_time,
         )
         resolved, meal_names, seen_attractions = [], set(), set()
         count = duration = 0
@@ -145,20 +145,14 @@ def build_itinerary(args: BuildArgs):
                     total_cost=float(cost),
                 )
             )
-        required_meals = set()
-        if earliest <= 11 * 60:
-            required_meals.add("breakfast")
-        if earliest <= 14 * 60 and latest >= 13 * 60:
-            required_meals.add("lunch")
-        if earliest <= 19 * 60 and latest >= 18 * 60:
-            required_meals.add("dinner")
-        if not required_meals.issubset(meal_names):
+        missing_meals = required_meals(earliest, latest) - meal_names
+        if missing_meals:
             invalid(
-                f"{selection.date}: missing meals {sorted(required_meals - meal_names)}. Meals cannot be omitted to meet budget."
+                f"{selection.date}: missing meals {sorted(missing_meals)}. Meals cannot be omitted to meet budget."
             )
         if count < 1 or count > max_count or duration > max_minutes:
             invalid(
-                f"{request.pace} pace requires 1–{max_count} attractions and at most {max_minutes} attraction minutes per day."
+                f"{selection.date}: {request.pace} pace requires 1–{max_count} attractions and at most {max_minutes} attraction minutes per day; received {count} attractions spanning {duration} minutes. Shorten the attraction slots or remove excess attractions on this date."
             )
         transport = TRANSPORT_PER_PERSON_DAY * request.travelers
         output_days.append(
