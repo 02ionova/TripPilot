@@ -723,9 +723,9 @@ def test_live_default_header_and_no_simulation_fallback(monkeypatch):
     assert not app.sidebar.radio
     assert any(
         "Travel information is retrieved from external data providers." in item.value
-        for item in app.info
+        for item in app.markdown
     )
-    assert not any("Educational simulation" in item.value for item in app.info)
+    assert not any("Educational simulation" in item.value for item in app.markdown)
 
 
 def test_user_supplied_city_qualifiers_are_restored_without_guessing(tmp_path, live_settings):

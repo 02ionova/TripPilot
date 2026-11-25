@@ -59,7 +59,8 @@ def test_date_widgets_reject_past_dates():
 def test_city_search_is_available_without_form_enter_submission():
     app = AppTest.from_file(str(ROOT / "app.py")).run(timeout=20)
     assert not app.exception
-    assert not app.get("form")[0].proto.form.enter_to_submit
+    # Independent widgets never submit an Enter-bound form; only the button plans.
+    assert not app.get("form")
     origin = app.selectbox(key="origin_city")
     destination = app.selectbox(key="destination_city")
     assert origin.proto.accept_new_options
@@ -128,3 +129,41 @@ def test_flexible_budget_and_daily_cards_render(request_data):
     assert "stop-card meal" in markup and "stop-card visit" in markup
     assert "Day 01" in markup and "Day 04" in markup
     assert len(app.get("image")) == 4
+
+
+def test_traveler_changes_adjust_current_budget_without_planning(monkeypatch):
+    calls = []
+
+    def unexpected_plan(*args, **kwargs):
+        calls.append(True)
+        raise AssertionError("Changing the traveler count must not generate a plan")
+
+    monkeypatch.setattr("agent.TravelAgent.run", unexpected_plan)
+    app = AppTest.from_file(str(ROOT / "app.py")).run(timeout=20)
+    assert app.number_input(key="trip_budget").value == 600
+    app.number_input(key="travelers").set_value(2).run(timeout=20)
+    assert app.number_input(key="trip_budget").value == 1100
+    app.number_input(key="travelers").set_value(4).run(timeout=20)
+    assert app.number_input(key="trip_budget").value == 2100
+    app.number_input(key="trip_budget").set_value(1800.0).run(timeout=20)
+    app.number_input(key="travelers").set_value(5).run(timeout=20)
+    assert app.number_input(key="trip_budget").value == 2300
+    app.number_input(key="travelers").set_value(3).run(timeout=20)
+    assert app.number_input(key="trip_budget").value == 1300
+    app.run(timeout=20)
+    assert app.number_input(key="trip_budget").value == 1300
+    app.number_input(key="trip_budget").set_value(100.0).run(timeout=20)
+    app.number_input(key="travelers").set_value(1).run(timeout=20)
+    assert app.number_input(key="trip_budget").value == 1
+    assert not calls and not app.exception
+
+
+def test_live_notice_is_subtle_and_readable(monkeypatch):
+    monkeypatch.setenv("DATA_MODE", "live")
+    app = AppTest.from_file(str(ROOT / "app.py")).run(timeout=20)
+    assert not app.exception
+    assert not app.info
+    assert any(
+        'class="provider-note"' in m.value and "Prices and availability may change" in m.value
+        for m in app.markdown
+    )

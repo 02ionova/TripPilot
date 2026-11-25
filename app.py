@@ -17,6 +17,21 @@ from ui import render_budget_metrics, render_itinerary_days, render_live_plan
 st.set_page_config(page_title="TripPilot AI", page_icon="✈️", layout="wide")
 apply_styles()
 settings = Settings()
+
+st.session_state.setdefault("trip_budget", 600.0)
+st.session_state.setdefault("previous_travelers", 1)
+
+
+def adjust_budget_for_travelers() -> None:
+    """Adjust the current editable budget by EUR 500 per added/removed traveler."""
+    count = st.session_state["travelers"]
+    difference = count - st.session_state["previous_travelers"]
+    st.session_state["trip_budget"] = max(
+        1.0, float(st.session_state["trip_budget"]) + difference * 500.0
+    )
+    st.session_state["previous_travelers"] = count
+
+
 heading, mode_control = st.columns([4, 1], vertical_alignment="center")
 with heading:
     st.markdown(
@@ -43,8 +58,11 @@ if st.session_state.get("selected_data_mode", mode) != mode or (
     st.session_state.pop("trace", None)
 st.session_state["selected_data_mode"] = mode
 if mode == "live":
-    st.info(
-        "Travel information is retrieved from external data providers. Prices and availability may change. Estimated expenses are clearly marked."
+    st.markdown(
+        '<div class="provider-note"><span class="provider-note-icon" aria-hidden="true">i</span>'
+        "<span>Travel information is retrieved from external data providers. Prices and availability may change. "
+        "Estimated expenses are clearly marked.</span></div>",
+        unsafe_allow_html=True,
     )
     st.caption(
         "Enter a city and country when names may be ambiguous. The city suggestions are optional, not a restriction on destinations."
@@ -55,7 +73,7 @@ else:
         "Demo Mode — all travel prices, schedules, availability, places and weather are simulated. No bookings are made."
     )
 quota_status = st.empty()
-with st.form("travel_request", enter_to_submit=False):
+with st.container(border=True, key="travel_request_panel"):
     a, b, c = st.columns(3)
     cities = city_options()
     origin = a.selectbox(
@@ -78,7 +96,15 @@ with st.form("travel_request", enter_to_submit=False):
         placeholder="Search or enter a destination city",
         help="Type to filter city suggestions. If your city is not listed, enter City, Country as a new option.",
     )
-    travelers = c.number_input("Number of travelers", 1, 20, 1)
+    travelers = c.number_input(
+        "Number of travelers",
+        1,
+        20,
+        1,
+        key="travelers",
+        on_change=adjust_budget_for_travelers,
+        help="Each added traveler increases the budget by EUR 500. Removing a traveler subtracts EUR 500. You can edit the total budget at any time.",
+    )
     a, b, c = st.columns(3)
     today = current_date()
     default_start = max(today, date(2027, 4, 10))
@@ -88,7 +114,7 @@ with st.form("travel_request", enter_to_submit=False):
     budget = c.number_input(
         "Total budget in EUR",
         min_value=1.0,
-        value=600.0,
+        key="trip_budget",
         step=25.0,
         help="Target total for all travelers. If needed, the planner may suggest a clearly marked alternative up to 10% above this amount.",
     )
@@ -125,7 +151,7 @@ with st.form("travel_request", enter_to_submit=False):
         "We aim for your budget. Alternatives up to 10% above it may be suggested and will be clearly marked."
     )
     diets = [value for value in dietary_selection if value != "none"]
-    submitted = st.form_submit_button("Generate Travel Plan", type="primary", width="stretch")
+    submitted = st.button("Generate Travel Plan", type="primary", width="stretch")
 
 if submitted:
     try:

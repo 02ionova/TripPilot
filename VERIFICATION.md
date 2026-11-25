@@ -92,3 +92,7 @@ Manual submission screenshots remain to be captured: Live input form, actual dai
 - A closed-Monday museum regression confirms that the builder names the actual closed attraction/date, suggests retrieved alternatives, and succeeds after replacement without additional API calls.
 - Fixed the weather adapter's captured date reference so the test clock remains deterministic after midnight.
 - These design checks use Streamlit's test harness; a full browser screenshot is not claimed.
+
+## Subtle notice and traveler budget adjustment — 25 November 2026
+
+The provider disclaimer now uses a muted inline information note instead of an alert. Input widgets update independently so traveler count changes can immediately adjust the editable budget by EUR 500 per person. Planning remains exclusively button-triggered. Tests cover increases, multi-person changes, decreases, preserving manual edits, minimum EUR 1, repeated reruns without duplicate additions and no accidental agent invocation. Full suite: **158 passed in 3.12 seconds**; Ruff and whitespace checks passed, no external API calls.

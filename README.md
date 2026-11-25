@@ -112,7 +112,7 @@ Create/sign in to a [SerpApi account](https://serpapi.com/users/sign_up), then c
 streamlit run app.py
 ```
 
-Open the displayed localhost URL. Choose Live Mode, enter cities (prefer **City, Country**) and future dates, budget for **all** travelers, pace, interests and diets. Planning starts only with **Generate Travel Plan**; Enter can select a city but does not submit the form. Country-qualified suggestions are passed to providers. Missing/invalid keys produce explicit errors, never an automatic simulation fallback.
+Open the displayed localhost URL. Choose Live Mode, enter cities (prefer **City, Country**) and future dates, budget for **all** travelers, pace, interests and diets. Planning starts only with **Generate Travel Plan**; Enter can confirm a field value but does not start planning. Adding/removing a traveler immediately adds/subtracts EUR 500 from the current editable total budget (minimum EUR 1). Changing fields does not invoke the agent. Country-qualified suggestions are passed to providers. Missing/invalid keys produce explicit errors, never an automatic simulation fallback.
 
 Results show the daily itinerary, retrieved flight/hotel details, source timestamps, ratings, estimated transfer notes, categorized budget and request counters. Observable planning progress is displayed during generation. Technical logs and JSON export buttons are hidden from the web interface; full execution traces are still automatically saved in `traces/`, and the CLI saves final JSON results. Switching modes clears the previous result.
 
@@ -231,7 +231,7 @@ trip-pilot-ai/
 python -m pytest -v
 ```
 
-**156 tests passed** after the budget and design update. Tests use mocked OpenAI responses and `httpx.MockTransport`; an autouse network guard blocks accidental real HTTP transport in unit tests. Coverage includes full six-tool recovery, complete round-trip/group pricing, hotel rates/taxes/nights/rooms, dietary uncertainty, forecasts/archive samples, missing/null data, opening hours, transfers, trusted IDs, budget tampering/overruns, cache isolation, no-results reuse, quotas, retries, clean termination, redaction and Streamlit rendering. Tests consume **zero paid API calls**. Ruff and dependency checks are documented in `VERIFICATION.md`.
+**158 tests passed** after the budget and design update. Tests use mocked OpenAI responses and `httpx.MockTransport`; an autouse network guard blocks accidental real HTTP transport in unit tests. Coverage includes full six-tool recovery, complete round-trip/group pricing, hotel rates/taxes/nights/rooms, dietary uncertainty, forecasts/archive samples, missing/null data, opening hours, transfers, trusted IDs, budget tampering/overruns, cache isolation, no-results reuse, quotas, retries, clean termination, redaction and Streamlit rendering. Tests consume **zero paid API calls**. Ruff and dependency checks are documented in `VERIFICATION.md`.
 
 ## Limitations, attribution and future work
 
