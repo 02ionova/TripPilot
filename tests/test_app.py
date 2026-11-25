@@ -28,6 +28,9 @@ def test_success_result_renders(request_data):
     assert not app.exception
     assert len(app.metric) == 3
     assert app.metric[1].value == "€243.00"
+    assert not app.get("download_button")
+    assert not app.json
+    assert not any("Execution trace" in x.label for x in app.expander)
 
 
 def test_error_result_renders():
@@ -37,6 +40,8 @@ def test_error_result_renders():
     app.run(timeout=20)
     assert not app.exception
     assert "Missing API key" in app.error[0].value
+    assert not app.get("download_button")
+    assert not app.json
 
 
 def test_date_widgets_reject_past_dates():

@@ -15,7 +15,7 @@ Travel information is retrieved from external data providers. Prices and availab
 - Real places, addresses, coordinates, ratings, restaurant dietary indications and opening hours when available.
 - Forecasts within the supported horizon; clearly labeled historical climate estimates for distant dates.
 - Day-by-day schedule, geographic transfer allowances, required meals, pace/weather checks and group budget arithmetic.
-- Bounded retries, replanning, provider caching/quota limits, inspectable sanitized execution traces and JSON downloads.
+- Bounded retries, replanning, provider caching/quota limits, sanitized execution traces automatically saved to disk.
 - Explicit Demo Mode retains the original simulated tools for teaching and offline provider tests. It still needs OpenAI for interactive agent runs.
 
 Screenshot placeholders (capture the actual running application):
@@ -114,7 +114,7 @@ streamlit run app.py
 
 Open the displayed localhost URL. Choose Live Mode, enter cities (prefer **City, Country**) and future dates, budget for **all** travelers, pace, interests and diets. Planning starts only with **Generate Travel Plan**; Enter can select a city but does not submit the form. Country-qualified suggestions are passed to providers. Missing/invalid keys produce explicit errors, never an automatic simulation fallback.
 
-Results show the daily itinerary, retrieved flight/hotel details, source timestamps, ratings, estimated transfer notes, categorized budget and request counters. Expand the observable activity/trace section or download itinerary and trace JSON. Switching modes clears the previous result.
+Results show the daily itinerary, retrieved flight/hotel details, source timestamps, ratings, estimated transfer notes, categorized budget and request counters. Observable planning progress is displayed during generation. Technical logs and JSON export buttons are hidden from the web interface; full execution traces are still automatically saved in `traces/`, and the CLI saves final JSON results. Switching modes clears the previous result.
 
 ### CLI and examples
 

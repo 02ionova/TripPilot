@@ -1,6 +1,5 @@
 """English Streamlit UI; business rules remain in the tools and agent."""
 
-import json
 from dataclasses import replace
 from datetime import date, timedelta
 
@@ -199,7 +198,6 @@ if submitted:
 
 if "result" in st.session_state:
     result = st.session_state["result"]
-    trace = st.session_state["trace"]
     if result.status == "success" and result.data_source == "live":
         render_live_plan(result)
     elif result.status == "success":
@@ -287,18 +285,3 @@ if "result" in st.session_state:
         st.caption(
             f"SerpApi searches used: {result.serpapi_requests} · Provider cache hits: {result.provider_cache_hits}"
         )
-    a, b = st.columns(2)
-    a.download_button(
-        "Download itinerary JSON" if result.status == "success" else "Download result JSON",
-        result.model_dump_json(indent=2),
-        "itinerary.json",
-        "application/json",
-    )
-    b.download_button(
-        "Download execution trace JSON",
-        json.dumps(trace, indent=2),
-        "trace.json",
-        "application/json",
-    )
-    with st.expander("Execution trace — observable actions and tool results"):
-        st.json(trace)
