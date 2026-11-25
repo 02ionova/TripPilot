@@ -19,6 +19,7 @@ from openai import (
 )
 from pydantic import ValidationError
 
+from budgeting import budget_notice, maximum_budget
 from cities import bind_city_label
 from config import Settings
 from planning import estimate_minimum_budget
@@ -106,6 +107,10 @@ class TravelAgent:
             stats = self.runtime.client.stats() if self.runtime else {}
             self.trace.data["provider_stats"] = stats
             self.trace.data["serpapi_requests"] = stats.get("serpapi_requests", 0)
+            if itinerary:
+                notice = budget_notice(request.budget, itinerary.budget_breakdown.total)
+                if notice:
+                    message = message + " " + notice
             result = self.trace.finish(
                 FinalResponse(
                     status=status,
@@ -149,10 +154,10 @@ class TravelAgent:
                 estimate=budget_estimate.model_dump(),
                 summary="Checked the minimum required simulated costs before contacting the model.",
             )
-            if budget_estimate.shortfall > 0:
+            if budget_estimate.minimum_total > maximum_budget(request.budget):
                 return finish(
                     "infeasible",
-                    f"This trip needs at least EUR {budget_estimate.minimum_total:.2f} under the simulated prices. Your total budget is EUR {request.budget:.2f}, a shortfall of EUR {budget_estimate.shortfall:.2f}. Increase the budget, shorten the trip, or reduce the traveler count. No model requests were needed.",
+                    f"This trip needs at least EUR {budget_estimate.minimum_total:.2f} under the simulated prices. Your total budget is EUR {request.budget:.2f}, a shortfall of EUR {budget_estimate.shortfall:.2f}. This also exceeds the 10% flexible maximum of EUR {maximum_budget(request.budget):.2f}. Increase the budget, shorten the trip, or reduce the traveler count. No model requests were needed.",
                 )
         if self.client is None:
             if not self.settings.api_key:

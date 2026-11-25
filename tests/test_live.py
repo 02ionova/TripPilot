@@ -173,6 +173,7 @@ def fixture_handler(request):
                             ]
                         },
                         "website": "https://venue.example.test",
+                        "thumbnail": "https://venue.example.test/photo.jpg",
                     }
                 ]
             },
@@ -718,7 +719,8 @@ def test_live_default_header_and_no_simulation_fallback(monkeypatch):
     monkeypatch.setenv("DATA_MODE", "live")
     app = AppTest.from_file(str(ROOT / "app.py")).run(timeout=20)
     assert not app.exception
-    assert app.radio[0].value == "Live Mode"
+    assert app.toggle(key="live_mode").value is True
+    assert not app.sidebar.radio
     assert any(
         "Travel information is retrieved from external data providers." in item.value
         for item in app.info
@@ -821,3 +823,56 @@ def test_auto_schedule_respects_early_return_as_travel_only_day(runtime):
     assert any(
         "meal allowance" in note.lower() for note in plan.daily_itinerary[-1].recommendations
     )
+
+
+@pytest.mark.parametrize("target,accepted", [(600, True), (550, True), (532.72, False)])
+def test_live_flexible_budget_is_checked_from_trusted_prices(runtime, target, accepted):
+    populate(runtime)
+    runtime.request = runtime.request.model_copy(update={"budget": target})
+    args = selection(runtime)
+    before = runtime.client.serpapi_requests
+    result = execute_tool("build_itinerary", args.model_dump(mode="json"), runtime)
+    assert (result["status"] == "ok") is accepted
+    assert runtime.client.serpapi_requests == before
+    if accepted:
+        assert result["data"]["budget_breakdown"]["total"] == 586
+        assert result["data"]["budget_breakdown"]["remaining_budget"] == target - 586
+        if target < 586:
+            assert any("Budget alternative" in w for w in result["data"]["warnings"])
+    else:
+        assert result["error"]["code"] == "over_budget"
+
+
+def test_closed_attraction_identified_before_meal_search_and_replaced(runtime):
+    """Regression: the screenshot kept a Monday-closed museum across five builds."""
+    populate(runtime)
+    args = selection(runtime)
+    args.auto_schedule = True
+    museum = next(p for p, _ in runtime.activities.values() if p.category == "attraction")
+    # April 12, 2027 is Monday. Other retrieved venues remain available.
+    closed = museum.model_copy(update={"opening_hours": {"monday": "Closed"}})
+    alternative = museum.model_copy(
+        update={"id": "fixture-alternative", "name": "Alternative gallery"}
+    )
+    runtime.activities[closed.id] = (closed, runtime.request.destination)
+    runtime.activities[alternative.id] = (alternative, runtime.request.destination)
+    before = runtime.client.serpapi_requests
+    result = execute_tool("build_itinerary", args.model_dump(mode="json"), runtime)
+    error = result["error"]
+    assert error["code"] == "selected_place_closed"
+    assert "2027-04-12" in error["message"] and closed.name in error["message"]
+    assert "fixture-alternative" in " ".join(error["suggestions"])
+    for day in args.days:
+        if str(day.date) == "2027-04-12":
+            for slot in day.schedule:
+                if slot.activity_id == closed.id:
+                    slot.activity_id = alternative.id
+    revised = runtime.build_itinerary(args).data
+    assert revised.daily_itinerary[2].schedule
+    assert runtime.client.serpapi_requests == before
+
+
+def test_maps_thumbnail_reused_without_extra_requests(runtime):
+    result = runtime.search_activities(ActivityArgs(destination="Rome")).data[0]
+    assert result.image_url == "https://venue.example.test/photo.jpg"
+    assert runtime.client.serpapi_requests == 1

@@ -2,6 +2,7 @@
 
 from decimal import Decimal
 
+from budgeting import budget_notice, maximum_budget
 from scheduling import required_meals, site_window
 from schemas import (
     Activity,
@@ -179,10 +180,10 @@ def build_itinerary(args: BuildArgs):
         + transport
     )
     remaining = Decimal(str(request.budget)) - total
-    if remaining < 0:
+    if total > maximum_budget(request.budget):
         raise ToolFailure(
             "over_budget",
-            f"Total EUR {total:.2f} exceeds budget by EUR {-remaining:.2f}.",
+            f"Total EUR {total:.2f} exceeds the maximum including 10% flexibility (EUR {maximum_budget(request.budget):.2f}).",
             [
                 "Choose a hostel or cheaper flight.",
                 "Replace paid attractions with free options.",
@@ -213,6 +214,7 @@ def build_itinerary(args: BuildArgs):
         weather_summary=weather,
         recommendations=["Reserve tickets only after verifying real availability."],
         warnings=[
+            *([budget_notice(request.budget, total)] if remaining < 0 else []),
             "All prices, schedules, availability, restaurants and weather are simulated.",
             "EUR 5 per traveler per day covers simulated local transport and airport transfers; flights include no paid extras.",
             "Daily costs include meals, attractions and transport; flights and accommodation are charged once in the trip budget.",

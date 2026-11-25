@@ -3,6 +3,7 @@
 from datetime import datetime, time, timedelta
 from decimal import Decimal
 
+from budgeting import budget_notice, maximum_budget
 from providers.schedule import open_for_slot, transfer
 from scheduling import required_meals
 from schemas import (
@@ -342,13 +343,16 @@ def build_live_itinerary(runtime, args: BuildArgs) -> Itinerary:
     }
     total = sum(totals.values(), Decimal(0))
     remaining = Decimal(str(request.budget)) - total
-    if remaining < 0:
+    if total > maximum_budget(request.budget):
         breakdown = ", ".join(f"{key} EUR {amount:.2f}" for key, amount in totals.items())
         reject(
             "over_budget",
-            f"Total estimated cost EUR {total:.2f} exceeds the budget by EUR {-remaining:.2f}. Components: {breakdown}.",
+            f"Total estimated cost EUR {total:.2f} exceeds the maximum including 10% flexibility (EUR {maximum_budget(request.budget):.2f}). Components: {breakdown}.",
             "Select cheaper retrieved flights/accommodation, lower-cost restaurant estimates or attractions with confirmed free admission. Do not omit meals or claim missing admission prices are zero.",
         )
+    notice = budget_notice(request.budget, total)
+    if notice:
+        warnings.insert(0, notice)
     budget = BudgetBreakdown(
         **{k: float(v) for k, v in totals.items()},
         total=float(total),

@@ -1,6 +1,137 @@
 """Presentation of live provider records, quotes, estimates and provenance."""
 
+from html import escape
+
 import streamlit as st
+
+from budgeting import budget_notice, maximum_budget
+from config import ROOT
+from providers.travel import safe_url
+
+
+def render_budget_metrics(plan) -> None:
+    """Keep the original target visible and show overruns as positive extra cost."""
+    b = plan.budget_breakdown
+    target = b.total + b.remaining_budget
+    left, middle, right = st.columns(3)
+    left.metric("Total budget", f"€{target:.2f}")
+    middle.metric("Total estimated cost", f"€{b.total:.2f}")
+    if b.remaining_budget < 0:
+        right.metric("Above target budget", f"€{-b.remaining_budget:.2f}")
+        st.warning(budget_notice(target, b.total))
+    else:
+        right.metric("Remaining budget", f"€{b.remaining_budget:.2f}")
+    st.caption(
+        f"Target €{target:.2f} · Flexible maximum €{maximum_budget(target):.2f} (+10%). Flights and accommodation are charged once per trip."
+    )
+
+
+def render_stop(slot, *, simulated: bool = False) -> None:
+    """Render escaped provider text in visually distinct visit and meal cards."""
+    place = slot.activity
+    kind = "meal" if slot.meal else "visit"
+    if slot.transfer_note:
+        st.markdown(
+            f'<div class="transfer-note">{escape(slot.transfer_note)}</div>', unsafe_allow_html=True
+        )
+    rating = f" · {place.rating}/5" if place.rating is not None and not simulated else ""
+    reviews = f" · {place.reviews} reviews" if place.reviews is not None else ""
+    label = "Simulated cost" if simulated else price_label(place.price_info)
+    address = f'<div class="stop-meta">{escape(place.address)}</div>' if place.address else ""
+    links = []
+    for name, value in [("Google Maps ↗", place.url), ("Venue website ↗", place.website)]:
+        url = safe_url(value)
+        if url:
+            links.append(
+                f'<a href="{escape(url, quote=True)}" target="_blank" rel="noopener noreferrer">{name}</a>'
+            )
+    st.markdown(
+        f'<article class="stop-card {kind}">'
+        f'<div class="stop-top"><span class="stop-time">{slot.start_time:%H:%M} – {slot.end_time:%H:%M}</span>'
+        f'<span class="stop-tag">{escape(slot.meal.title() if slot.meal else "Explore")}</span></div>'
+        f'<div class="stop-name">{escape(place.name)}</div>{address}'
+        f'<div class="stop-meta">{label}: €{slot.total_cost:.2f} for all travelers{rating}{reviews}</div>'
+        f'<div class="stop-links">{"".join(links)}</div></article>',
+        unsafe_allow_html=True,
+    )
+    if slot.meal and not simulated and place.dietary_status == "unverified":
+        st.caption("Dietary suitability is unverified. Confirm directly with the venue.")
+
+
+def render_day_illustration(day, *, simulated: bool) -> None:
+    """Reuse a retrieved venue thumbnail; never spend searches just for decoration."""
+    venues = [s.activity for s in day.schedule]
+    featured = sorted(venues, key=lambda p: p.category == "meal")
+    photograph = (
+        next((p for p in featured if safe_url(p.image_url)), None) if not simulated else None
+    )
+    if photograph:
+        source_url = safe_url(photograph.url)
+        caption = f"{escape(photograph.name)} · Provider photo"
+        if source_url:
+            caption = f'<a href="{escape(source_url, quote=True)}" target="_blank" rel="noopener noreferrer">{caption} ↗</a>'
+        st.markdown(
+            f'<figure class="day-photo"><img src="{escape(safe_url(photograph.image_url), quote=True)}" alt="{escape(photograph.name, quote=True)}" loading="lazy" referrerpolicy="no-referrer"><figcaption>{caption}</figcaption></figure>',
+            unsafe_allow_html=True,
+        )
+    else:
+        scene = (
+            "museum"
+            if any(p.category == "attraction" for p in venues)
+            else "dining"
+            if venues
+            else "travel"
+        )
+        st.image(str(ROOT / "assets" / f"day-{scene}.svg"), width="stretch")
+        st.caption(
+            "Decorative illustration · Simulated venues"
+            if simulated
+            else "Decorative illustration · Venue photo unavailable"
+        )
+    if featured:
+        st.caption(f"Featuring {featured[0].name}")
+    else:
+        st.caption("Your journey · Arrival or departure day")
+
+
+def render_itinerary_days(plan) -> None:
+    """Day overview/photo alongside a color-coded chronological schedule."""
+    simulated = plan.data_source == "simulated"
+    for index, day in enumerate(plan.daily_itinerary, start=1):
+        with st.container(border=True, key=f"itinerary_day_{index}"):
+            overview, schedule = st.columns([1, 1.8], gap="large")
+            with overview:
+                st.markdown(
+                    f'<div class="day-number">Day {index:02} · {day.date:%A, %d %B}</div><div class="day-title">{escape(day.title)}</div>',
+                    unsafe_allow_html=True,
+                )
+                render_day_illustration(day, simulated=simulated)
+                w = day.weather
+                st.caption(
+                    f"{w.information_type} · {w.conditions} · {w.min_temperature:.0f}–{w.max_temperature:.0f} °C"
+                )
+                st.markdown(f"**€{day.estimated_cost:.2f}** · Daily estimated expenses")
+                st.caption(
+                    f"Local transport allowance: €{day.local_transport:.2f}. Flights and accommodation excluded from this daily figure."
+                )
+            with schedule:
+                if not day.schedule:
+                    st.info("Travel day — no destination visits scheduled.")
+                for slot in day.schedule:
+                    render_stop(slot, simulated=simulated)
+                if day.recommendations:
+                    with st.expander("Practical notes"):
+                        for text in day.recommendations:
+                            st.caption(text)
+    points = [
+        {"lat": s.activity.coordinates.latitude, "lon": s.activity.coordinates.longitude}
+        for d in plan.daily_itinerary
+        for s in d.schedule
+        if s.activity.coordinates
+    ]
+    if points:
+        with st.expander("Explore your places on the map"):
+            st.map(points)
 
 
 def price_label(info) -> str:
@@ -16,10 +147,7 @@ def render_live_plan(result):
         f"{summary.start_date} – {summary.end_date} · {summary.travelers} traveler(s) · EUR · Live Mode"
     )
     b = plan.budget_breakdown
-    left, middle, right = st.columns(3)
-    left.metric("Total budget", f"€{b.total + b.remaining_budget:.2f}")
-    middle.metric("Total estimated cost", f"€{b.total:.2f}")
-    right.metric("Remaining budget", f"€{b.remaining_budget:.2f}")
+    render_budget_metrics(plan)
     st.caption(
         f"SerpApi searches used: {result.serpapi_requests} · Provider cache hits: {result.provider_cache_hits} · Result assembled: {result.retrieved_at:%Y-%m-%d %H:%M UTC}"
         if result.retrieved_at
@@ -29,60 +157,7 @@ def render_live_plan(result):
         ["Day-by-day itinerary", "Flights & stay", "Weather", "Budget", "Sources & assumptions"]
     )
     with days:
-        for day in plan.daily_itinerary:
-            with st.expander(
-                f"{day.date} · {day.title} · €{day.estimated_cost:.2f}", expanded=True
-            ):
-                w = day.weather
-                rain = (
-                    f" · rain probability {w.rain_probability:.0%}"
-                    if w.rain_probability is not None
-                    else ""
-                )
-                st.caption(
-                    f"{w.information_type} · {w.conditions} · {w.min_temperature:.1f}–{w.max_temperature:.1f} °C{rain}"
-                )
-                if not day.schedule:
-                    st.write("Travel day — no destination visits scheduled.")
-                for slot in day.schedule:
-                    place = slot.activity
-                    st.markdown(
-                        f"**{slot.start_time:%H:%M}–{slot.end_time:%H:%M} · {slot.meal.title() if slot.meal else 'Visit'} · {place.name}**"
-                    )
-                    st.caption(
-                        f"{price_label(place.price_info)}: €{slot.total_cost:.2f} for all travelers · "
-                        + (f"Rating {place.rating}/5 · " if place.rating is not None else "")
-                        + (
-                            f"{place.reviews} reviews"
-                            if place.reviews is not None
-                            else "Review count unavailable"
-                        )
-                    )
-                    if place.address:
-                        st.write(place.address)
-                    if place.url:
-                        st.link_button("View on Google Maps", place.url)
-                    if place.website:
-                        st.link_button("Venue website", place.website)
-                    if slot.transfer_note:
-                        st.caption(slot.transfer_note)
-                    if place.price_info:
-                        for text in place.price_info.notes:
-                            st.caption(text)
-                    if slot.meal and place.dietary_status == "unverified":
-                        st.caption(
-                            "Dietary suitability is unverified. Confirm directly with the venue."
-                        )
-                for text in day.recommendations:
-                    st.caption(text)
-        points = [
-            {"lat": s.activity.coordinates.latitude, "lon": s.activity.coordinates.longitude}
-            for d in plan.daily_itinerary
-            for s in d.schedule
-            if s.activity.coordinates
-        ]
-        if points:
-            st.map(points)
+        render_itinerary_days(plan)
     with travel:
         flight = plan.selected_flights
         st.markdown(f"**{flight.airline}**")

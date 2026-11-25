@@ -8,6 +8,7 @@ from pathlib import Path
 from time import perf_counter
 from uuid import uuid4
 
+from budgeting import maximum_budget
 from config import ROOT
 
 
@@ -79,6 +80,11 @@ class Trace:
                 "valid": True,
                 "total": budget.total,
                 "remaining_budget": budget.remaining_budget,
+                "within_target": budget.remaining_budget >= 0,
+                "over_budget_amount": max(0, -budget.remaining_budget),
+                "maximum_with_flexibility": float(
+                    maximum_budget(budget.total + budget.remaining_budget)
+                ),
             }
         self.data = redact(self.data)
         self.directory.mkdir(parents=True, exist_ok=True)

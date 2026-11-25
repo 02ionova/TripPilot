@@ -6,7 +6,7 @@ chooses tools, flight/hotel/attraction IDs, dates/themes, searches and alternati
 
 from datetime import datetime, time, timedelta
 
-from providers.schedule import open_for_slot, transfer
+from providers.schedule import DAY_NAMES, open_for_slot, transfer
 from scheduling import required_meals
 from schemas import DaySelection, ScheduledSelection
 from tools.common import ToolFailure
@@ -61,6 +61,40 @@ def arrange(runtime, args):
                 )
             if stored[0].category == "attraction" and stored[0].id not in [p.id for p in selected]:
                 selected.append(stored[0])
+        # Diagnose the selected attraction before searching meal permutations.
+        # A closed museum cannot be fixed by repeatedly changing breakfast cafes.
+        for place in selected:
+
+            def can_visit(candidate):
+                return any(
+                    open_for_slot(candidate, day.date, start, start + candidate.duration_minutes)
+                    is not False
+                    for start in range(lower, upper - candidate.duration_minutes + 1, 5)
+                )
+
+            if not can_visit(place):
+                alternatives = [
+                    p
+                    for p, destination in runtime.activities.values()
+                    if destination == runtime.request.destination
+                    and p.category == "attraction"
+                    and p.id != place.id
+                    and can_visit(p)
+                ]
+                suggestions = [
+                    f"Replace {place.id} on {day.date}, or move it to an open day. Changing meal times cannot fix this attraction's closure.",
+                    "Already retrieved alternatives with usable/unknown hours: "
+                    + (
+                        "; ".join(f"{p.id}: {p.name}" for p in alternatives[:5])
+                        or "none; search other attractions"
+                    ),
+                ]
+                hours = place.opening_hours.get(DAY_NAMES[day.date.weekday()], "unavailable")
+                raise ToolFailure(
+                    "selected_place_closed",
+                    f"{day.date}: selected attraction {place.name} (ID {place.id}) cannot fit a full visit in the available window. Provider {DAY_NAMES[day.date.weekday()]} hours: {hours}.",
+                    suggestions,
+                )
         mandatory = [
             m for m in ("breakfast", "lunch", "dinner") if m in required_meals(lower, upper)
         ]

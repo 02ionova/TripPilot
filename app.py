@@ -8,18 +8,32 @@ import streamlit as st
 from pydantic import ValidationError
 
 from agent import TravelAgent
+from budgeting import maximum_budget
 from city_suggestions import city_label, city_options
 from config import Settings
+from design import apply_styles
 from schemas import TravelRequest, current_date
-from ui import render_live_plan
+from ui import render_budget_metrics, render_itinerary_days, render_live_plan
 
 st.set_page_config(page_title="TripPilot AI", page_icon="✈️", layout="wide")
-st.title("TripPilot AI")
-st.subheader("Your intelligent travel planning assistant")
+apply_styles()
 settings = Settings()
-mode_label = st.sidebar.radio(
-    "Data mode", ["Live Mode", "Demo Mode"], index=0 if settings.data_mode == "live" else 1
-)
+heading, mode_control = st.columns([4, 1], vertical_alignment="center")
+with heading:
+    st.markdown(
+        '<div class="journey-kicker">Thoughtfully planned. Ready to explore.</div>',
+        unsafe_allow_html=True,
+    )
+    st.title("TripPilot AI")
+    st.caption("Your intelligent travel planning assistant")
+with mode_control:
+    live_enabled = st.toggle(
+        "Live Mode",
+        value=settings.data_mode == "live",
+        key="live_mode",
+        help="On: Live Mode searches real flights, hotels, places and weather through external providers. Off: Demo Mode uses simulated travel data. Both modes use AI to plan; neither makes bookings.",
+    )
+mode_label = "Live Mode" if live_enabled else "Demo Mode"
 mode = "live" if mode_label == "Live Mode" else "demo"
 settings = replace(settings, data_mode=mode)
 if st.session_state.get("selected_data_mode", mode) != mode or (
@@ -36,12 +50,12 @@ if mode == "live":
     st.caption(
         "Enter a city and country when names may be ambiguous. The city suggestions are optional, not a restriction on destinations."
     )
-    st.sidebar.caption(f"SerpApi search cap per run: {settings.max_serpapi_requests}")
+
 else:
     st.warning(
         "Demo Mode — all travel prices, schedules, availability, places and weather are simulated. No bookings are made."
     )
-quota_status = st.sidebar.empty()
+quota_status = st.empty()
 with st.form("travel_request", enter_to_submit=False):
     a, b, c = st.columns(3)
     cities = city_options()
@@ -72,7 +86,13 @@ with st.form("travel_request", enter_to_submit=False):
     default_end = min(default_start + timedelta(days=3), date(2035, 12, 31))
     start = a.date_input("Start date", default_start, min_value=today, max_value=date(2035, 12, 31))
     end = b.date_input("End date", default_end, min_value=today, max_value=date(2035, 12, 31))
-    budget = c.number_input("Total budget in EUR", min_value=1.0, value=600.0, step=25.0)
+    budget = c.number_input(
+        "Total budget in EUR",
+        min_value=1.0,
+        value=600.0,
+        step=25.0,
+        help="Target total for all travelers. If needed, the planner may suggest a clearly marked alternative up to 10% above this amount.",
+    )
     a, b, c = st.columns(3)
     pace = a.selectbox("Travel pace", ["relaxed", "moderate", "intensive"], index=1)
     interests = b.multiselect(
@@ -101,6 +121,9 @@ with st.form("travel_request", enter_to_submit=False):
             "gluten-free": "Gluten-free",
             "halal": "Halal",
         }[value],
+    )
+    st.caption(
+        "We aim for your budget. Alternatives up to 10% above it may be suggested and will be clearly marked."
     )
     diets = [value for value in dietary_selection if value != "none"]
     submitted = st.form_submit_button("Generate Travel Plan", type="primary", width="stretch")
@@ -164,7 +187,7 @@ if submitted:
             st.session_state["trace"] = agent.trace.data
             final_label = {
                 "success": "Your travel plan is ready",
-                "infeasible": "Your trip needs a budget adjustment",
+                "infeasible": "No complete plan found — review the suggestions below",
                 "needs_clarification": "Please review your trip details",
             }.get(result.status, "Planning could not be completed")
             current_step.empty()
@@ -188,28 +211,12 @@ if "result" in st.session_state:
             f"{summary.start_date} – {summary.end_date} · {summary.travelers} traveler(s) · EUR"
         )
         budget_data = plan.budget_breakdown
-        a, b, c = st.columns(3)
-        a.metric("Total budget", f"€{budget_data.total + budget_data.remaining_budget:.2f}")
-        b.metric("Estimated total cost", f"€{budget_data.total:.2f}")
-        c.metric("Remaining budget", f"€{budget_data.remaining_budget:.2f}")
+        render_budget_metrics(plan)
         days, travel, weather, costs = st.tabs(
             ["Day-by-day itinerary", "Flights & accommodation", "Weather", "Budget"]
         )
         with days:
-            for day in plan.daily_itinerary:
-                with st.expander(
-                    f"{day.date} · {day.title} · €{day.estimated_cost:.2f}", expanded=True
-                ):
-                    st.caption(
-                        f"{day.weather.conditions} · {day.weather.min_temperature}–{day.weather.max_temperature} °C · local transport €{day.local_transport:.2f}"
-                    )
-                    for slot in day.schedule:
-                        st.write(
-                            f"**{slot.start_time:%H:%M}–{slot.end_time:%H:%M} · {slot.meal.title() if slot.meal else 'Visit'}: {slot.activity.name}** — €{slot.total_cost:.2f}"
-                        )
-                        st.caption(slot.activity.description)
-                    for text in day.recommendations:
-                        st.caption(text)
+            render_itinerary_days(plan)
         with travel:
             f, h = plan.selected_flights, plan.selected_accommodation
             st.markdown(f"**{f.airline}** · {f.id} · round trip €{f.total_price:.2f}")
@@ -270,7 +277,7 @@ if "result" in st.session_state:
                 }
             )
             st.info(
-                "Try a shorter trip, fewer travelers, or a higher total budget, then generate a new plan."
+                f"The estimate also exceeds the 10% flexible maximum of EUR {maximum_budget(estimate.available_budget):.2f}. Try a shorter trip, fewer travelers, or a higher target budget."
             )
     elif result.status == "needs_clarification":
         st.warning(result.message)

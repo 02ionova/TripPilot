@@ -180,6 +180,7 @@ def places(
                 source_category=raw.get("type"),
                 url=url,
                 website=safe_url(raw.get("website")),
+                image_url=safe_url(raw.get("thumbnail")),
                 price_info=price,
                 dietary_status="provider_indication" if compatible else "unverified",
                 source=source(payload, "SerpApi Google Maps", url),

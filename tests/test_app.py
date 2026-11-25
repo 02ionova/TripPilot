@@ -89,3 +89,37 @@ def test_planning_runs_only_after_generate_button(monkeypatch):
     assert len(calls) == 1
     assert calls[0].origin == "Berlin"
     assert calls[0].destination == "Lisbon"
+
+
+def test_compact_mode_toggle_has_help_and_clears_previous_result():
+    app = AppTest.from_file(str(ROOT / "app.py")).run(timeout=20)
+    toggle = app.toggle(key="live_mode")
+    assert "external providers" in toggle.proto.help
+    assert "simulated" in toggle.proto.help
+    assert not app.sidebar.radio and not app.sidebar.toggle
+    app.session_state["result"] = FinalResponse(status="error", message="Old result")
+    app.session_state["trace"] = {"events": []}
+    toggle.set_value(True).run(timeout=20)
+    assert not app.exception
+    assert "result" not in app.session_state
+
+
+def test_flexible_budget_and_daily_cards_render(request_data):
+    request_data["budget"] = 230
+    plan = Itinerary.model_validate(
+        execute_tool("build_itinerary", make_build(request_data))["data"]
+    )
+    app = AppTest.from_file(str(ROOT / "app.py"))
+    app.session_state["result"] = FinalResponse(
+        status="success", message="Alternative", itinerary=plan
+    )
+    app.session_state["trace"] = {"events": []}
+    app.run(timeout=20)
+    assert not app.exception
+    assert app.metric[0].value == "€230.00"
+    assert app.metric[2].label == "Above target budget" and app.metric[2].value == "€13.00"
+    assert any("10% flexibility" in w.value for w in app.warning)
+    markup = " ".join(m.value for m in app.markdown)
+    assert "stop-card meal" in markup and "stop-card visit" in markup
+    assert "Day 01" in markup and "Day 04" in markup
+    assert len(app.get("image")) == 4

@@ -1,10 +1,12 @@
 """Validated inputs, tool contracts and final itinerary models (EUR only)."""
 
 from datetime import date, datetime, time
+from decimal import Decimal
 from typing import Generic, Literal, TypeVar
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from budgeting import maximum_budget
 from cities import normalize_city_name
 
 
@@ -241,6 +243,7 @@ class Activity(Model):
     source_category: str | None = None
     url: str | None = None
     website: str | None = None
+    image_url: str | None = None
     price_info: PriceInfo | None = None
     dietary_status: Literal["simulated", "provider_indication", "unverified"] = "simulated"
     source: SourceInfo | None = None
@@ -321,7 +324,9 @@ class BudgetBreakdown(Model):
     activities: float = Field(ge=0)
     local_transport: float = Field(ge=0)
     total: float = Field(ge=0)
-    remaining_budget: float = Field(ge=0)
+    remaining_budget: float = Field(
+        description="Original target minus total; negative for an accepted alternative up to 10% above target."
+    )
 
     @model_validator(mode="after")
     def sums_match(self):
@@ -330,6 +335,10 @@ class BudgetBreakdown(Model):
         )
         if abs(self.total - expected) > 0.005:
             raise ValueError("Budget components must sum to total.")
+        if self.remaining_budget < 0:
+            target = Decimal(str(self.total)) + Decimal(str(self.remaining_budget))
+            if target <= 0 or Decimal(str(self.total)) > maximum_budget(target):
+                raise ValueError("Total cannot exceed the original budget by more than 10%.")
         return self
 
 

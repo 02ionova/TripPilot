@@ -4,10 +4,11 @@ from collections import Counter
 from datetime import date, timedelta
 from statistics import mean
 
+import schemas
 from providers.http import ProviderClient
 from providers.locations import geocode
 from providers.travel import source
-from schemas import WeatherArgs, WeatherDay, current_date
+from schemas import WeatherArgs, WeatherDay
 from tools.common import ToolFailure, dates
 
 WEATHER_CODES = {
@@ -64,7 +65,7 @@ def weather(client: ProviderClient, args: WeatherArgs) -> list[WeatherDay]:
         timezone=city.get("timezone", "auto"),
     )
     requested = dates(args.start_date, args.end_date)
-    today = current_date()
+    today = schemas.current_date()
     forecast_days = [day for day in requested if today <= day <= today + timedelta(days=15)]
     result = {}
     if forecast_days:

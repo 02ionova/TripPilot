@@ -160,7 +160,7 @@ CLI exit codes: 0 success, 2 invalid/missing input or clarification, 1 other ter
 
 ## Budget integrity and uncertainty
 
-All costs are EUR for the entire party. Decimal arithmetic sums flights, accommodation, food, activities and local transportation; the itinerary is rejected if the total exceeds the requested budget. Meals are charged once per scheduled meal; nightly accommodation and round-trip flights are charged once. Travel-only days receive an explicit meal allowance rather than invented restaurant visits.
+All costs are EUR for the entire party. Decimal arithmetic sums flights, accommodation, food, activities and local transportation; the planner prefers the original budget and can suggest a clearly marked alternative up to 10% above it. Totals above that flexible maximum are rejected. The original target is preserved and a negative `remaining_budget` records an accepted overrun. Meals are charged once per scheduled meal; nightly accommodation and round-trip flights are charged once. Travel-only days receive an explicit meal allowance rather than invented restaurant visits.
 
 Every `cost_items` entry has **Retrieved price** or **Estimated cost** provenance:
 
@@ -231,7 +231,7 @@ trip-pilot-ai/
 python -m pytest -v
 ```
 
-**142 tests passed** after the Live integration. Tests use mocked OpenAI responses and `httpx.MockTransport`; an autouse network guard blocks accidental real HTTP transport in unit tests. Coverage includes full six-tool recovery, complete round-trip/group pricing, hotel rates/taxes/nights/rooms, dietary uncertainty, forecasts/archive samples, missing/null data, opening hours, transfers, trusted IDs, budget tampering/overruns, cache isolation, no-results reuse, quotas, retries, clean termination, redaction and Streamlit rendering. Tests consume **zero paid API calls**. Ruff and dependency checks are documented in `VERIFICATION.md`.
+**156 tests passed** after the budget and design update. Tests use mocked OpenAI responses and `httpx.MockTransport`; an autouse network guard blocks accidental real HTTP transport in unit tests. Coverage includes full six-tool recovery, complete round-trip/group pricing, hotel rates/taxes/nights/rooms, dietary uncertainty, forecasts/archive samples, missing/null data, opening hours, transfers, trusted IDs, budget tampering/overruns, cache isolation, no-results reuse, quotas, retries, clean termination, redaction and Streamlit rendering. Tests consume **zero paid API calls**. Ruff and dependency checks are documented in `VERIFICATION.md`.
 
 ## Limitations, attribution and future work
 
@@ -253,3 +253,11 @@ Future work: verified routing, richer date-specific opening calendars, direct bo
 - [ ] Actual screenshots: capture the views listed above.
 
 Changes are committed to the user-designated repository. Do not commit `.env`, provider caches, temporary results or incidental private traces. Selected reviewed demonstration traces are deliberately tracked.
+
+## Budget flexibility and visual update (25 November 2026)
+
+Both Live and Demo Mode now allow suggestions up to 10% above the original target when necessary. An accepted overrun is explicitly shown as **Above target budget**, included in warnings/final text, and recorded in trace validation. The model cannot change the original request budget; Python enforces the 110% maximum.
+
+The compact Live Mode toggle is at the top with help explaining both modes; the sidebar menu has been removed. The interface uses an ivory, aubergine, sage and brass palette. Each day has a visual overview and separate color-coded visit/meal cards. Live venue photos reuse Google Maps thumbnails from existing searches without extra SerpApi requests. When a photo is unavailable (including older saved traces), clearly labeled decorative SVG illustrations are used; they do not claim to depict the actual venue.
+
+The scheduler now diagnoses a selected closed attraction before trying meal permutations, reporting the exact place/date/ID and already retrieved alternatives. This addresses the Berlin screenshot's Monday-closed museum; increasing the budget alone cannot resolve a confirmed closure.

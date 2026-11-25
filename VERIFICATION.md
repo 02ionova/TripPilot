@@ -82,3 +82,13 @@ python main.py --mode live --input examples/live_paris.json --demonstrate-recove
 Update example dates after their departure date. Keep keys in your own `.env`; no source changes are required. Repeated real runs spend OpenAI tokens and may consume SerpApi credits after cache expiry, so they are not part of automated testing.
 
 Manual submission screenshots remain to be captured: Live input form, actual daily plan and budget, flights/hotel sources, and Paris recovery trace. Source hours/prices, room inventory, actual transfer routes and dietary suitability must be rechecked before travel; this application plans trips but does not reserve or certify offers.
+
+## Budget and design regression verification — 25 November 2026
+
+- Full automated suite: **156 passed in 3.23 seconds**, zero external API calls. Ruff lint passed.
+- Streamlit AppTest verifies the top mode toggle/help, empty sidebar, mode-switch result clearing, separate meal/visit cards, four day illustrations and clear EUR 13 overrun display for a EUR 230 target / EUR 243 plan.
+- HTTP fixtures verify provider thumbnails are reused without extra searches. Original Live rendering tests still pass.
+- Budget tests cover original-target success, accepted alternatives, exact 10% and one-cent boundary rejection, Demo precheck, Live/Demo builders, final JSON round-trip and trace overrun disclosure.
+- A closed-Monday museum regression confirms that the builder names the actual closed attraction/date, suggests retrieved alternatives, and succeeds after replacement without additional API calls.
+- Fixed the weather adapter's captured date reference so the test clock remains deterministic after midnight.
+- These design checks use Streamlit's test harness; a full browser screenshot is not claimed.
