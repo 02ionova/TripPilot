@@ -7,7 +7,7 @@ def apply_styles() -> None:
     """Warm ivory, aubergine, forest and brass with readable venue cards."""
     st.markdown(
         """<style>
-        .block-container {max-width: 1220px; padding-top: 2.2rem; padding-bottom: 3rem;}
+        .block-container {max-width: 1220px; padding-top: 5rem; padding-bottom: 3rem;}
         h1, h2, h3 {letter-spacing: -.035em;}
         h1 {font-family: Georgia, serif; font-weight: 500 !important; color: #493343;}
         [data-testid="stForm"] {background: #FFFEFC; border-color: #E4DCD2; border-radius: 18px; padding: 1.35rem;}
@@ -35,7 +35,7 @@ def apply_styles() -> None:
         .stop-links {font-size: .78rem; padding-top: .45rem; display: flex; gap: 1rem;}
         .transfer-note {font-size: .74rem; color: #6F726F; border-left: 1px dashed #CFC6B9; margin: .15rem 0 .3rem .7rem; padding: .2rem .8rem;}
         @media (max-width: 700px) {
-          .block-container {padding: 1rem;}
+          .block-container {padding: 5rem 1rem 2rem;}
           .day-photo img {height: 190px;}
           .stop-card {padding: .8rem;}
         }
