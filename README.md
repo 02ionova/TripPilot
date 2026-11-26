@@ -8,6 +8,11 @@
 
 TripPilot AI builds day-by-day travel plans from a destination, dates, total budget and preferences. Its OpenAI agent independently chooses tools, searches for travel options and revises unsuccessful plans. Python validates retrieved option IDs, schedules and costs. The application includes a Streamlit interface, an independent CLI, automated tests and two full successful execution traces.
 
+
+https://github.com/user-attachments/assets/cfc5ea1e-81e4-4655-ae94-b5307068decb
+
+
+
 **Live Mode** uses SerpApi for flights, hotels, attractions and restaurants, plus Open-Meteo for weather. **Demo Mode** explicitly uses simulated travel data. Neither mode makes bookings. Prices and availability may change; estimated expenses are labeled.
 
 ## Start here: instructor review
