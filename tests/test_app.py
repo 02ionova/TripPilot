@@ -55,6 +55,7 @@ def test_date_widgets_reject_past_dates():
     assert not app.exception
     for widget in app.date_input:
         assert widget.min == date(2026, 11, 24)
+        assert widget.max == date(2027, 12, 31)
         assert widget.value >= widget.min
     assert app.selectbox(key="origin_city").value == "Prague"
     assert app.selectbox(key="destination_city").value == "Rome"

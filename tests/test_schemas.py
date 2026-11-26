@@ -41,6 +41,24 @@ def test_missing_fields():
         TravelRequest.model_validate({})
 
 
+@pytest.mark.parametrize(
+    "start,end,valid",
+    [
+        ("2026-11-24", "2026-11-27", True),
+        ("2027-12-28", "2027-12-31", True),
+        ("2027-12-31", "2028-01-01", False),
+        ("2028-01-01", "2028-01-04", False),
+    ],
+)
+def test_supported_travel_years(request_data, start, end, valid):
+    request_data.update(start_date=start, end_date=end)
+    if valid:
+        TravelRequest.model_validate(request_data)
+    else:
+        with pytest.raises(ValidationError, match="only in 2026 and 2027"):
+            TravelRequest.model_validate(request_data)
+
+
 def test_success_requires_itinerary():
     with pytest.raises(ValidationError):
         FinalResponse(status="success", message="Done")

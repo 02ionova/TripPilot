@@ -97,16 +97,16 @@ with st.container(border=True, key="travel_request_panel"):
     a, b, c = st.columns(3)
     today = current_date()
     default_start = max(today, date(2027, 4, 10))
-    default_end = min(default_start + timedelta(days=3), date(2035, 12, 31))
+    default_end = min(default_start + timedelta(days=3), date(2027, 12, 31))
     start = a.date_input(
         "Start date",
         default_start,
         min_value=today,
-        max_value=date(2035, 12, 31),
+        max_value=date(2027, 12, 31),
         format="DD/MM/YYYY",
     )
     end = b.date_input(
-        "End date", default_end, min_value=today, max_value=date(2035, 12, 31), format="DD/MM/YYYY"
+        "End date", default_end, min_value=today, max_value=date(2027, 12, 31), format="DD/MM/YYYY"
     )
     budget = c.number_input(
         "Total budget in EUR",

@@ -155,7 +155,7 @@ Example request (`examples/live_rome.json`):
 }
 ```
 
-Required fields are validated before API calls: nonempty city labels, positive finite total budget, 1–20 travelers, chronological future dates, supported duration 1–14 days and supported years 2026–2035. Ambiguous provider city matches return clarification instead of guessing. Travel preferences use English labels. No dietary restrictions is `[]`.
+Required fields are validated before API calls: nonempty city labels, positive finite total budget, 1–20 travelers, chronological future dates, supported duration 1–14 days and supported years 2026–2027. Ambiguous provider city matches return clarification instead of guessing. Travel preferences use English labels. No dietary restrictions is `[]`.
 
 The final JSON is a typed envelope with `status`, `message`, `itinerary`, `data_source`, counters and retrieval time. A successful itinerary contains `trip_summary`, complete `selected_flights`, `selected_accommodation` (nullable for no overnight stay), `daily_itinerary`, `weather_summary`, `budget_breakdown`, `cost_items`, recommendations and warnings. Refer to `schemas.py` and the included complete genuine traces instead of treating an abbreviated example as a complete schema.
 
@@ -244,7 +244,7 @@ trip-pilot-ai/
 python -m pytest -v
 ```
 
-**195 tests passed** after the AI backup and date-display update. Tests use mocked OpenAI responses and `httpx.MockTransport`; an autouse network guard blocks accidental real HTTP transport in unit tests. Coverage includes full six-tool recovery, complete round-trip/group pricing, hotel rates/taxes/nights/rooms, dietary uncertainty, forecasts/archive samples, missing/null data, opening hours, transfers, trusted IDs, budget tampering/overruns, cache isolation, no-results reuse, quotas, retries, clean termination, redaction and Streamlit rendering. Backup tests cover single-call limits, invalid output/dates, timeout/secret handling, preserving failure status and absent budget validation, token statistics, report export and UI rendering. Tests consume **zero paid API calls**. Ruff and dependency checks are documented in `VERIFICATION.md`.
+**199 tests passed** after the AI backup, date-display and supported-year updates. Tests use mocked OpenAI responses and `httpx.MockTransport`; an autouse network guard blocks accidental real HTTP transport in unit tests. Coverage includes full six-tool recovery, complete round-trip/group pricing, hotel rates/taxes/nights/rooms, dietary uncertainty, forecasts/archive samples, missing/null data, opening hours, transfers, trusted IDs, budget tampering/overruns, cache isolation, no-results reuse, quotas, retries, clean termination, redaction and Streamlit rendering. Backup tests cover single-call limits, invalid output/dates, timeout/secret handling, preserving failure status and absent budget validation, token statistics, report export and UI rendering. Tests consume **zero paid API calls**. Ruff and dependency checks are documented in `VERIFICATION.md`.
 
 ## Limitations, attribution and future work
 

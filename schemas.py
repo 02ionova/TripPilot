@@ -28,8 +28,8 @@ class DateRange(Model):
     def dates_valid(self):
         if not 0 <= (self.end_date - self.start_date).days <= 13:
             raise ValueError("Trip must last 1–14 calendar days, with end_date >= start_date.")
-        if self.start_date.year < 2026 or self.end_date.year > 2035:
-            raise ValueError("Dates are supported from 2026 through 2035.")
+        if self.start_date.year < 2026 or self.end_date.year > 2027:
+            raise ValueError("Dates are supported only in 2026 and 2027.")
         return self
 
 

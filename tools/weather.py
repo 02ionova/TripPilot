@@ -1,4 +1,4 @@
-"""Seasonal simulations, repeatable for dates in 2026–2035."""
+"""Seasonal simulations, repeatable for dates in 2026–2027."""
 
 from schemas import WeatherArgs, WeatherDay
 from tools.common import dates, load, success

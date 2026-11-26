@@ -137,3 +137,8 @@ The UI shows backup model, response duration and reported token usage. Traces re
 - One actual OpenAI backup request using the original failed Amsterdam request succeeded with **gpt-4.1-mini**, **6.515 seconds**, **1,148 tokens**, four days. This was a direct helper verification, not a new successful full-agent itinerary trace. **Zero SerpApi searches** were used. The local verification output is under ignored `results/ai_backup_verification.json`; no key was logged.
 - A real local Chromium session verified Streamlit startup, the existing daily plan/flight/stay cards, desktop/mobile layout, information control and full report download using a saved genuine result. All external browser requests were blocked and the local server stopped afterward.
 - `.env` and the configured model were not changed. The tested model remains configurable; newer models must be checked for Chat Completions tool/structured-output compatibility before substitution.
+
+
+## Supported travel years — 26 November 2026
+
+Both date pickers now end at 31 December 2027. Shared Python date validation accepts only 2026–2027 for requests and tools, including rejecting trips crossing into 2028. The existing no-past-departure rule is unchanged. README and simulated-weather documentation match the range. Streamlit bounds and year-boundary regressions pass. Full suite: **199 passed in 3.39 seconds**; Ruff and whitespace checks passed. No external API requests were made.

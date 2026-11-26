@@ -28,7 +28,7 @@ def test_destinations_have_sufficient_activities(city):
 
 
 def test_future_dates_repeat_seasonal_profile():
-    assert weather(start="2030-04-10", end="2030-04-13")["status"] == "ok"
+    assert weather(start="2027-04-10", end="2027-04-13")["status"] == "ok"
 
 
 def test_new_destination_uses_simulated_weather():
