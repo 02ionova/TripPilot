@@ -256,7 +256,6 @@ def price_label(info) -> str:
 def render_live_plan(result):
     plan = result.itinerary
     summary = plan.trip_summary
-    st.caption("Your travel plan is ready.")
     st.subheader(f"{summary.origin} → {summary.destination}")
     st.caption(
         f"{display_date(summary.start_date)} – {display_date(summary.end_date)} · {summary.travelers} traveler(s) · EUR · Live Mode"

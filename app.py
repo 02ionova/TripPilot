@@ -226,7 +226,6 @@ if "result" in st.session_state:
     if result.status == "success" and result.data_source == "live":
         render_live_plan(result)
     elif result.status == "success":
-        st.caption("Your simulated travel plan is ready.")
         plan = result.itinerary
         summary = plan.trip_summary
         st.subheader(f"{summary.origin} → {summary.destination}")
