@@ -115,7 +115,7 @@ with st.container(border=True, key="travel_request_panel"):
         "Total budget in EUR",
         min_value=1.0,
         key="trip_budget",
-        step=25.0,
+        step=100.0,
         help="Target total for all travelers. If needed, the planner may suggest a clearly marked alternative up to 10% above this amount.",
     )
     a, b, c = st.columns(3)
