@@ -1,5 +1,19 @@
 # Verification record — Live provider migration
 
+## Final submission review — 26 November 2026
+
+The README has been consolidated for instructor review, with an assignment-to-source evidence table, setup for macOS/Linux/Windows, current architecture, all six tools, structured contracts, budget provenance/policy, error handling and trace inspection. Incremental UI development history is no longer mixed into the main README; the dated records below remain historical verification evidence.
+
+- `python -m pytest -v`: **209 passed in 3.62 seconds**, mocked SDK/HTTP responses, no external requests.
+- `python verify_submission.py`: **both submitted genuine Live traces passed** local schema, required-tool/call-ID, independent cost-item/category sum, original-budget and recorded-recovery checks. This offline checker does not claim to verify current availability or re-execute the scheduler.
+- `python -m pip check`: **No broken requirements found**. Ruff and whitespace checks passed. Local README/walkthrough links and fenced JSON examples were checked.
+- Four actual browser screenshots are included under `docs/screenshots/`, replacing the old placeholders. Screenshots show the current interface using the saved genuine Rome result, not new searches. All external browser requests were blocked and the temporary server stopped afterward.
+- `docs/DEMONSTRATIONS.md` lists the exact observable iterations for Rome and Paris, retrieved/estimated costs, disclosed recovery constraint and reproduction commands. Existing genuine traces were not modified or fabricated.
+- README explicitly distinguishes the optional 10% budget flexibility from strict-budget examples; both submitted results remain below their original EUR 2,000 budget.
+- No OpenAI or SerpApi requests were made for this final documentation review. Existing `.env` was preserved. Historical statements below about screenshots still being outstanding are superseded by this review.
+
+## Historical verification records
+
 Verified on **24 November 2026**, macOS, Python 3.14.0, OpenAI SDK 2.54.0, Pydantic 2.14.4, Streamlit 1.67.0, pytest 9.2.0. The project targets Python 3.11+; this record describes the actual installed environment.
 
 ## Automated verification

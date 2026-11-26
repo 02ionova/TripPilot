@@ -2,96 +2,55 @@
 
 **Your intelligent travel planning assistant**
 
-Unicorn University — **AI for Software Developers, Homework 3: Agentic Application**, Option A: Travel-Planner Agent.
+**Unicorn University · AI for Software Developers · Homework 3 — Agentic Application**
 
-TripPilot is a Python/OpenAI tool-calling agent with a Streamlit interface and independent CLI. In **Live Mode (default)** it searches external providers for flights, accommodation, attractions, restaurants and weather. The model chooses its tools and alternatives; Python schedules visits, resolves trusted offer IDs and validates the total estimated budget. The application does not make bookings.
+**Option A — Travel-Planner Agent · Author: Natalia Ionova**
 
-Travel information is retrieved from external data providers. Prices and availability may change. Estimated expenses are clearly marked.
+TripPilot AI builds day-by-day travel plans from a destination, dates, total budget and preferences. Its OpenAI agent independently chooses tools, searches for travel options and revises unsuccessful plans. Python validates retrieved option IDs, schedules and costs. The application includes a Streamlit interface, an independent CLI, automated tests and two full successful execution traces.
 
-## Features and screenshots
+**Live Mode** uses SerpApi for flights, hotels, attractions and restaurants, plus Open-Meteo for weather. **Demo Mode** explicitly uses simulated travel data. Neither mode makes bookings. Prices and availability may change; estimated expenses are labeled.
 
-- Arbitrary departure/destination city labels, searchable offline suggestions and country disambiguation.
-- Round-trip flights with complete outbound/return segments; real hotel quotes, source links and photos when supplied.
-- Real places, addresses, coordinates, ratings, restaurant dietary indications and opening hours when available.
-- Forecasts within the supported horizon; clearly labeled historical climate estimates for distant dates.
-- Day-by-day schedule, geographic transfer allowances, required meals, pace/weather checks and group budget arithmetic.
-- Bounded retries, replanning, provider caching/quota limits, sanitized execution traces automatically saved to disk.
-- Explicit Demo Mode retains the original simulated tools for teaching and offline provider tests. It still needs OpenAI for interactive agent runs.
+## Start here: instructor review
 
-Screenshot placeholders (capture the actual running application):
+1. Follow the setup below, then run `python -m pytest -v`. Tests require no API keys and make no external requests.
+2. Run `python verify_submission.py` to inspect the two submitted successful Live traces without spending API credits.
+3. Read [agent.py](agent.py) for the explicit loop, [tools/registry.py](tools/registry.py) for native function definitions/dispatch, and [schemas.py](schemas.py) for typed contracts.
+4. Read [the two-run walkthrough](docs/DEMONSTRATIONS.md) for actual actions, recoverable errors and independently checked costs.
+5. To try a new AI-generated plan, configure your own keys and launch `streamlit run app.py` or use the CLI examples.
 
-| Screenshot | Suggested content |
+| Assignment requirement | Evidence |
 | --- | --- |
-| Input form | Live Mode, country-qualified cities, dates and preferences |
-| Completed plan | Daily itinerary, actual venues, budget metrics and cost labels |
-| Flights and hotel | Round-trip segments, hotel photo and source links |
-| Recovery | Paris trace showing restrictive hotel search and successful broader search |
+| Destination, dates, budget and pace/interests/dietary preferences | `TravelRequest` in [schemas.py](schemas.py); form in [app.py](app.py) |
+| Explicit agent loop; autonomous tool selection | `TravelAgent._run` in [agent.py](agent.py) |
+| Native tool calling and structured outputs | OpenAI Chat Completions function calls + strict JSON-schema decision; Pydantic validation |
+| At least four tools, including itinerary assembly | Six Live tools; five preserved Demo tools, described below |
+| Tool errors, replanning or clarification | Paris `no_priced_hotels` → broader search; Rome `pace_limit` → revised schedule |
+| Day-by-day itinerary and programmatic budget checks | [providers/itinerary.py](providers/itinerary.py), [providers/arrange.py](providers/arrange.py), [budgeting.py](budgeting.py) |
+| Clean termination | Five typed terminal statuses, bounded iterations/retries/repeated calls |
+| Two complete successful traces | [Rome](traces/20261124T205633_19e1ba5b-0276-4169-b7f3-4944c8c82099.json), [Paris](traces/20261124T205633_30127e40-3f4e-4b19-9f70-b3131cb94ac1.json) |
+| Setup, architecture and examples | This README, [examples/](examples), [.env.example](.env.example) |
 
-## Stack and architecture
+## Setup
 
-Python 3.11+, OpenAI Python SDK, Pydantic, Streamlit, python-dotenv, httpx, SQLite/JSON and pytest. No orchestration framework.
-
-```mermaid
-flowchart TD
-    UI[Streamlit / CLI] --> Input[Pydantic TravelRequest]
-    Input --> Agent[Explicit agent loop]
-    Agent <--> Model[OpenAI native function calling and structured decision]
-    Agent --> Registry[Validated tool registry]
-    Registry --> Live[Per-run LiveTools and trusted offer store]
-    Live --> Client[HTTP client: timeout, TTL cache, quota cap]
-    Client --> Serp[SerpApi Flights / Hotels / Maps / Account]
-    Client --> Weather[Open-Meteo geocoding / forecast / archive]
-    Live --> Builder[Python timing, geography, opening hours and budget validator]
-    Builder --> Agent
-    Registry --> Demo[Explicit Demo Mode tools and local JSON]
-    Agent --> Trace[Sanitized JSON execution trace]
-    Agent --> Output[Typed final result and itinerary]
-```
-
-### Explicit agent loop
-
-The `for iteration ...` loop in `agent.py` calls `client.chat.completions.create` with native function definitions and a strict JSON-schema final decision. It preserves each assistant tool-call message, call ID and corresponding tool result. The model independently chooses the tool, arguments, searches, selected flight/hotel/attraction IDs and revisions. There is no fixed sequence of API calls.
-
-Each result or structured error is appended to the conversation. The model may broaden hotel filters, search other venues, explore another outbound flight's return options, or revise the itinerary after budget/timing errors. Repeated identical calls, tool failures, transient retries and total iterations are bounded. Terminal statuses are `success`, `needs_clarification`, `infeasible`, `error`, and `iteration_limit`.
-
-A successful response requires all six Live tools and a successful builder result. Python copies the validated builder result into the final response; model-generated prices or a final text claim cannot establish success. Native structured output constrains the final decision, while detailed Pydantic models validate inputs, offers, tool results and the final itinerary.
-
-The live builder defaults to `auto_schedule=true`: the model selects retrieved attractions for each date, while a bounded Python constraint search places those visits and meals from the retrieved restaurant pool. It uses local flight arrival/departure times, opening intervals and estimated transfers. This mechanical scheduling step neither retrieves fictional places nor replaces the agent's tool/replanning decisions. `auto_schedule=false` validates proposed times strictly. The builder returns actionable errors for infeasible selections; the agent must change them.
-
-### Tools and external APIs
-
-| Tool | Source | Behavior |
-| --- | --- | --- |
-| `get_weather` | Open-Meteo | Geocode; daily min/max temperature, wind, weather code and forecast rain probability. Outside the 16-day horizon, comparable dates from three completed seasons are averaged and labeled **Historical climate estimate**. Historical wet-day frequency is not a predicted rain probability. |
-| `search_flights` | SerpApi Google Flights + autocomplete | Resolve city/airport IDs; initial round-trip outbound search, then `departure_token` return selection. Only complete paired offers with usable prices/times are returned. The return-stage quote is the complete party round-trip price; the outbound-stage price is never added to it. |
-| `search_hotels` | SerpApi Google Hotels | Date/guest-specific quotes, total/nightly rates, tax information, ratings, photos, location and links. Distinguishes period totals from nightly rates; missing usable prices return an error. |
-| `search_activities` | SerpApi Google Maps | Bulk search real attractions by interests/query; preserve addresses, coordinates, ratings, hours and sources. Missing admission prices receive a labeled estimate, never an invented confirmed ticket price. |
-| `search_restaurants` | SerpApi Google Maps | Bulk restaurant/cafe searches with requested diets and optional geographic bias. Supports vegetarian, vegan, gluten-free, halal and no restrictions. Provider indications are not dietary certification. |
-| `build_itinerary` | Python, no HTTP | Resolve only IDs retrieved for this request, schedule and validate every date, pace, meals, known opening hours, weather, transfer gaps and total party costs. Return feedback for replanning. |
-
-Official API references: [Flights](https://serpapi.com/google-flights-api), [flight results and return tokens](https://serpapi.com/google-flights-results), [autocomplete](https://serpapi.com/google-flights-autocomplete-api), [Hotels](https://serpapi.com/google-hotels-api), [Maps](https://serpapi.com/google-maps-api), [Search API](https://serpapi.com/search-api), [Account API](https://serpapi.com/account-api), [Open-Meteo forecast](https://open-meteo.com/en/docs), [geocoding](https://open-meteo.com/en/docs/geocoding-api), [historical weather](https://open-meteo.com/en/docs/historical-weather-api).
-
-## Installation and configuration
-
-From the repository directory on macOS/Linux:
+Requires **Python 3.11+**. Verification was performed on macOS with Python 3.14; the installed dependency snapshot is [requirements-tested.txt](requirements-tested.txt). Use [requirements.txt](requirements.txt) for normal installation.
 
 ```bash
+git clone https://github.com/02ionova/TripPilot.git
+cd TripPilot
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
-cp .env.example .env
 ```
 
-Windows PowerShell:
+On Windows PowerShell, create/activate the environment with:
 
 ```powershell
 py -3 -m venv .venv
 .venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
-Copy-Item .env.example .env
 ```
 
-Only copy `.env.example` if `.env` does not already exist. Edit your own `.env`:
+For interactive agent runs, copy `.env.example` to `.env` **only if `.env` does not already exist** (`cp .env.example .env` on macOS/Linux; `Copy-Item .env.example .env` on PowerShell). Fill in your own keys:
 
 ```env
 OPENAI_API_KEY=
@@ -103,138 +62,210 @@ DATA_MODE=live
 ENABLE_AI_FALLBACK=true
 ```
 
-Create/sign in to a [SerpApi account](https://serpapi.com/users/sign_up), then copy the API key from the private dashboard into `SERPAPI_API_KEY`. The same key is used for all SerpApi engines. No new subscription or paid plan is enabled by this application. Open-Meteo needs no key for its free noncommercial API; OpenAI usage is billed separately by OpenAI.
+| Setting | Purpose |
+| --- | --- |
+| `OPENAI_API_KEY` | Required for real agent runs in either mode; not needed by mocked tests or saved-trace verification |
+| `OPENAI_MODEL` | Configurable model; must support Chat Completions native function calling and strict JSON-schema output in your API project |
+| `SERPAPI_API_KEY` | One key for all Live searches; create a [SerpApi account](https://serpapi.com/users/sign_up) and copy the key from its dashboard |
+| `MAX_AGENT_ITERATIONS` | Maximum planning iterations, default 15 |
+| `MAX_SERPAPI_REQUESTS_PER_RUN` | Search-attempt cap, default 15, including retries/airport lookups/return selections/pages |
+| `DATA_MODE` | `live` by default; `demo` explicitly selects simulation |
+| `ENABLE_AI_FALLBACK` | Optional separate, unverified AI advice after unresolved Live search failures |
 
-`gpt-4.1-mini` was verified with the installed OpenAI 2.x SDK using Chat Completions function calling and JSON-schema structured output. A replacement model must support both and be accessible to your OpenAI API project. Existing exported environment variables take precedence over `.env`. Restart Streamlit after changing keys/settings. Never commit `.env`.
+The submitted runs used `gpt-4.1-mini`. Do not assume that any model name is compatible: this implementation uses **Chat Completions**, not Responses API. Existing exported environment variables take precedence over `.env`; restart the application after changing configuration. Open-Meteo needs no key. OpenAI API usage is billed separately from SerpApi; no subscription changes are performed. Never commit `.env`.
 
-OpenAI now labels this tested model as deprecated. Model migrations must check endpoint compatibility: for example, `gpt-6.1-terra` requires Responses API for tool calling, while this agent currently uses Chat Completions. Do not change to an incompatible model name without adapting the loop. See the official [model documentation](https://developers.openai.com/api/docs/models/gpt-6.1-terra).
+## Run the application
 
-### Launch the web application
+### Web interface
 
 ```bash
 streamlit run app.py
 ```
 
-Open the displayed localhost URL. Choose Live Mode, enter cities (prefer **City, Country**) and future dates, budget for **all** travelers, pace, interests and diets. Planning starts only with **Generate Travel Plan**; Enter can confirm a field value but does not start planning. Adding/removing a traveler immediately adds/subtracts EUR 500 from the current editable total budget (minimum EUR 1). Changing fields does not invoke the agent. Country-qualified suggestions are passed to providers. Missing/invalid keys produce explicit errors, never an automatic simulation fallback.
+Open the displayed localhost URL. Use the top toggle for Live/Demo Mode; its help explains the difference. Enter any supported city, preferably **City, Country**, using searchable suggestions or a custom value. Supply dates, budget for **all travelers**, traveler count, pace, interests and dietary preferences. Supported diets are unrestricted, vegetarian, vegan, gluten-free and halal.
 
-The day-by-day itinerary appears directly on the main results page, including selected flight segments, transfer allowances, accommodation and meals. Supporting Flights & stay, Weather and Budget tabs appear below it. Retrieved/estimated cost labels, source timestamps and ratings remain visible. Observable planning progress is displayed during generation. Technical logs remain hidden from the main interface. A single **Download full report** button at the bottom saves a ZIP containing the complete itinerary/result, original request, execution trace, concise log, information notes and budget validation. Full execution traces are also automatically saved in `traces/`, and the CLI saves final JSON results. Switching modes clears the previous result.
+Only **Generate Travel Plan** starts planning; Enter does not submit a trip. Dates must not be in the past, must lie in **2026–2027**, and may span **1–14 days**. Adding/removing one traveler adjusts the editable budget by EUR 500; budget buttons use EUR 100 steps and manual values are accepted.
 
-### CLI and examples
+The main result shows daily visits, meals, flight segments, stay and transfer allowances. Supporting tabs show flights/accommodation, two weather/clothing cards and a budget donut with itemized spending. A floating **i** control contains assumptions and practical notes. **Download full report** exports the result and diagnostics together; no inline technical log is required to use the application.
+
+### Command line
 
 ```bash
+# Live examples used by the submitted genuine runs
 python main.py --mode live --input examples/live_rome.json --output results/live_rome.json
 python main.py --mode live --input examples/live_paris.json --demonstrate-recovery --output results/live_paris.json
-```
 
-The Live examples reproduce the inputs of actual successful runs on 24 November 2026. **Update their dates before rerunning after 3 December 2026.** Example budgets are EUR 2,000 to avoid treating a transient quote as proof of a universally feasible cheap trip. Actual verified totals were EUR 360 and EUR 455. Prices, search rankings and model choices will vary.
-
-`--demonstrate-recovery` explicitly asks the model to try an initial EUR 10/night hotel filter, then independently broaden it when no priced options fit. This teaching constraint is disclosed and is not enabled for ordinary planning. In the actual Paris trace it produced `no_priced_hotels`, followed by a successful broader search using cached provider data. Errors and successful itineraries are not hardcoded in the loop.
-
-For the original assignment's simulated scenarios:
-
-```bash
+# Original simulated course-style examples
 python main.py --mode demo --input examples/rome.json
 python main.py --mode demo --input examples/paris.json --demonstrate-recovery
 ```
 
-Demo Mode explicitly labels simulated data and uses `data/*.json` / generic templates. Those files are not a Live Mode travel source. Live still uses the offline city suggestion list as UI convenience, not provider evidence.
+The Live examples use **3–5 December 2026**. Update their dates before reuse once the departure date has passed. New prices, search results and model decisions can differ. `--demonstrate-recovery` explicitly requests an initially restrictive hotel filter for a teaching demonstration; it is not enabled in ordinary planning.
 
-Example request (`examples/live_rome.json`):
+The CLI prints the trip/budget, saves final JSON in `results/` and always records a normal completed run in `traces/`, including structured failures. Exit codes: **0** success, **2** invalid input or clarification, **1** other terminal failure. Demo Mode still uses a real OpenAI agent interactively; only its travel data is simulated. Missing provider keys never silently switch Live Mode to Demo Mode.
+
+## Input and structured output
+
+Example input from [examples/rome.json](examples/rome.json), suitable for explicit Demo Mode:
 
 ```json
 {
-  "origin": "Prague, Czechia",
-  "destination": "Rome, Italy",
-  "start_date": "2026-12-03",
-  "end_date": "2026-12-05",
-  "budget": 2000,
+  "origin": "Prague",
+  "destination": "Rome",
+  "start_date": "2027-04-10",
+  "end_date": "2027-04-13",
+  "budget": 600,
   "travelers": 1,
-  "pace": "relaxed",
-  "interests": ["museums", "architecture", "local food"],
-  "dietary_preferences": ["vegetarian"]
+  "pace": "moderate",
+  "interests": ["architecture", "museums", "history", "local food"],
+  "dietary_preferences": []
 }
 ```
 
-Required fields are validated before API calls: nonempty city labels, positive finite total budget, 1–20 travelers, chronological future dates, supported duration 1–14 days and supported years 2026–2027. Ambiguous provider city matches return clarification instead of guessing. Travel preferences use English labels. No dietary restrictions is `[]`.
+Pydantic validates required/nonempty fields, finite positive budgets, 1–20 travelers, supported dates/duration and preferences. Ambiguous locations return clarification rather than selecting a different country silently.
 
-The final JSON is a typed envelope with `status`, `message`, `itinerary`, `data_source`, counters and retrieval time. A successful itinerary contains `trip_summary`, complete `selected_flights`, `selected_accommodation` (nullable for no overnight stay), `daily_itinerary`, `weather_summary`, `budget_breakdown`, `cost_items`, recommendations and warnings. Refer to `schemas.py` and the included complete genuine traces instead of treating an abbreviated example as a complete schema.
+`FinalDecision` constrains the model's terminal status/message. Python creates the authoritative `FinalResponse` from a validated builder result. A successful `itinerary` contains the trip summary, selected flights/accommodation, weather, daily schedule, cost items, budget breakdown, recommendations and warnings. Daily entries contain dates, start/end times, places, meals, costs and practical notes. Full typed models are in [schemas.py](schemas.py).
 
-CLI exit codes: 0 success, 2 invalid/missing input or clarification, 1 other terminal failure. Results and traces are saved even for normal structured agent failures.
+Actual budget excerpt from the submitted Rome Live result (not a complete response schema):
 
-## Budget integrity and uncertainty
+```json
+{
+  "status": "success",
+  "data_source": "live",
+  "itinerary": {
+    "budget_breakdown": {
+      "flights": 175,
+      "accommodation": 32,
+      "food": 75,
+      "activities": 30,
+      "local_transport": 48,
+      "total": 360,
+      "remaining_budget": 1640
+    }
+  }
+}
+```
 
-All costs are EUR for the entire party. Decimal arithmetic sums flights, accommodation, food, activities and local transportation; the planner prefers the original budget and can suggest a clearly marked alternative up to 10% above it. Totals above that flexible maximum are rejected. The original target is preserved and a negative `remaining_budget` records an accepted overrun. Meals are charged once per scheduled meal; nightly accommodation and round-trip flights are charged once. Travel-only days receive an explicit meal allowance rather than invented restaurant visits.
+See the full [Rome trace](traces/20261124T205633_19e1ba5b-0276-4169-b7f3-4944c8c82099.json) for the remaining fields. Human-facing dates/money are formatted for readability; JSON retains ISO dates and numeric amounts.
 
-Every `cost_items` entry has **Retrieved price** or **Estimated cost** provenance:
+## Architecture and explicit agent loop
 
-- Flights use the complete round-trip party quote. Baggage/ancillary charges absent from the quote are not assumed included.
-- Hotels prefer the retrieved stay total including taxes/fees when supplied. Otherwise tax inclusion is marked unknown. A nightly-only rate is multiplied by nights and labeled estimated.
-- Google Hotels exposes guest counts but no room-count parameter used here. For more than two adults, the app quotes up to two adults per room and multiplies by `ceil(travelers / 2)`. This is explicitly an **estimated multiroom total**; availability of that many rooms is not confirmed. All travelers are treated as adults.
-- Restaurant amounts are planning estimates from provider price tiers, or EUR 15/person/meal if no tier exists. No exact menu bill is implied.
-- Missing admission prices use an explicitly labeled EUR 15/person allowance; only an explicit EUR price/free indication can be treated as retrieved. Missing hours remain unknown and generate practical warnings.
-- Local transport uses EUR 8/person/day plus EUR 12/person per airport leg. Transfers between venues use geographic distance estimates, not live routing or verified timetables. Default policies are centralized in `config.py`.
+Stack: Python, OpenAI Python SDK, Pydantic, Streamlit, python-dotenv, httpx, SQLite/JSON and pytest. **No LangChain, LangGraph, CrewAI or other orchestration framework.**
 
-A validated budget is a planning estimate, not a guaranteed bookable total or proof of optimality. If the model cannot produce a feasible plan it terminates with an explanation; no fictional fallback is substituted.
+```mermaid
+flowchart TD
+    UI[Streamlit or CLI] --> Input[Pydantic TravelRequest]
+    Input --> Agent[Manual agent loop]
+    Agent <--> Model[OpenAI native function calls and structured decisions]
+    Agent --> Tools[Validated tool registry]
+    Tools --> Live[Live adapters and per-run trusted offer store]
+    Live --> HTTP[Timeouts, cache, retries and request cap]
+    HTTP --> APIs[SerpApi and Open-Meteo]
+    Tools --> Demo[Explicit Demo tools and JSON datasets]
+    Live --> Builder[Python schedule and budget validator]
+    Builder --> Agent
+    Agent --> Output[Validated FinalResponse]
+    Agent --> Trace[Sanitized execution trace]
+```
 
-## Request economy, errors and security
+The explicit `for iteration in range(...)` loop is in `TravelAgent._run` in [agent.py](agent.py):
 
-The HTTP client applies a 25-second timeout to every provider request, at most two attempts for transient failures, and no automatic retries for authentication/quota rejection. Search attempts, including failed attempts, count toward `MAX_SERPAPI_REQUESTS_PER_RUN`. Autocomplete, initial Flights searches, return-selection calls and additional result pages all consume this cap. Account API calls are counted separately and do not consume search credits. The free official account check can stop searches when the known quota is exhausted.
+1. Send the conversation and native function schemas to OpenAI.
+2. Preserve the assistant's full tool-call message, including call IDs.
+3. Validate and dispatch each selected tool safely; append the result/error with its matching call ID.
+4. Let the model choose another search, changed arguments, revised plan or a structured terminal decision.
+5. Accept success only after every required tool has succeeded and `build_itinerary` has returned a validated plan. A model's text claim cannot establish success.
 
-Exact provider requests are reused within the run and in an ignored SQLite TTL cache (`.cache/providers.sqlite3`). SerpApi cache TTL is one hour; weather forecast one hour, geocoding seven days and historical observations one day. Cache keys are namespaced by a hash of the configured SerpApi key. No-results responses are memoized within a run, filters are applied locally where possible, and the builder never calls providers. A fresh run after cache expiry may use more credits than the recorded warm-cache demonstrations. Concurrent runs each have their own cap; the UI counter is not an account-wide billing meter. Delete `.cache/` to remove local provider data.
+The order of searches is **not hardcoded**. In Live Mode, the model selects retrieved flight/hotel IDs and attractions by date. The default `auto_schedule=true` builder uses bounded Python constraint search to place visits/meals around flight windows, known opening intervals and estimated transfers. With `auto_schedule=false`, proposed times are checked strictly. Either path returns actionable errors for the agent to resolve.
 
-Unknown tools/arguments, no results/prices, unsupported/ambiguous locations, missing keys, invalid dates, timeouts, provider errors, quota limits, schedule conflicts and over-budget plans become structured feedback. Repeated failures terminate cleanly. No subscription changes are performed.
+## Tools and providers
 
-### Optional AI backup response
+| Tool | Live source | Responsibility |
+| --- | --- | --- |
+| `get_weather` | Open-Meteo geocoding, forecast and archive | Coordinates, daily temperatures/conditions/wind/rain; distant dates use a clearly labeled three-season **Historical climate estimate**, not a forecast |
+| `search_flights` | SerpApi Google Flights + autocomplete | Resolve city/airport IDs, compare complete round trips and preserve both directions, times, airlines, stops, party prices and search links |
+| `search_hotels` | SerpApi Google Hotels | Guest/date-specific stay quotes, nights/rooms, ratings, taxes when supplied, photos and links |
+| `search_activities` | SerpApi Google Maps | Real attractions matching interests; location, ratings, hours and entry prices when supplied |
+| `search_restaurants` | SerpApi Google Maps | Real meal suggestions with dietary search indications and geographic context; dietary suitability remains subject to confirmation |
+| `build_itinerary` | Python, no HTTP | Trusted IDs, schedules, meals, pace, weather, geographic transfer gaps, cost arithmetic and budget validation |
 
-When Live planning ends with an unresolved external travel-search failure, the application can make **one additional OpenAI request** with the original travel request and sanitized search errors. This is a general-knowledge API answer, not a request to the ChatGPT website or a second live search provider. It offers flexible daily ideas and search/verification strategies; it must not invent flights, quotes, availability, schedules or a confirmed budget.
+Independent Demo implementations preserve all five original assignment tools and deterministic European mock datasets. Local JSON is never a Live travel-data fallback; the offline city list is only an input convenience.
 
-The UI displays this response separately, explicitly marks it unverified, and shows the model, duration and token usage reported by OpenAI. The original error/status is preserved; no trusted itinerary is created and no budget validation is claimed. The CLI keeps its original failure exit code. A malformed response or backup timeout terminates without further retries. Successful searches that recover within the agent loop do not trigger a backup. Neither do invalid input, ambiguous cities, a pure budget-validation failure or a terminal OpenAI error. Missing OpenAI credentials prevent the backup entirely.
+## Budget policy and uncertainty
 
-Set `ENABLE_AI_FALLBACK=false` to disable it. The additional call consumes OpenAI tokens and **zero SerpApi searches**. The response and observable events are recorded in the execution trace; the full report adds `ai_fallback.json` when a backup was attempted. Traces never include hidden reasoning. This feature does not automatically switch Live Mode to Demo Mode.
+All amounts are EUR for the whole party. Python uses Decimal for cost sums and checks, including flights, accommodation, food, activities and local transportation. Flights/accommodation are charged once; daily figures exclude those trip-level costs. Meals are charged once per scheduled meal; travel-only days can use explicit meal allowances.
 
-Dates in the interface, CLI and readable report use `10 Apr 2027`; flight timestamps use `10 Apr 2027 · 20:55` and durations use `1 h 15 min`. Flight clocks retain the provider's airport-local time. Form dates use `DD/MM/YYYY`. API inputs and machine-readable JSON/trace files retain ISO dates and timestamps.
+**Budget policy:** the planner prefers the original target. At the user's request, the application also allows a clearly disclosed alternative up to **10% above** that target. Python rejects larger totals, preserves the original budget and shows any overrun explicitly. This is an application extension to strict-budget planning. **Both submitted successful demonstrations are within their original budgets**, without using the extra allowance.
 
-`tracing.py` records observable actions only: run ID/timestamps, original request, model, assistant responses/tool calls, call IDs, arguments, raw sanitized provider results, source/retrieval times, errors, retries/replanning, timings/token usage, counters, final response/status and budget validation. Hidden chain-of-thought is neither requested nor saved. API keys, authorization fields and credential-bearing URL parameters are redacted; raw exception bodies and account email/key are not logged. Trace files still contain travel preferences: review before sharing.
+**Retrieved price** means a provider supplied a usable quote. **Estimated cost** is a planning allowance or derived estimate, never a confirmed offer:
 
-## Genuine Live execution traces
+- Flights use the complete return-selection quote for all travelers; an outbound preview is not counted again. Unquoted baggage/ancillary charges remain unknown.
+- Hotels prefer the retrieved stay total and tax information. A nightly-only rate is multiplied by nights and marked estimated. For groups over two, the app multiplies a quote for up to two adults per room by `ceil(travelers / 2)`; this is an estimated multiroom total, not confirmed room inventory. All travelers are treated as adults.
+- Meals use provider price-tier estimates or a default EUR 15/person/meal. Missing admission prices use a labeled EUR 15/person allowance; unknown hours are not invented.
+- Local transport defaults to EUR 8/person/day plus EUR 12/person per airport leg. Transfers use distance estimates, not real routing/timetables. Policies are centralized in [config.py](config.py).
 
-Verified on **24 November 2026**, both with real OpenAI `gpt-4.1-mini` and real external data (no mocked provider/SDK responses):
+A validated plan is an estimated itinerary, not a reservation, guaranteed bill or proof of the cheapest possible trip.
 
-| Run | Full trace | Total / budget | New SerpApi searches | Cache hits |
-| --- | --- | --- | --- | --- |
-| Rome, 8 iterations | [Rome Live trace](traces/20261124T205633_19e1ba5b-0276-4169-b7f3-4944c8c82099.json) | EUR 360 / 2,000 | 3 | 9 |
-| Paris recovery, 8 iterations | [Paris Live trace](traces/20261124T205633_30127e40-3f4e-4b19-9f70-b3131cb94ac1.json) | EUR 455 / 2,000 | 2 | 10 |
+## Error handling, termination and request limits
 
-Both used all six tools and passed Python/Pydantic budget and schedule validation. Rome also revised a pace-limit error. Paris independently broadened its initial failed hotel filter. Across integration debugging and these final runs, **22 SerpApi search requests** were used; the official Account API confirmed **228 of 250 remaining**. Cached data came from actual earlier provider calls, not test fixtures. See [VERIFICATION.md](VERIFICATION.md) for the full audit.
+Invalid tool arguments, unknown tools, no results, missing prices, ambiguous cities, unsupported directions, timeouts, quota/authentication errors and invalid/over-budget schedules return structured feedback. The agent can replan or ask for clarification. Terminal statuses are `success`, `needs_clarification`, `infeasible`, `error` and `iteration_limit`.
 
-Older tracked traces use real OpenAI over **simulated** data and remain historical Demo artifacts, not evidence of Live provider execution. `tests/artifacts/*_mocked.json` are explicitly mocked reference runs. Neither category substitutes for the two Live traces above. `python tests/generate_mock_traces.py` regenerates the original mocked Demo examples without paid requests.
+- Planning stops at the configured iteration limit; identical tool calls are bounded.
+- Transient OpenAI errors allow at most three attempts; provider requests use a 25-second timeout and at most two transient attempts. Authentication/quota failures are not repeatedly retried.
+- Every SerpApi search attempt counts toward the per-run cap, including airport autocomplete, return-flight selections and extra pages. Account API checks are counted separately.
+- Identical requests reuse per-run results and an ignored SQLite TTL cache. SerpApi results are cached for one hour; geocoding seven days, forecasts one hour and historical weather one day. Cache keys isolate different SerpApi credentials. The builder makes no provider requests.
+
+The optional AI backup makes at most one separate OpenAI request after an unresolved Live travel-search failure. It shows **unverified general-knowledge suggestions**, model/time/token statistics and verification steps. It cannot invent retrieved offers, claim budget validation or turn a failed plan into `success`. It uses zero additional SerpApi searches; disable with `ENABLE_AI_FALLBACK=false`.
+
+## Execution traces and submitted runs
+
+Every normal agent run saves a timestamped JSON file under `traces/`: run ID, request, model, iterations, assistant/tool messages, call IDs, arguments/results, provider sources/times, errors/replanning/retries, durations/token usage, request counters, final response/status and budget validation. Only observable actions are recorded. **Hidden chain-of-thought is neither requested nor stored.** Keys, authorization fields and credential-bearing URL parameters are redacted.
+
+| Genuine Live run, 24 November 2026 | Final total / original budget | Iterations | Recovery |
+| --- | --- | --- | --- |
+| [Rome full trace](traces/20261124T205633_19e1ba5b-0276-4169-b7f3-4944c8c82099.json) | EUR 360 / 2,000 | 8 | `pace_limit` → revised daily selection |
+| [Paris full trace](traces/20261124T205633_30127e40-3f4e-4b19-9f70-b3131cb94ac1.json) | EUR 455 / 2,000 | 8 | `no_priced_hotels` → broader hotel search |
+
+Both used the real OpenAI API and all six Live tools. Warm-cache search counts were three for Rome and two for Paris; cached responses came from earlier actual provider requests. The recovery filter was explicitly enabled for the Paris demonstration. See [docs/DEMONSTRATIONS.md](docs/DEMONSTRATIONS.md) for the full action sequence, costs and reproduction notes.
+
+Older genuine traces with simulated tools are historical **Demo** runs. Files in `tests/artifacts/` are explicitly **mocked test artifacts**. Neither is presented as Live evidence. `verify_submission.py` checks only the two specified Live traces locally; it does not claim to check today's availability.
+
+The bottom report ZIP includes readable `README.md`, `result.json`, `request.json`, `execution_trace.json`, `runtime.log`, `information.json` and `budget_validation.json`; it adds `ai_fallback.json` if a backup was attempted. Traces/exports can contain travel preferences even after credential redaction; review before sharing.
+
+## Screenshots
+
+Actual browser captures of the application. Result views render the saved genuine Rome Live response; they are **not new searches or current booking offers**. Decorative day illustrations are labeled when venue photos are unavailable.
+
+| Input form | Daily itinerary |
+| --- | --- |
+| ![Travel request form](docs/screenshots/request-form.png) | ![Day itinerary with flight and accommodation cards](docs/screenshots/daily-itinerary.png) |
+
+| Weather and packing guidance | Budget overview |
+| --- | --- |
+| ![Weather and clothing cards](docs/screenshots/weather.png) | ![Budget donut and spending categories](docs/screenshots/budget.png) |
 
 ## Project structure
 
 ```text
-trip-pilot-ai/
-├── app.py, ui.py             # Streamlit form and live result rendering
-├── main.py                  # CLI
-├── agent.py, prompts.py      # Explicit OpenAI loop and mode-specific prompts
-├── schemas.py, config.py     # Typed contracts and environment settings
-├── tracing.py               # Observable sanitized JSON traces
-├── providers/
-│   ├── http.py              # Timeouts, retries, cache, quota/accounting
-│   ├── locations.py         # Geocoding and flight airport resolution
-│   ├── travel.py            # Live Flights and Hotels adapters
-│   ├── places.py            # Maps attractions and restaurants
-│   ├── weather.py           # Forecast and historical climate
-│   ├── runtime.py           # Per-run trusted offer store and dispatch
-│   ├── arrange.py           # Bounded scheduling constraint search
-│   ├── schedule.py          # Opening hours and geographic transfer checks
-│   └── itinerary.py         # Authoritative live budget/itinerary builder
-├── tools/                   # Registry and preserved Demo tool implementations
-├── data/                    # Demo datasets and offline city suggestions
-├── examples/                # Live and Demo request JSON
-├── tests/                   # SDK/HTTP mocks, tool/agent/UI regressions
-├── traces/                  # Genuine selected runs; automatic runtime traces
-├── .streamlit/config.toml   # Light theme
-├── .env.example, .gitignore, requirements.txt
+TripPilot/
+├── app.py, ui.py, overview.py       # Form, itinerary, weather and spending views
+├── design.py, display.py            # Styling and readable dates/money
+├── main.py                         # Independent CLI
+├── agent.py, prompts.py             # Explicit loop and system prompts
+├── schemas.py, config.py            # Typed contracts and environment settings
+├── budgeting.py, tracing.py         # Budget policy and sanitized execution traces
+├── fallback.py                     # Separate unverified AI backup response
+├── information.py, reporting.py     # Practical notes and full report ZIP
+├── verify_submission.py            # Offline verification of submitted evidence
+├── providers/                      # Live HTTP/cache, adapters and schedule/budget builder
+├── tools/                          # Native schemas, dispatch and Demo tools
+├── data/, assets/                   # Demo data, city suggestions, decorative SVGs
+├── examples/, traces/               # Inputs and selected genuine execution traces
+├── tests/                          # Mocked SDK/HTTP, tool/agent/UI regressions
+├── docs/                           # Demonstration walkthrough and screenshots
+├── .streamlit/config.toml           # Light theme
+├── .env.example, .gitignore
+├── requirements.txt, requirements-tested.txt
 └── README.md, VERIFICATION.md
 ```
 
@@ -242,62 +273,18 @@ trip-pilot-ai/
 
 ```bash
 python -m pytest -v
+python verify_submission.py
+python -m pip check
 ```
 
-**209 tests passed** after the weather, spending and money-format presentation update. Tests use mocked OpenAI responses and `httpx.MockTransport`; an autouse network guard blocks accidental real HTTP transport in unit tests. Coverage includes full six-tool recovery, complete round-trip/group pricing, hotel rates/taxes/nights/rooms, dietary uncertainty, forecasts/archive samples, missing/null data, opening hours, transfers, trusted IDs, budget tampering/overruns, cache isolation, no-results reuse, quotas, retries, clean termination, redaction and Streamlit rendering. Backup tests cover single-call limits, invalid output/dates, timeout/secret handling, preserving failure status and absent budget validation, token statistics, report export and UI rendering. Tests consume **zero paid API calls**. Ruff and dependency checks are documented in `VERIFICATION.md`.
+**209 automated tests passed** in the latest full application check. Tests use scripted SDK responses and mocked HTTP transports, with a guard against accidental external HTTP. They consume **zero API credits**. Coverage includes input/year validation, all tools, round-trip/group pricing, nights/rooms, dietary filtering/uncertainty, weather/archive interpretation, opening hours, overlaps/transfers, trusted IDs, budgets/overruns, cache/quotas/retries, full tool-call recovery, clean termination, structured outputs, traces/secret redaction, backup responses and Streamlit rendering.
 
-## Limitations, attribution and future work
+[VERIFICATION.md](VERIFICATION.md) records actual environment, earlier integration checks and subsequent regressions. Documentation/screenshot preparation reuses saved data and does not require new paid demonstrations.
 
-Search providers may lack coverage, fresh prices, admission fees or opening hours. Search-result hours may be incomplete/stale or omit holiday exceptions; only parseable confirmed closures can be enforced. Restaurant dietary indications cannot guarantee allergy safety. Flight timestamps are provider-local times; the destination's arrival/return-departure window is used for on-site planning. No ticketing, live routing, room inventory guarantee, baggage fee verification, child fares or reservation system is implemented.
+## Limitations and future improvements
 
-Historical climate estimates average only a small three-season sample, not a long-term climatology or weather prediction. Forecast horizon/provider availability can change. Open-Meteo data is attributed in the UI and source links: [Open-Meteo](https://open-meteo.com/), [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); geocoding uses [GeoNames](https://www.geonames.org/). The free Open-Meteo service is intended for noncommercial use, appropriate for this university project; review provider terms before commercial deployment. Observe [SerpApi terms](https://serpapi.com/terms) when retaining/sharing provider results. No additional paid service has been activated.
+External coverage, prices and hours can be incomplete/stale. Only known parseable closures can be enforced. Dietary indications do not certify allergy safety or halal compliance. Historical climate uses a small three-season sample, not a long-term climate normal or a prediction. No reservations, child fares, guaranteed multiroom inventory, verified public-transport routing or baggage-fee validation are implemented. API latency depends on the number of searches, model turns, retries and cache state.
 
-Future work: verified routing, richer date-specific opening calendars, direct booking/room availability checks, better independently sourced admission costs, longer climate baselines and systematic model evaluations. Preserve independent Python validation and explicit source uncertainty.
+Weather attribution: [Open-Meteo](https://open-meteo.com/), [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); location data: [GeoNames](https://www.geonames.org/). Live search integrations follow the official [Flights](https://serpapi.com/google-flights-api), [Hotels](https://serpapi.com/google-hotels-api), [Maps](https://serpapi.com/google-maps-api), [Search](https://serpapi.com/search-api) and [Account](https://serpapi.com/account-api) interfaces. Observe provider terms and noncommercial/free-service limitations before reuse. `.env`, caches, virtual environments and temporary results are ignored by Git; selected reviewed demonstration traces are intentionally included.
 
-## Assignment checklist
-
-- [x] Native OpenAI function calling, explicit inspectable loop and structured output.
-- [x] Six typed Live tools; original five Demo tools preserved.
-- [x] Independent tool choice, errors, replanning and bounded clean termination.
-- [x] Python price resolution, schedule validation and total-party budget checks.
-- [x] Streamlit, independent CLI, examples and configuration without embedded keys.
-- [x] Automatic sanitized traces and two genuine successful Live runs, including recovery.
-- [x] Mocked automated tests, architecture diagram, setup and verification documentation.
-- [ ] Actual screenshots: capture the views listed above.
-
-Changes are committed to the user-designated repository. Do not commit `.env`, provider caches, temporary results or incidental private traces. Selected reviewed demonstration traces are deliberately tracked.
-
-## Budget flexibility and visual update (25 November 2026)
-
-Both Live and Demo Mode now allow suggestions up to 10% above the original target when necessary. An accepted overrun is explicitly shown as **Above target budget**, included in warnings/final text, and recorded in trace validation. The model cannot change the original request budget; Python enforces the 110% maximum.
-
-The compact Live Mode toggle is at the top with help explaining both modes; the sidebar menu has been removed. The interface uses an ivory, aubergine, sage and brass palette. Each day has a visual overview and separate color-coded visit/meal cards. Live venue photos reuse Google Maps thumbnails from existing searches without extra SerpApi requests. When a photo is unavailable (including older saved traces), clearly labeled decorative SVG illustrations are used; they do not claim to depict the actual venue.
-
-The scheduler now diagnoses a selected closed attraction before trying meal permutations, reporting the exact place/date/ID and already retrieved alternatives. This addresses the Berlin screenshot's Monday-closed museum; increasing the budget alone cannot resolve a confirmed closure.
-
-## Schedule recovery and iteration handling (26 November 2026)
-
-Unambiguous model clock strings such as `7:30` are normalized to `07:30`; impossible times are still rejected. Validation errors identify the actual field instead of incorrectly reporting a changed original request. A revised build is allowed after earlier different errors; identical repeated calls and the total iteration cap remain bounded. A fully validated final-iteration build can complete successfully without an extra model call solely to announce success. Technical iteration failures no longer imply that the user's trip must be shortened. Arrival/departure days may contain meals or travel allowances without mandatory sightseeing; full sightseeing days still require a selected retrieved attraction.
-
-## Consolidated information and main itinerary (26 November 2026)
-
-A single floating **i** control at the right edge collects provider disclaimers, budget flexibility, room assumptions, climate/dietary caveats and practical notes for the current trip. Hover or focus it to read the scrollable popover; tapping focuses the control on touch devices. Informational banners and the long Sources & assumptions tab are removed. Generation/input failures remain visible, and any budget excess remains explicit in the metrics. No warnings are removed from the actual itinerary JSON or execution trace.
-
-The main page shows day cards immediately. Flight cards use retrieved airline, flight number, airport and local segment times; no train journeys are invented. Estimated airport transfers and the selected hotel are included on the relevant days. These are display-only references to existing trip costs and never charge flights/accommodation again. Unknown hotel check-in/out times are not invented. On travel-only days, a neutral arrival/departure title replaces inaccurate model titles promising a restaurant visit.
-
-Typography uses locally available sans-serif heading/body stacks (Trebuchet MS and Avenir Next/Segoe UI with fallbacks), with light search fields and rounded white cards. No remote font requests or new frontend runtime dependencies are required.
-
-## Country-qualified geocoding and full report export (26 November 2026)
-
-Some provider country labels differ from normal user labels: Open-Meteo can return no result for `Amsterdam, Netherlands` while its country name is `The Netherlands`. If a qualified lookup returns no matching result, the adapter retries the city name once, then filters the returned locations against **all** supplied country/admin qualifiers. Country-code and common label aliases are supported; no other country is silently substituted. Exact city-name matches are preferred over suburbs, and unresolved ambiguity asks for clarification. Both searches use the existing geocoding cache and consume no SerpApi credits. [Official geocoding parameters and matching rules](https://open-meteo.com/en/docs/geocoding-api).
-
-The full report ZIP includes `README.md`, `result.json`, `request.json`, `execution_trace.json`, `runtime.log`, `information.json` and `budget_validation.json`. It is available after successful and failed runs and contains only the current run's sanitized data; `.env`, provider caches and unrelated traces are never included. Downloading does not invoke the agent or providers. Search counters remain in the information popover, trace and archive, and are hidden from normal page captions/progress.
-
-
-## Weather and spending overview (26 November 2026)
-
-The Weather tab uses two responsive cards: temperature range and the most common daily conditions, followed by clothing suggestions derived from temperature, rain/snow indicators and wind. Historical samples remain explicitly labeled **Historical climate estimate**. The compact plain-text provider attribution replaces the API link; complete source metadata stays in JSON and the report. Summary cards reuse the itinerary weather without new searches.
-
-The Budget tab shows a five-color donut with total estimated spending at its center and a matching category legend with amounts/shares. Remaining funds are separate from expenses; an accepted overrun is labeled above-target. Live itemized expenses are grouped in expandable categories with readable dates, venue names and **Retrieved price** / **Estimated cost** badges. The chart uses native HTML/CSS with an adjacent textual breakdown, without extra chart libraries or remote assets. The same weather and category overview is used in Demo Mode.
-
-All displayed UI amounts omit zero cents (`€310`, `€1,272`) while retaining actual cents (`€98.50`). The budget field hides unnecessary decimals while preserving manual fractional input. Only presentation is changed: validated numerical amounts, budget arithmetic, execution traces and machine-readable exports retain their existing precision.
+Potential improvements: verified routes and seasonal/holiday hours, direct inventory checks, independently sourced admission prices, stronger model evaluation and a longer climate baseline. Preserve independent Python validation and explicit price uncertainty.
