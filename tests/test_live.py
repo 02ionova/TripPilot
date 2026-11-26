@@ -709,6 +709,13 @@ def test_live_ui_renders_sources_prices_and_estimates(runtime, monkeypatch):
     assert not app.exception
     assert len(app.metric) == 3
     assert any("Retrieved prices and estimated costs" in item.value for item in app.subheader)
+    markup = " ".join(item.value for item in app.markdown)
+    assert 'class="expense-row"' in markup
+    assert 'class="cost-badge retrieved"' in markup and 'class="cost-badge estimated"' in markup
+    assert 'class="budget-donut"' in markup
+    assert not app.table
+    assert len(app.dataframe) == 2  # Flight legs only; no weather/expense tables.
+    assert not any("Open-Meteo" in button.label for button in app.get("link_button"))
 
 
 def test_live_default_header_and_no_simulation_fallback(monkeypatch):

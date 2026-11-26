@@ -1,8 +1,18 @@
 """Consistent human-facing dates/times; serialized API/trace values stay ISO."""
 
 from datetime import date, datetime
+from decimal import ROUND_HALF_UP, Decimal
 
 MONTHS = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+
+def money(value: float | Decimal) -> str:
+    """Hide zero cents, preserve real cents and group thousands for display only."""
+    amount = Decimal(str(value)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    if amount == 0:
+        amount = abs(amount)
+    formatted = f"{amount:,.2f}"
+    return "€" + (formatted[:-3] if formatted.endswith(".00") else formatted)
 
 
 def display_date(value: date) -> str:

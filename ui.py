@@ -5,7 +5,8 @@ from html import escape
 import streamlit as st
 
 from config import ROOT
-from display import display_date, display_datetime, display_duration
+from display import display_date, display_datetime, display_duration, money
+from overview import render_budget, render_weather
 from providers.travel import safe_url
 
 
@@ -14,12 +15,12 @@ def render_budget_metrics(plan) -> None:
     b = plan.budget_breakdown
     target = b.total + b.remaining_budget
     left, middle, right = st.columns(3)
-    left.metric("Total budget", f"€{target:.2f}")
-    middle.metric("Total estimated cost", f"€{b.total:.2f}")
+    left.metric("Total budget", money(target))
+    middle.metric("Total estimated cost", money(b.total))
     if b.remaining_budget < 0:
-        right.metric("Above target budget", f"€{-b.remaining_budget:.2f}")
+        right.metric("Above target budget", money(-b.remaining_budget))
     else:
-        right.metric("Remaining budget", f"€{b.remaining_budget:.2f}")
+        right.metric("Remaining budget", money(b.remaining_budget))
 
 
 def render_stop(slot, *, simulated: bool = False) -> None:
@@ -46,7 +47,7 @@ def render_stop(slot, *, simulated: bool = False) -> None:
         f'<div class="stop-top"><span class="stop-time">{slot.start_time:%H:%M} – {slot.end_time:%H:%M}</span>'
         f'<span class="stop-tag">{escape(slot.meal.title() if slot.meal else "Explore")}</span></div>'
         f'<div class="stop-name">{escape(place.name)}</div>{address}'
-        f'<div class="stop-meta">{label}: €{slot.total_cost:.2f} for all travelers{rating}{reviews}</div>'
+        f'<div class="stop-meta">{label}: {money(slot.total_cost)} for all travelers{rating}{reviews}</div>'
         f'<div class="stop-links">{"".join(links)}</div></article>',
         unsafe_allow_html=True,
     )
@@ -159,7 +160,7 @@ def render_daily_stay(plan, day) -> None:
             "stay",
             label,
             hotel.name,
-            f"{hotel.address or hotel.neighborhood} · {hotel.rooms} room(s) · Full stay €{hotel.total_cost:.2f} for {hotel.nights} night(s), charged once in the trip budget.",
+            f"{hotel.address or hotel.neighborhood} · {hotel.rooms} room(s) · Full stay {money(hotel.total_cost)} for {hotel.nights} night(s), charged once in the trip budget.",
             hotel.url,
         )
 
@@ -194,9 +195,9 @@ def render_itinerary_days(plan) -> None:
                 st.caption(
                     f"{w.information_type} · {w.conditions} · {w.min_temperature:.0f}–{w.max_temperature:.0f} °C"
                 )
-                st.markdown(f"**€{day.estimated_cost:.2f}** · Daily estimated expenses")
+                st.markdown(f"**{money(day.estimated_cost)}** · Daily estimated expenses")
                 st.caption(
-                    f"Local transport allowance: €{day.local_transport:.2f}. Flights and accommodation excluded from this daily figure."
+                    f"Local transport allowance: {money(day.local_transport)}. Flights and accommodation excluded from this daily figure."
                 )
             with schedule:
                 arrival, departure = journey_dates(plan)
@@ -225,7 +226,7 @@ def render_itinerary_days(plan) -> None:
                             "meal",
                             "During your journey",
                             "Airport or in-transit meal allowance",
-                            f"Estimated cost: €{food_allowance:.2f} for all travelers. Included in the daily total.",
+                            f"Estimated cost: {money(food_allowance)} for all travelers. Included in the daily total.",
                         )
                 if arrival < day.date < departure:
                     render_daily_stay(plan, day)
@@ -260,7 +261,6 @@ def render_live_plan(result):
     st.caption(
         f"{display_date(summary.start_date)} – {display_date(summary.end_date)} · {summary.travelers} traveler(s) · EUR · Live Mode"
     )
-    b = plan.budget_breakdown
     render_budget_metrics(plan)
     if result.retrieved_at:
         st.caption(f"Travel information retrieved: {display_datetime(result.retrieved_at)} UTC")
@@ -271,7 +271,7 @@ def render_live_plan(result):
         flight = plan.selected_flights
         st.markdown(f"**{flight.airline}**")
         st.write(
-            f"{price_label(flight.price_info)}: €{flight.total_price:.2f} total round trip for {summary.travelers} traveler(s)."
+            f"{price_label(flight.price_info)}: {money(flight.total_price)} total round trip for {summary.travelers} traveler(s)."
         )
         for title, legs in [
             ("Outbound", flight.outbound_segments),
@@ -309,7 +309,7 @@ def render_live_plan(result):
                 st.image(hotel.image_url, width=500)
             st.write(hotel.address or hotel.neighborhood)
             st.write(
-                f"{price_label(hotel.price_info)}: €{hotel.total_cost:.2f} for {hotel.nights} nights / {hotel.rooms} room(s). Retrieved or derived nightly unit rate: €{hotel.price_per_night:.2f}."
+                f"{price_label(hotel.price_info)}: {money(hotel.total_cost)} for {hotel.nights} nights / {hotel.rooms} room(s). Retrieved or derived nightly unit rate: {money(hotel.price_per_night)}."
             )
             st.caption(
                 (f"Rating {hotel.rating}/5" if hotel.rating is not None else "Rating unavailable")
@@ -320,58 +320,9 @@ def render_live_plan(result):
         else:
             st.caption("No overnight accommodation needed.")
     with weather:
-        st.dataframe(
-            [
-                {
-                    "Date": display_date(w.date),
-                    "Information": w.information_type,
-                    "Min °C": w.min_temperature,
-                    "Max °C": w.max_temperature,
-                    "Rain probability": w.rain_probability,
-                    "Historical wet-day frequency": w.historical_wet_day_frequency,
-                    "Wind km/h": w.wind_speed_kmh,
-                    "Conditions": w.conditions,
-                    "Historical years": ", ".join(map(str, w.historical_years)),
-                }
-                for w in plan.weather_summary
-            ],
-            hide_index=True,
-            width="stretch",
-        )
-        st.caption(
-            "Weather: Open-Meteo · Geocoding: GeoNames via Open-Meteo · Attribution: CC BY 4.0"
-        )
-        st.link_button("Open-Meteo data and attribution", "https://open-meteo.com/")
+        render_weather(plan)
     with budget:
-        names = {
-            "flights": "Flights",
-            "accommodation": "Accommodation",
-            "food": "Food",
-            "activities": "Activities",
-            "local_transport": "Local transportation",
-        }
-        st.bar_chart({names[k]: getattr(b, k) for k in names})
-        st.table(
-            {
-                "Category": [names[k] for k in names]
-                + ["Total estimated cost", "Remaining budget"],
-                "EUR": [getattr(b, k) for k in names] + [b.total, b.remaining_budget],
-            }
-        )
-        st.subheader("Retrieved prices and estimated costs")
-        st.dataframe(
-            [
-                {
-                    "Category": names[c.category],
-                    "Item": c.label,
-                    "EUR (all travelers)": c.amount,
-                    "Cost type": "Retrieved price" if c.kind == "retrieved" else "Estimated cost",
-                }
-                for c in plan.cost_items
-            ],
-            hide_index=True,
-            width="stretch",
-        )
+        render_budget(plan)
 
 
 def render_ai_advice(advice) -> None:

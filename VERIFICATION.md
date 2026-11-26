@@ -142,3 +142,12 @@ The UI shows backup model, response duration and reported token usage. Traces re
 ## Supported travel years — 26 November 2026
 
 Both date pickers now end at 31 December 2027. Shared Python date validation accepts only 2026–2027 for requests and tools, including rejecting trips crossing into 2028. The existing no-past-departure rule is unchanged. README and simulated-weather documentation match the range. Streamlit bounds and year-boundary regressions pass. Full suite: **199 passed in 3.39 seconds**; Ruff and whitespace checks passed. No external API requests were made.
+
+
+## Weather cards, donut and itemized expenses — 26 November 2026
+
+- Replaced the Weather table/API button with two temperature/condition and clothing cards. Range and dominant conditions derive from existing daily data; cold, hot, rainy/snowy and windy conditions influence packing advice. Forecast, historical climate and simulated labels remain distinct. Provider attribution remains as plain text.
+- Replaced the bar chart/summary table with an accessible CSS donut and category legend. Live expense tables became grouped expense cards with separate dates and retrieved/estimated badges. Positive remaining funds and above-target spending remain distinct. No extra provider/model requests or dependencies were introduced.
+- Shared UI money formatting removes zero cents and retains real cents, including manually edited budgets. JSON values and validation arithmetic are unchanged.
+- Full automated suite: **209 passed in 2.93 seconds**. Ruff and whitespace checks passed. Tests cover weather-derived guidance/labels, readable expense dates, money rounding and both Live/Demo rendering.
+- Real Chromium checks verified desktop/mobile weather cards, chart colors, category detail cards, missing weather API button, absence of horizontal overflow, report download and budget input values `600` / `1234.56`. Checks rendered the saved genuine Rome result with external browser requests blocked: **zero OpenAI/SerpApi requests**. Screenshots are saved locally in ignored `results/weather_cards_desktop.png`, `budget_overview_desktop.png`, `budget_details_desktop.png`, `weather_mobile.png` and `budget_mobile.png`. The temporary Streamlit server was stopped afterward.

@@ -27,12 +27,19 @@ def test_success_result_renders(request_data):
     app.run(timeout=20)
     assert not app.exception
     assert len(app.metric) == 3
-    assert app.metric[1].value == "€243.00"
+    assert app.metric[1].value == "€243"
     assert len(app.get("download_button")) == 1
     assert app.get("download_button")[0].label == "Download full report"
     assert not any("SerpApi" in caption.value for caption in app.caption)
     assert not app.json
     assert not any("Execution trace" in x.label for x in app.expander)
+    markup = " ".join(m.value for m in app.markdown)
+    assert (
+        'class="weather-card weather-' in markup and 'class="weather-card packing-card"' in markup
+    )
+    assert 'class="budget-donut"' in markup and "conic-gradient" in markup
+    assert not app.table and not app.dataframe
+    assert not any("Open-Meteo" in button.label for button in app.get("link_button"))
 
 
 def test_error_result_renders():
@@ -127,8 +134,8 @@ def test_flexible_budget_and_daily_cards_render(request_data):
     app.session_state["trace"] = {"events": []}
     app.run(timeout=20)
     assert not app.exception
-    assert app.metric[0].value == "€230.00"
-    assert app.metric[2].label == "Above target budget" and app.metric[2].value == "€13.00"
+    assert app.metric[0].value == "€230"
+    assert app.metric[2].label == "Above target budget" and app.metric[2].value == "€13"
     assert not app.warning
     assert any("10% flexibility" in m.value for m in app.markdown)
     markup = " ".join(m.value for m in app.markdown)
@@ -194,4 +201,4 @@ def test_one_information_control_collects_notices_without_alerts(request_data):
     assert 'tabindex="0"' in controls[0] and 'role="tooltip"' in controls[0]
     assert [tab.label for tab in app.tabs] == ["Flights & accommodation", "Weather", "Budget"]
     # The overrun remains visible without opening any tooltip.
-    assert app.metric[2].label == "Above target budget" and app.metric[2].value == "€13.00"
+    assert app.metric[2].label == "Above target budget" and app.metric[2].value == "€13"

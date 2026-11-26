@@ -11,8 +11,9 @@ from budgeting import maximum_budget
 from city_suggestions import city_label, city_options
 from config import Settings
 from design import apply_styles
-from display import display_date
+from display import display_date, money
 from information import render_information
+from overview import render_budget, render_weather
 from reporting import create_report_archive
 from schemas import TravelRequest, current_date
 from ui import render_ai_advice, render_budget_metrics, render_itinerary_days, render_live_plan
@@ -113,6 +114,7 @@ with st.container(border=True, key="travel_request_panel"):
         min_value=1.0,
         key="trip_budget",
         step=100.0,
+        format="%.12g",
         help="Target total for all travelers. If needed, the planner may suggest a clearly marked alternative up to 10% above this amount.",
     )
     a, b, c = st.columns(3)
@@ -231,14 +233,13 @@ if "result" in st.session_state:
         st.caption(
             f"{display_date(summary.start_date)} – {display_date(summary.end_date)} · {summary.travelers} traveler(s) · EUR"
         )
-        budget_data = plan.budget_breakdown
         render_budget_metrics(plan)
         st.subheader("Your day-by-day itinerary")
         render_itinerary_days(plan)
         travel, weather, costs = st.tabs(["Flights & accommodation", "Weather", "Budget"])
         with travel:
             f, h = plan.selected_flights, plan.selected_accommodation
-            st.markdown(f"**{f.airline}** · {f.id} · round trip €{f.total_price:.2f}")
+            st.markdown(f"**{f.airline}** · {f.id} · round trip {money(f.total_price)}")
             st.write(
                 f"Outbound {display_date(f.departure_date)}: {f.departure_time:%H:%M} → {f.arrival_time:%H:%M}; return {display_date(f.return_date)}: {f.return_departure_time:%H:%M} → {f.return_arrival_time:%H:%M}. All times local."
             )
@@ -246,33 +247,20 @@ if "result" in st.session_state:
                 f"**{h.name}** · {h.accommodation_type} · {h.neighborhood} · rating {h.rating}/10"
             )
             st.write(
-                f"{h.nights} nights × {h.rooms} rooms/beds × €{h.price_per_night:.2f} = €{h.total_cost:.2f}"
+                f"{h.nights} nights × {h.rooms} rooms/beds × {money(h.price_per_night)} = {money(h.total_cost)}"
             )
         with weather:
-            st.dataframe(
-                [
-                    {**w.model_dump(mode="json"), "date": display_date(w.date)}
-                    for w in plan.weather_summary
-                ],
-                hide_index=True,
-                width="stretch",
-            )
+            render_weather(plan)
         with costs:
-            components = {
-                k: v
-                for k, v in budget_data.model_dump().items()
-                if k not in ["total", "remaining_budget"]
-            }
-            st.bar_chart(components)
-            st.table(budget_data.model_dump())
+            render_budget(plan)
     elif result.status == "infeasible":
         st.write(result.message)
         estimate = result.budget_estimate
         if estimate and estimate.shortfall > 0:
             a, b, c = st.columns(3)
-            a.metric("Your total budget", f"€{estimate.available_budget:.2f}")
-            b.metric("Minimum required", f"€{estimate.minimum_total:.2f}")
-            c.metric("Budget shortfall", f"€{estimate.shortfall:.2f}")
+            a.metric("Your total budget", money(estimate.available_budget))
+            b.metric("Minimum required", money(estimate.minimum_total))
+            c.metric("Budget shortfall", money(estimate.shortfall))
             st.caption(
                 "Minimum costs for all travelers using the cheapest compatible simulated options. No bookings have been made."
             )
@@ -286,16 +274,16 @@ if "result" in st.session_state:
                         "Local transport",
                     ],
                     "Minimum cost (EUR)": [
-                        estimate.flights,
-                        estimate.accommodation,
-                        estimate.food,
-                        estimate.activities,
-                        estimate.local_transport,
+                        money(estimate.flights),
+                        money(estimate.accommodation),
+                        money(estimate.food),
+                        money(estimate.activities),
+                        money(estimate.local_transport),
                     ],
                 }
             )
             st.caption(
-                f"Flexible maximum: EUR {maximum_budget(estimate.available_budget):.2f} (+10%)."
+                f"Flexible maximum: {money(maximum_budget(estimate.available_budget))} (+10%)."
             )
     elif result.status == "needs_clarification":
         st.write(result.message)
