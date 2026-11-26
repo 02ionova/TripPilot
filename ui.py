@@ -4,7 +4,6 @@ from html import escape
 
 import streamlit as st
 
-from budgeting import budget_notice, maximum_budget
 from config import ROOT
 from providers.travel import safe_url
 
@@ -18,12 +17,8 @@ def render_budget_metrics(plan) -> None:
     middle.metric("Total estimated cost", f"€{b.total:.2f}")
     if b.remaining_budget < 0:
         right.metric("Above target budget", f"€{-b.remaining_budget:.2f}")
-        st.warning(budget_notice(target, b.total))
     else:
         right.metric("Remaining budget", f"€{b.remaining_budget:.2f}")
-    st.caption(
-        f"Target €{target:.2f} · Flexible maximum €{maximum_budget(target):.2f} (+10%). Flights and accommodation are charged once per trip."
-    )
 
 
 def render_stop(slot, *, simulated: bool = False) -> None:
@@ -54,8 +49,6 @@ def render_stop(slot, *, simulated: bool = False) -> None:
         f'<div class="stop-links">{"".join(links)}</div></article>',
         unsafe_allow_html=True,
     )
-    if slot.meal and not simulated and place.dietary_status == "unverified":
-        st.caption("Dietary suitability is unverified. Confirm directly with the venue.")
 
 
 def render_day_illustration(day, *, simulated: bool) -> None:
@@ -94,6 +87,92 @@ def render_day_illustration(day, *, simulated: bool) -> None:
         st.caption("Your journey · Arrival or departure day")
 
 
+def render_travel_card(
+    kind: str, label: str, title: str, detail: str, url: str | None = None
+) -> None:
+    """Display existing itinerary facts; this renderer never searches or adds costs."""
+    link = safe_url(url)
+    links = (
+        f'<div class="stop-links"><a href="{escape(link, quote=True)}" target="_blank" rel="noopener noreferrer">View source ↗</a></div>'
+        if link
+        else ""
+    )
+    st.markdown(
+        f'<article class="stop-card {kind}"><div class="stop-top"><span class="stop-tag">{escape(label)}</span></div>'
+        f'<div class="stop-name">{escape(title)}</div><div class="stop-meta">{escape(detail)}</div>{links}</article>',
+        unsafe_allow_html=True,
+    )
+
+
+def journey_dates(plan):
+    f = plan.selected_flights
+    arrival = f.outbound_arrival.date() if f.outbound_arrival else f.departure_date
+    departure = f.return_departure.date() if f.return_departure else f.return_date
+    return arrival, departure
+
+
+def render_daily_flights(plan, day, *, returning: bool) -> None:
+    flight = plan.selected_flights
+    legs = flight.return_segments if returning else flight.outbound_segments
+    label = "Return flight" if returning else "Outbound flight"
+    if legs:
+        for leg in legs:
+            if day.date not in {leg.departure.date(), leg.arrival.date()} and not (
+                leg.departure.date() < day.date < leg.arrival.date()
+            ):
+                continue
+            number = f" · {leg.flight_number}" if leg.flight_number else ""
+            render_travel_card(
+                "flight",
+                label,
+                f"{leg.departure_airport} → {leg.arrival_airport}",
+                f"{leg.airline}{number} · {leg.departure:%d %b %H:%M} → {leg.arrival:%d %b %H:%M} (airport local times)"
+                + (f" · {leg.duration_minutes} min" if leg.duration_minutes is not None else ""),
+                flight.search_url,
+            )
+    elif day.date == (flight.return_date if returning else flight.departure_date):
+        start = flight.return_departure_time if returning else flight.departure_time
+        end = flight.return_arrival_time if returning else flight.arrival_time
+        origin = flight.destination if returning else flight.origin
+        destination = flight.origin if returning else flight.destination
+        render_travel_card(
+            "flight",
+            label,
+            f"{origin} → {destination}",
+            f"{flight.airline} · {start:%H:%M} → {end:%H:%M} · "
+            + ("Simulated schedule" if plan.data_source == "simulated" else "Airport local times"),
+            flight.search_url,
+        )
+
+
+def render_daily_stay(plan, day) -> None:
+    hotel = plan.selected_accommodation
+    arrival, departure = journey_dates(plan)
+    if hotel and arrival <= day.date < departure:
+        label = "Arrival accommodation" if day.date == arrival else "Overnight stay"
+        render_travel_card(
+            "stay",
+            label,
+            hotel.name,
+            f"{hotel.address or hotel.neighborhood} · {hotel.rooms} room(s) · Full stay €{hotel.total_cost:.2f} for {hotel.nights} night(s), charged once in the trip budget.",
+            hotel.url,
+        )
+
+
+def display_day_title(plan, day) -> str:
+    """Do not advertise a restaurant visit when the day only has travel allowances."""
+    if day.schedule:
+        return day.title
+    arrival, departure = journey_dates(plan)
+    if day.date == arrival == departure:
+        return "Arrival and return journey"
+    if day.date == arrival:
+        return f"Arrival in {plan.trip_summary.destination}"
+    if day.date == departure:
+        return "Return journey"
+    return day.title
+
+
 def render_itinerary_days(plan) -> None:
     """Day overview/photo alongside a color-coded chronological schedule."""
     simulated = plan.data_source == "simulated"
@@ -102,7 +181,7 @@ def render_itinerary_days(plan) -> None:
             overview, schedule = st.columns([1, 1.8], gap="large")
             with overview:
                 st.markdown(
-                    f'<div class="day-number">Day {index:02} · {day.date:%A, %d %B}</div><div class="day-title">{escape(day.title)}</div>',
+                    f'<div class="day-number">Day {index:02} · {day.date:%A, %d %B}</div><div class="day-title">{escape(display_day_title(plan, day))}</div>',
                     unsafe_allow_html=True,
                 )
                 render_day_illustration(day, simulated=simulated)
@@ -115,14 +194,44 @@ def render_itinerary_days(plan) -> None:
                     f"Local transport allowance: €{day.local_transport:.2f}. Flights and accommodation excluded from this daily figure."
                 )
             with schedule:
-                if not day.schedule:
-                    st.info("Travel day — no destination visits scheduled.")
+                arrival, departure = journey_dates(plan)
+                render_daily_flights(plan, day, returning=False)
+                if day.date == arrival:
+                    render_travel_card(
+                        "transfer",
+                        "Estimated arrival transfer",
+                        "Airport → accommodation",
+                        "Airport transfer allowance is included in the daily local transport budget. Arrival buffer: 90 minutes.",
+                    )
+                    render_daily_stay(plan, day)
+                if day.date == departure and plan.selected_accommodation:
+                    render_travel_card(
+                        "stay",
+                        "Departure day",
+                        f"Check out · {plan.selected_accommodation.name}",
+                        "Arrange check-out around the selected return flight; hotel-specific check-out time is not supplied.",
+                    )
                 for slot in day.schedule:
                     render_stop(slot, simulated=simulated)
-                if day.recommendations:
-                    with st.expander("Practical notes"):
-                        for text in day.recommendations:
-                            st.caption(text)
+                if not day.schedule:
+                    food_allowance = day.estimated_cost - day.local_transport
+                    if food_allowance > 0:
+                        render_travel_card(
+                            "meal",
+                            "During your journey",
+                            "Airport or in-transit meal allowance",
+                            f"Estimated cost: €{food_allowance:.2f} for all travelers. Included in the daily total.",
+                        )
+                if arrival < day.date < departure:
+                    render_daily_stay(plan, day)
+                if day.date == departure:
+                    render_travel_card(
+                        "transfer",
+                        "Estimated departure transfer",
+                        "Accommodation → airport",
+                        "Airport transfer allowance is included in the daily local transport budget. Be at the airport at least 2 hours before departure.",
+                    )
+                render_daily_flights(plan, day, returning=True)
     points = [
         {"lat": s.activity.coordinates.latitude, "lon": s.activity.coordinates.longitude}
         for d in plan.daily_itinerary
@@ -141,7 +250,7 @@ def price_label(info) -> str:
 def render_live_plan(result):
     plan = result.itinerary
     summary = plan.trip_summary
-    st.success(result.message)
+    st.caption("Your travel plan is ready.")
     st.subheader(f"{summary.origin} → {summary.destination}")
     st.caption(
         f"{summary.start_date} – {summary.end_date} · {summary.travelers} traveler(s) · EUR · Live Mode"
@@ -153,11 +262,9 @@ def render_live_plan(result):
         if result.retrieved_at
         else f"SerpApi searches used: {result.serpapi_requests}"
     )
-    days, travel, weather, budget, sources = st.tabs(
-        ["Day-by-day itinerary", "Flights & stay", "Weather", "Budget", "Sources & assumptions"]
-    )
-    with days:
-        render_itinerary_days(plan)
+    st.subheader("Your day-by-day itinerary")
+    render_itinerary_days(plan)
+    travel, weather, budget = st.tabs(["Flights & stay", "Weather", "Budget"])
     with travel:
         flight = plan.selected_flights
         st.markdown(f"**{flight.airline}**")
@@ -204,12 +311,10 @@ def render_live_plan(result):
                 (f"Rating {hotel.rating}/5" if hotel.rating is not None else "Rating unavailable")
                 + (f" · {hotel.reviews} reviews" if hotel.reviews is not None else "")
             )
-            for text in hotel.notes:
-                st.caption(text)
             if hotel.url:
                 st.link_button("View accommodation", hotel.url)
         else:
-            st.info("No overnight accommodation is needed for this trip.")
+            st.caption("No overnight accommodation needed.")
     with weather:
         st.dataframe(
             [
@@ -229,10 +334,6 @@ def render_live_plan(result):
             hide_index=True,
             width="stretch",
         )
-        if any(w.information_type == "Historical climate estimate" for w in plan.weather_summary):
-            st.info(
-                "Historical climate estimates summarize comparable dates in previous seasons. They are not a forecast for your trip."
-            )
         st.caption(
             "Weather: Open-Meteo · Geocoding: GeoNames via Open-Meteo · Attribution: CC BY 4.0"
         )
@@ -267,16 +368,3 @@ def render_live_plan(result):
             hide_index=True,
             width="stretch",
         )
-        st.caption(
-            "No estimates are represented as confirmed quotes. Taxes, room availability, admission and meal prices may need verification."
-        )
-    with sources:
-        for text in plan.warnings:
-            st.warning(text)
-        for text in plan.recommendations:
-            st.write(text)
-        for item in plan.cost_items:
-            if item.notes:
-                st.markdown(f"**{item.label}**")
-                for text in item.notes:
-                    st.caption(text)

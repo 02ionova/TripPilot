@@ -95,5 +95,5 @@ def test_vienna_form_shows_budget_gap_without_api(monkeypatch, tmp_path):
     assert not app.exception
     assert not app.error
     assert [metric.value for metric in app.metric] == ["€600.00", "€712.00", "€112.00"]
-    assert any("712.00" in warning.value for warning in app.warning)
+    assert any("712.00" in item.value for item in app.markdown)
     assert not any("Handling tool feedback" in item.value for item in app.markdown)

@@ -910,3 +910,44 @@ def test_late_arrival_does_not_force_closed_sightseeing(runtime):
     with pytest.raises(ToolFailure) as exc:
         runtime.build_itinerary(args)
     assert exc.value.error.code == "missing_attraction_selection"
+
+
+def test_selected_flight_and_hotel_appear_in_main_daily_plan(runtime, monkeypatch):
+    from streamlit.testing.v1 import AppTest
+
+    from config import ROOT
+    from schemas import FinalResponse
+
+    monkeypatch.setenv("DATA_MODE", "live")
+    populate(runtime)
+    plan = runtime.build_itinerary(selection(runtime)).data
+    original = plan.model_dump_json()
+    searches = runtime.client.serpapi_requests
+    app = AppTest.from_file(str(ROOT / "app.py"))
+    app.session_state["result"] = FinalResponse(
+        status="success", message="Ready", itinerary=plan, data_source="live"
+    )
+    app.session_state["trace"] = {"events": []}
+    app.run(timeout=20)
+    assert not app.exception
+    markup = " ".join(m.value for m in app.markdown)
+    assert "Outbound flight" in markup and "Return flight" in markup
+    assert "FX 123" in markup and "PRG → FCO" in markup
+    assert "Fixture Hotel" in markup and "Estimated arrival transfer" in markup
+    assert "Estimated departure transfer" in markup
+    assert "Overnight stay" in markup
+    assert [tab.label for tab in app.tabs] == ["Flights & stay", "Weather", "Budget"]
+    assert not app.warning and not app.info
+    assert runtime.client.serpapi_requests == searches
+    assert plan.model_dump_json() == original  # Display cards never add costs.
+
+
+def test_empty_arrival_title_matches_travel_only_contents(runtime):
+    from ui import display_day_title
+
+    populate(runtime)
+    plan = runtime.build_itinerary(selection(runtime)).data
+    day = plan.daily_itinerary[0].model_copy(
+        update={"schedule": [], "title": "Arrival and evening restaurant"}
+    )
+    assert display_day_title(plan, day) == "Arrival in Rome"

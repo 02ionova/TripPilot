@@ -11,6 +11,7 @@ from budgeting import maximum_budget
 from city_suggestions import city_label, city_options
 from config import Settings
 from design import apply_styles
+from information import render_information
 from schemas import TravelRequest, current_date
 from ui import render_budget_metrics, render_itinerary_days, render_live_plan
 
@@ -57,21 +58,8 @@ if st.session_state.get("selected_data_mode", mode) != mode or (
     st.session_state.pop("result", None)
     st.session_state.pop("trace", None)
 st.session_state["selected_data_mode"] = mode
-if mode == "live":
-    st.markdown(
-        '<div class="provider-note"><span class="provider-note-icon" aria-hidden="true">i</span>'
-        "<span>Travel information is retrieved from external data providers. Prices and availability may change. "
-        "Estimated expenses are clearly marked.</span></div>",
-        unsafe_allow_html=True,
-    )
-    st.caption(
-        "Enter a city and country when names may be ambiguous. The city suggestions are optional, not a restriction on destinations."
-    )
-
-else:
-    st.warning(
-        "Demo Mode — all travel prices, schedules, availability, places and weather are simulated. No bookings are made."
-    )
+if mode == "demo":
+    mode_control.caption("Demo · Simulated data")
 quota_status = st.empty()
 with st.container(border=True, key="travel_request_panel"):
     a, b, c = st.columns(3)
@@ -146,9 +134,6 @@ with st.container(border=True, key="travel_request_panel"):
             "gluten-free": "Gluten-free",
             "halal": "Halal",
         }[value],
-    )
-    st.caption(
-        "We aim for your budget. Alternatives up to 10% above it may be suggested and will be clearly marked."
     )
     diets = [value for value in dietary_selection if value != "none"]
     submitted = st.button("Generate Travel Plan", type="primary", width="stretch")
@@ -227,7 +212,7 @@ if "result" in st.session_state:
     if result.status == "success" and result.data_source == "live":
         render_live_plan(result)
     elif result.status == "success":
-        st.success(result.message)
+        st.caption("Your simulated travel plan is ready.")
         plan = result.itinerary
         summary = plan.trip_summary
         st.subheader(f"{summary.origin} → {summary.destination}")
@@ -236,11 +221,9 @@ if "result" in st.session_state:
         )
         budget_data = plan.budget_breakdown
         render_budget_metrics(plan)
-        days, travel, weather, costs = st.tabs(
-            ["Day-by-day itinerary", "Flights & accommodation", "Weather", "Budget"]
-        )
-        with days:
-            render_itinerary_days(plan)
+        st.subheader("Your day-by-day itinerary")
+        render_itinerary_days(plan)
+        travel, weather, costs = st.tabs(["Flights & accommodation", "Weather", "Budget"])
         with travel:
             f, h = plan.selected_flights, plan.selected_accommodation
             st.markdown(f"**{f.airline}** · {f.id} · round trip €{f.total_price:.2f}")
@@ -267,12 +250,8 @@ if "result" in st.session_state:
             }
             st.bar_chart(components)
             st.table(budget_data.model_dump())
-        for text in plan.recommendations:
-            st.write(text)
-        for text in plan.warnings:
-            st.warning(text)
     elif result.status == "infeasible":
-        st.warning(result.message)
+        st.write(result.message)
         estimate = result.budget_estimate
         if estimate and estimate.shortfall > 0:
             a, b, c = st.columns(3)
@@ -300,14 +279,16 @@ if "result" in st.session_state:
                     ],
                 }
             )
-            st.info(
-                f"The estimate also exceeds the 10% flexible maximum of EUR {maximum_budget(estimate.available_budget):.2f}. Try a shorter trip, fewer travelers, or a higher target budget."
+            st.caption(
+                f"Flexible maximum: EUR {maximum_budget(estimate.available_budget):.2f} (+10%)."
             )
     elif result.status == "needs_clarification":
-        st.warning(result.message)
+        st.write(result.message)
     else:
         st.error(result.message)
     if result.data_source == "live" and result.status != "success":
         st.caption(
             f"SerpApi searches used: {result.serpapi_requests} · Provider cache hits: {result.provider_cache_hits}"
         )
+
+render_information(mode, st.session_state.get("result"))

@@ -124,7 +124,8 @@ def test_flexible_budget_and_daily_cards_render(request_data):
     assert not app.exception
     assert app.metric[0].value == "€230.00"
     assert app.metric[2].label == "Above target budget" and app.metric[2].value == "€13.00"
-    assert any("10% flexibility" in w.value for w in app.warning)
+    assert not app.warning
+    assert any("10% flexibility" in m.value for m in app.markdown)
     markup = " ".join(m.value for m in app.markdown)
     assert "stop-card meal" in markup and "stop-card visit" in markup
     assert "Day 01" in markup and "Day 04" in markup
@@ -164,6 +165,28 @@ def test_live_notice_is_subtle_and_readable(monkeypatch):
     assert not app.exception
     assert not app.info
     assert any(
-        'class="provider-note"' in m.value and "Prices and availability may change" in m.value
+        'class="travel-information"' in m.value and "Prices and availability may change" in m.value
         for m in app.markdown
     )
+
+
+def test_one_information_control_collects_notices_without_alerts(request_data):
+    request_data["budget"] = 230
+    plan = Itinerary.model_validate(
+        execute_tool("build_itinerary", make_build(request_data))["data"]
+    )
+    plan.warnings.append("Provider text <script>not executable</script>")
+    app = AppTest.from_file(str(ROOT / "app.py"))
+    app.session_state["result"] = FinalResponse(status="success", message="Ready", itinerary=plan)
+    app.session_state["trace"] = {"events": []}
+    app.run(timeout=20)
+    assert not app.exception
+    assert not app.warning and not app.info
+    controls = [m.value for m in app.markdown if 'class="travel-information"' in m.value]
+    assert len(controls) == 1
+    assert "10% flexibility" in controls[0]
+    assert "&lt;script&gt;" in controls[0] and "<script>" not in controls[0]
+    assert 'tabindex="0"' in controls[0] and 'role="tooltip"' in controls[0]
+    assert [tab.label for tab in app.tabs] == ["Flights & accommodation", "Weather", "Budget"]
+    # The overrun remains visible without opening any tooltip.
+    assert app.metric[2].label == "Above target budget" and app.metric[2].value == "€13.00"

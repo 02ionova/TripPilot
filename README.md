@@ -114,7 +114,7 @@ streamlit run app.py
 
 Open the displayed localhost URL. Choose Live Mode, enter cities (prefer **City, Country**) and future dates, budget for **all** travelers, pace, interests and diets. Planning starts only with **Generate Travel Plan**; Enter can confirm a field value but does not start planning. Adding/removing a traveler immediately adds/subtracts EUR 500 from the current editable total budget (minimum EUR 1). Changing fields does not invoke the agent. Country-qualified suggestions are passed to providers. Missing/invalid keys produce explicit errors, never an automatic simulation fallback.
 
-Results show the daily itinerary, retrieved flight/hotel details, source timestamps, ratings, estimated transfer notes, categorized budget and request counters. Observable planning progress is displayed during generation. Technical logs and JSON export buttons are hidden from the web interface; full execution traces are still automatically saved in `traces/`, and the CLI saves final JSON results. Switching modes clears the previous result.
+The day-by-day itinerary appears directly on the main results page, including selected flight segments, transfer allowances, accommodation and meals. Supporting Flights & stay, Weather and Budget tabs appear below it. Retrieved/estimated cost labels, source timestamps and ratings remain visible. Observable planning progress is displayed during generation. Technical logs and JSON export buttons are hidden from the web interface; full execution traces are still automatically saved in `traces/`, and the CLI saves final JSON results. Switching modes clears the previous result.
 
 ### CLI and examples
 
@@ -231,7 +231,7 @@ trip-pilot-ai/
 python -m pytest -v
 ```
 
-**168 tests passed** after the scheduling and termination fixes. Tests use mocked OpenAI responses and `httpx.MockTransport`; an autouse network guard blocks accidental real HTTP transport in unit tests. Coverage includes full six-tool recovery, complete round-trip/group pricing, hotel rates/taxes/nights/rooms, dietary uncertainty, forecasts/archive samples, missing/null data, opening hours, transfers, trusted IDs, budget tampering/overruns, cache isolation, no-results reuse, quotas, retries, clean termination, redaction and Streamlit rendering. Tests consume **zero paid API calls**. Ruff and dependency checks are documented in `VERIFICATION.md`.
+**171 tests passed** after the itinerary presentation update. Tests use mocked OpenAI responses and `httpx.MockTransport`; an autouse network guard blocks accidental real HTTP transport in unit tests. Coverage includes full six-tool recovery, complete round-trip/group pricing, hotel rates/taxes/nights/rooms, dietary uncertainty, forecasts/archive samples, missing/null data, opening hours, transfers, trusted IDs, budget tampering/overruns, cache isolation, no-results reuse, quotas, retries, clean termination, redaction and Streamlit rendering. Tests consume **zero paid API calls**. Ruff and dependency checks are documented in `VERIFICATION.md`.
 
 ## Limitations, attribution and future work
 
@@ -265,3 +265,11 @@ The scheduler now diagnoses a selected closed attraction before trying meal perm
 ## Schedule recovery and iteration handling (26 November 2026)
 
 Unambiguous model clock strings such as `7:30` are normalized to `07:30`; impossible times are still rejected. Validation errors identify the actual field instead of incorrectly reporting a changed original request. A revised build is allowed after earlier different errors; identical repeated calls and the total iteration cap remain bounded. A fully validated final-iteration build can complete successfully without an extra model call solely to announce success. Technical iteration failures no longer imply that the user's trip must be shortened. Arrival/departure days may contain meals or travel allowances without mandatory sightseeing; full sightseeing days still require a selected retrieved attraction.
+
+## Consolidated information and main itinerary (26 November 2026)
+
+A single floating **i** control at the right edge collects provider disclaimers, budget flexibility, room assumptions, climate/dietary caveats and practical notes for the current trip. Hover or focus it to read the scrollable popover; tapping focuses the control on touch devices. Informational banners and the long Sources & assumptions tab are removed. Generation/input failures remain visible, and any budget excess remains explicit in the metrics. No warnings are removed from the actual itinerary JSON or execution trace.
+
+The main page shows day cards immediately. Flight cards use retrieved airline, flight number, airport and local segment times; no train journeys are invented. Estimated airport transfers and the selected hotel are included on the relevant days. These are display-only references to existing trip costs and never charge flights/accommodation again. Unknown hotel check-in/out times are not invented. On travel-only days, a neutral arrival/departure title replaces inaccurate model titles promising a restaurant visit.
+
+Typography uses locally available sans-serif heading/body stacks (Trebuchet MS and Avenir Next/Segoe UI with fallbacks), with light search fields and rounded white cards. No remote font requests or new frontend runtime dependencies are required.

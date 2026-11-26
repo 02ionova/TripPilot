@@ -106,3 +106,10 @@ Corrections normalize H:MM, distinguish field-validation errors from request tam
 The saved provider records were replayed offline with the original first build and a disclosed replacement of Monday's closed/outdoor selections by an already retrieved open museum. The current scheduler/validator produced a EUR 989 estimate (flights 210, accommodation 116, food 360, activities 135, transport 168; EUR 611 remaining). This is **an offline replay of historical offers with revised selections**, not a new real LLM run, fresh quote or fabricated successful trace. Zero new OpenAI/SerpApi requests were made.
 
 Automated regression coverage: H:MM normalization, invalid-clock rejection, precise field errors, valid corrections after four distinct failed builds, final-iteration success and late-arrival/full-day distinction. Full suite: **168 passed**.
+
+## Consolidated information and visual itinerary — 26 November 2026
+
+- Automated suite: **171 passed**. New checks cover a single information control, preservation/escaping of actual trip caveats, explicit over-budget metrics without alert banners, main-page flight/hotel/transfer cards, and unchanged budget/provider counters after rendering.
+- Real Chromium verification used the saved genuine Rome response, not a new LLM execution. Confirmed one hover/focus information panel, availability on the Weather tab, desktop/mobile panel bounds at widths 1440 and 390, and no mobile horizontal overflow. Flight/stay cards rendered existing provider records. Screenshots were inspected locally in ignored `results/`.
+- Browser external requests were blocked; zero SerpApi/OpenAI searches were made. Playwright was installed only in a temporary verification directory, not as an application dependency. The temporary local Streamlit process was stopped afterward.
+- The day-by-day plan is outside the supporting tabs. Provider caveats, pricing assumptions and practical notes are aggregated in the single edge popover; input/generation failures and explicit budget-overrun metrics remain visible. Actual trace/JSON warnings are unchanged.
