@@ -96,3 +96,13 @@ Manual submission screenshots remain to be captured: Live input form, actual dai
 ## Subtle notice and traveler budget adjustment — 25 November 2026
 
 The provider disclaimer now uses a muted inline information note instead of an alert. Input widgets update independently so traveler count changes can immediately adjust the editable budget by EUR 500 per person. Planning remains exclusively button-triggered. Tests cover increases, multi-person changes, decreases, preserving manual edits, minimum EUR 1, repeated reruns without duplicate additions and no accidental agent invocation. Full suite: **158 passed in 3.12 seconds**; Ruff and whitespace checks passed, no external API calls.
+
+## Madrid scheduling and iteration regression — 26 November 2026
+
+The actual failed Milan-to-Madrid run (10–13 April 2027, three travelers, EUR 1,600) was inspected locally. Two initial builds were rejected for non-zero-padded `7:30`/`8:15` fields, but incorrectly received `request_mismatch`. Repeated failures subsequently blocked a corrected build. The original request itself matched.
+
+Corrections normalize H:MM, distinguish field-validation errors from request tampering, allow revised arguments after previous different failures, and retain bounded identical-call/iteration protections. A validated last-iteration build finishes successfully. Late arrival no longer forces a destination attraction into a short evening window.
+
+The saved provider records were replayed offline with the original first build and a disclosed replacement of Monday's closed/outdoor selections by an already retrieved open museum. The current scheduler/validator produced a EUR 989 estimate (flights 210, accommodation 116, food 360, activities 135, transport 168; EUR 611 remaining). This is **an offline replay of historical offers with revised selections**, not a new real LLM run, fresh quote or fabricated successful trace. Zero new OpenAI/SerpApi requests were made.
+
+Automated regression coverage: H:MM normalization, invalid-clock rejection, precise field errors, valid corrections after four distinct failed builds, final-iteration success and late-arrival/full-day distinction. Full suite: **168 passed**.

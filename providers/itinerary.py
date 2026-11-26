@@ -283,7 +283,12 @@ def build_live_itinerary(runtime, args: BuildArgs) -> Itinerary:
                 "missing_meals",
                 f"{selection.date}: missing {sorted(required - meals)}. Keep all required meals when reducing costs.",
             )
-        if on_site and (latest - earliest).total_seconds() >= 2 * 3600 and count < 1:
+        if (
+            on_site
+            and arrival.date() < selection.date < departure.date()
+            and (latest - earliest).total_seconds() >= 2 * 3600
+            and count < 1
+        ):
             reject(
                 "empty_day",
                 f"{selection.date}: include at least one attraction in the available on-site window.",

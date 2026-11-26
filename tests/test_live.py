@@ -876,3 +876,37 @@ def test_maps_thumbnail_reused_without_extra_requests(runtime):
     result = runtime.search_activities(ActivityArgs(destination="Rome")).data[0]
     assert result.image_url == "https://venue.example.test/photo.jpg"
     assert runtime.client.serpapi_requests == 1
+
+
+def test_late_arrival_does_not_force_closed_sightseeing(runtime):
+    """Madrid regression: arrival 18:30 leaves 20:00–22:00 after the buffer."""
+    from datetime import datetime
+
+    from schemas import LiveBuildArgs
+
+    populate(runtime)
+    flight_id = next(iter(runtime.flights))
+    flight, flight_args = runtime.flights[flight_id]
+    runtime.flights[flight_id] = (
+        flight.model_copy(
+            update={
+                "outbound_arrival": datetime.combine(
+                    runtime.request.start_date, __import__("datetime").time(18, 30)
+                )
+            }
+        ),
+        flight_args,
+    )
+    args = selection(runtime)
+    args.days[0].schedule = []
+    args.auto_schedule = True
+    result = runtime.build_itinerary(
+        LiveBuildArgs.model_validate(args.model_dump(mode="json"))
+    ).data
+    assert not result.daily_itinerary[0].schedule
+    assert result.daily_itinerary[0].estimated_cost > 0
+    # A full middle day must still contain an LLM-selected retrieved attraction.
+    args.days[1].schedule = []
+    with pytest.raises(ToolFailure) as exc:
+        runtime.build_itinerary(args)
+    assert exc.value.error.code == "missing_attraction_selection"

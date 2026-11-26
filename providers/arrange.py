@@ -102,7 +102,8 @@ def arrange(runtime, args):
         if upper - lower < 120 and not mandatory:
             result.append(DaySelection(date=day.date, title=day.title, schedule=[]))
             continue
-        if not selected and upper - lower >= 120:
+        full_sightseeing_day = arrival.date() < day.date < departure.date()
+        if not selected and full_sightseeing_day and upper - lower >= 120:
             raise ToolFailure(
                 "missing_attraction_selection",
                 f"{day.date}: choose at least one retrieved attraction for this on-site day.",

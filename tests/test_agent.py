@@ -303,3 +303,44 @@ def test_explicit_demo_mode_overrides_live_environment(tmp_path, request_data, m
     assert result.data_source == "simulated"
     assert agent.trace.data["data_mode"] == "demo"
     assert not agent.runtime
+
+
+def test_invalid_schedule_field_has_precise_feedback(tmp_path, request_data):
+    build = make_build(request_data)
+    build["days"][0]["schedule"][0]["start_time"] = "25:00"
+    agent, _, result = run(
+        tmp_path, request_data, [response("build_itinerary", build)], iterations=1
+    )
+    error = next(
+        e["result"]["error"] for e in agent.trace.data["events"] if e["kind"] == "tool_call"
+    )
+    assert result.status == "iteration_limit"
+    assert error["code"] == "invalid_arguments"
+    assert "days.0.schedule.0.start_time" in error["message"]
+    assert "request_mismatch" not in error["message"]
+
+
+def test_revised_build_not_locked_out_after_four_different_errors(tmp_path, request_data):
+    responses = flow(request_data)
+    bad_calls = []
+    for invalid_hour in [25, 26, 27, 28]:
+        build = make_build(request_data)
+        build["days"][0]["schedule"][0]["start_time"] = f"{invalid_hour}:00"
+        bad_calls.append(response("build_itinerary", build))
+    responses[-2:-2] = bad_calls
+    agent, _, result = run(tmp_path, request_data, responses)
+    assert result.status == "success"
+    errors = [
+        e["result"]["error"]["code"]
+        for e in agent.trace.data["events"]
+        if e["kind"] == "tool_call" and e["result"]["status"] == "error"
+    ]
+    assert errors == ["invalid_arguments"] * 4
+
+
+def test_validated_last_iteration_build_finishes_success(tmp_path, request_data):
+    responses = flow(request_data)[:-1]
+    agent, client, result = run(tmp_path, request_data, responses, iterations=len(responses))
+    assert result.status == "success"
+    assert len(client.requests) == len(responses)
+    assert agent.trace.data["budget_validation"]["valid"]

@@ -1,5 +1,6 @@
 """Validated inputs, tool contracts and final itinerary models (EUR only)."""
 
+import re
 from datetime import date, datetime, time
 from decimal import Decimal
 from typing import Generic, Literal, TypeVar
@@ -274,6 +275,14 @@ class ScheduledSelection(Model):
     start_time: time
     end_time: time
     meal: Literal["breakfast", "lunch", "dinner"] | None = None
+
+    @field_validator("start_time", "end_time", mode="before")
+    @classmethod
+    def normalize_clock(cls, value):
+        """Accept unambiguous H:MM from models; invalid hours still fail validation."""
+        if isinstance(value, str) and re.fullmatch(r"[0-9]:[0-9]{2}", value):
+            return "0" + value
+        return value
 
 
 class DaySelection(Model):

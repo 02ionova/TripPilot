@@ -201,7 +201,6 @@ class TravelAgent:
                 }
             )
         calls = Counter()
-        failures = Counter()
         searched = set()
         validated_itinerary = None
         failure_feedback_sent = False
@@ -286,7 +285,7 @@ class TravelAgent:
                     tick = perf_counter()
                     signature = (name, arguments)
                     calls[signature] += 1
-                    if calls[signature] > 2 or failures[name] >= 4:
+                    if calls[signature] > 2:
                         result = {
                             "status": "error",
                             "data": None,
@@ -330,7 +329,22 @@ class TravelAgent:
                             result = execute_tool(
                                 name, dispatch_arguments, self.runtime, mode=self.settings.data_mode
                             )
-                        except (ValidationError, ValueError):
+                        except ValidationError as exc:
+                            result = {
+                                "status": "error",
+                                "data_source": "live" if live else "simulated",
+                                "error": {
+                                    "code": "invalid_arguments",
+                                    "message": "; ".join(
+                                        f"{'.'.join(map(str, e['loc']))}: {e['msg']}"
+                                        for e in exc.errors(include_input=False)
+                                    ),
+                                    "suggestions": [
+                                        "Correct the named fields. Times use HH:MM (for example 07:30). The original request may already be correct."
+                                    ],
+                                },
+                            }
+                        except ValueError:
                             result = {
                                 "status": "error",
                                 "error": {
@@ -344,7 +358,6 @@ class TravelAgent:
                         if name == "build_itinerary":
                             validated_itinerary = Itinerary.model_validate(result["data"])
                     else:
-                        failures[name] += 1
                         if name == "build_itinerary":
                             validated_itinerary = None
                             last_build_error = result.get("error")
@@ -398,7 +411,6 @@ class TravelAgent:
                 if (
                     decision.status in {"error", "infeasible"}
                     and last_build_error
-                    and failures["build_itinerary"] < 4
                     and not failure_feedback_sent
                 ):
                     failure_feedback_sent = True
@@ -426,7 +438,17 @@ class TravelAgent:
                         + " Correct the response or complete the missing tools.",
                     }
                 )
+        if validated_itinerary is not None and searched == set(LIVE_REGISTRY if live else REGISTRY):
+            self.event(
+                "validated_completion",
+                summary="Completed from the validated final tool result at the iteration boundary.",
+            )
+            return finish(
+                "success",
+                "Your travel plan is ready. The schedule and total estimated budget have been validated. No bookings have been made.",
+                validated_itinerary,
+            )
         return finish(
             "iteration_limit",
-            "Maximum agent iterations reached. Try a shorter trip or adjust constraints.",
+            "The planner did not resolve all scheduling details within this attempt. No complete travel plan was produced. Please try generating again; you do not need to shorten the trip solely because of this technical limit.",
         )

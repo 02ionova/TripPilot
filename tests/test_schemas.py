@@ -77,3 +77,21 @@ def test_today_departure_allowed(request_data, monkeypatch):
 
     monkeypatch.setattr("schemas.current_date", lambda: date(2027, 4, 10))
     assert TravelRequest(**request_data).start_date == date(2027, 4, 10)
+
+
+@pytest.mark.parametrize(
+    "value,expected", [("7:30", "07:30"), ("8:15", "08:15"), ("07:30", "07:30")]
+)
+def test_schedule_accepts_single_digit_hour(value, expected):
+    from schemas import ScheduledSelection
+
+    slot = ScheduledSelection(activity_id="retrieved-id", start_time=value, end_time="09:00")
+    assert slot.start_time.strftime("%H:%M") == expected
+
+
+@pytest.mark.parametrize("value", ["25:00", "7:65", "not a time"])
+def test_schedule_rejects_invalid_clocks(value):
+    from schemas import ScheduledSelection
+
+    with pytest.raises(ValidationError):
+        ScheduledSelection(activity_id="retrieved-id", start_time=value, end_time="09:00")

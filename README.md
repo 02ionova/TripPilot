@@ -231,7 +231,7 @@ trip-pilot-ai/
 python -m pytest -v
 ```
 
-**158 tests passed** after the budget and design update. Tests use mocked OpenAI responses and `httpx.MockTransport`; an autouse network guard blocks accidental real HTTP transport in unit tests. Coverage includes full six-tool recovery, complete round-trip/group pricing, hotel rates/taxes/nights/rooms, dietary uncertainty, forecasts/archive samples, missing/null data, opening hours, transfers, trusted IDs, budget tampering/overruns, cache isolation, no-results reuse, quotas, retries, clean termination, redaction and Streamlit rendering. Tests consume **zero paid API calls**. Ruff and dependency checks are documented in `VERIFICATION.md`.
+**168 tests passed** after the scheduling and termination fixes. Tests use mocked OpenAI responses and `httpx.MockTransport`; an autouse network guard blocks accidental real HTTP transport in unit tests. Coverage includes full six-tool recovery, complete round-trip/group pricing, hotel rates/taxes/nights/rooms, dietary uncertainty, forecasts/archive samples, missing/null data, opening hours, transfers, trusted IDs, budget tampering/overruns, cache isolation, no-results reuse, quotas, retries, clean termination, redaction and Streamlit rendering. Tests consume **zero paid API calls**. Ruff and dependency checks are documented in `VERIFICATION.md`.
 
 ## Limitations, attribution and future work
 
@@ -261,3 +261,7 @@ Both Live and Demo Mode now allow suggestions up to 10% above the original targe
 The compact Live Mode toggle is at the top with help explaining both modes; the sidebar menu has been removed. The interface uses an ivory, aubergine, sage and brass palette. Each day has a visual overview and separate color-coded visit/meal cards. Live venue photos reuse Google Maps thumbnails from existing searches without extra SerpApi requests. When a photo is unavailable (including older saved traces), clearly labeled decorative SVG illustrations are used; they do not claim to depict the actual venue.
 
 The scheduler now diagnoses a selected closed attraction before trying meal permutations, reporting the exact place/date/ID and already retrieved alternatives. This addresses the Berlin screenshot's Monday-closed museum; increasing the budget alone cannot resolve a confirmed closure.
+
+## Schedule recovery and iteration handling (26 November 2026)
+
+Unambiguous model clock strings such as `7:30` are normalized to `07:30`; impossible times are still rejected. Validation errors identify the actual field instead of incorrectly reporting a changed original request. A revised build is allowed after earlier different errors; identical repeated calls and the total iteration cap remain bounded. A fully validated final-iteration build can complete successfully without an extra model call solely to announce success. Technical iteration failures no longer imply that the user's trip must be shortened. Arrival/departure days may contain meals or travel allowances without mandatory sightseeing; full sightseeing days still require a selected retrieved attraction.
