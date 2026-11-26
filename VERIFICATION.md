@@ -113,3 +113,15 @@ Automated regression coverage: H:MM normalization, invalid-clock rejection, prec
 - Real Chromium verification used the saved genuine Rome response, not a new LLM execution. Confirmed one hover/focus information panel, availability on the Weather tab, desktop/mobile panel bounds at widths 1440 and 390, and no mobile horizontal overflow. Flight/stay cards rendered existing provider records. Screenshots were inspected locally in ignored `results/`.
 - Browser external requests were blocked; zero SerpApi/OpenAI searches were made. Playwright was installed only in a temporary verification directory, not as an application dependency. The temporary local Streamlit process was stopped afterward.
 - The day-by-day plan is outside the supporting tabs. Provider caveats, pricing assumptions and practical notes are aggregated in the single edge popover; input/generation failures and explicit budget-overrun metrics remain visible. Actual trace/JSON warnings are unchanged.
+
+## Amsterdam location and full report regression — 26 November 2026
+
+The user's actual Berlin–Amsterdam failure was caused by geocoding, not unavailable flights/hotels: both travel searches succeeded, but repeated weather/place tools received `city_not_found`. A direct public Open-Meteo check reproduced HTTP 200 with no matches for `Amsterdam, Netherlands`; the country-code query `name=Amsterdam&countryCode=NL` returned Amsterdam, `The Netherlands`.
+
+The adapter now falls back once to the city name and validates all country/admin qualifiers against provider metadata, including the Netherlands/The Netherlands alias. New HTTP-mocked tests cover the actual empty-qualified-result shape, cache reuse, exact city vs suburb, rejection of a wrong country and same-country administrative ambiguity.
+
+Actual updated-tool verification found Amsterdam at 52.37403, 4.88969, retrieved four correctly labeled **Historical climate estimate** days for 10–13 April 2027, and found twelve real Maps places including Oude Kerk and Dam Square. This was a direct provider/tool verification, not a new complete LLM itinerary run. It used **one SerpApi search**; diagnostic geocoding/archive/account requests did not consume SerpApi search credits. No successful agent trace was fabricated.
+
+The single bottom report button produces a sanitized seven-file ZIP on both success and failure. Tests inspect archive contents, parse all JSON, verify the readable itinerary/log, and confirm credential redaction. Main progress/result captions no longer display search counters; the counters remain available in the archive/info control. Full suite: **176 tests passed**.
+
+The report button was also clicked in a real local Chromium session using the saved Rome result. The browser downloaded `trippilot-report.zip`, its seven entries were opened and checked, and the search-counter caption was absent. The browser check did not call travel providers or rerun the agent.

@@ -1,40 +1,83 @@
 """Resolve real city coordinates and flight airport identifiers without LLM guesses."""
 
 import re
+import unicodedata
 
 from providers.http import ProviderClient
 from tools.common import ToolFailure
 
 
+def location_key(value: str) -> str:
+    """Compare provider country/admin labels without accents or a leading 'The'."""
+    value = re.sub(r"^the\s+", "", value.strip().casefold())
+    value = "".join(c for c in unicodedata.normalize("NFKD", value) if not unicodedata.combining(c))
+    value = re.sub(r"[\W_]", "", value)
+    return {
+        "usa": "us",
+        "unitedstates": "us",
+        "unitedstatesofamerica": "us",
+        "uk": "gb",
+        "unitedkingdom": "gb",
+        "greatbritain": "gb",
+        "czechrepublic": "cz",
+        "czechia": "cz",
+    }.get(value, value)
+
+
 def geocode(client: ProviderClient, city: str) -> dict:
+    parts = [part.strip() for part in city.split(",") if part.strip()]
+    qualifiers = [location_key(part) for part in parts[1:]]
+
+    def matches(place):
+        labels = {
+            location_key(str(place.get(key) or ""))
+            for key in ("country", "country_code", "admin1", "admin2", "admin3", "admin4")
+        }
+        return all(part in labels for part in qualifiers)
+
     result = client.get_json(
         "https://geocoding-api.open-meteo.com/v1/search",
         {"name": city, "count": 10, "language": "en", "format": "json"},
         ttl=7 * 86400,
     )
     choices = result.get("results", [])
+    if qualifiers:
+        choices = [place for place in choices if matches(place)]
+        if not choices:
+            # Some valid labels (Netherlands vs The Netherlands) return no matches
+            # for a combined query. Retry the city once and enforce every qualifier
+            # ourselves; never silently choose a city in another country.
+            fallback = client.get_json(
+                "https://geocoding-api.open-meteo.com/v1/search",
+                {"name": parts[0], "count": 100, "language": "en", "format": "json"},
+                ttl=7 * 86400,
+            )
+            choices = [place for place in fallback.get("results", []) if matches(place)]
     if not choices:
         raise ToolFailure(
             "city_not_found",
             f"Could not locate {city}.",
-            ["Specify the city and country, for example Paris, France."],
+            [
+                "Specify city and country or administrative region; no different country will be substituted."
+            ],
         )
-    # Do not silently send people to a different Springfield/Paris. Country-qualified
-    # queries are already narrowed by Open-Meteo; same-country suburbs are acceptable.
-    countries = {c.get("country_code") for c in choices}
-    if len(countries) > 1 and "," not in city:
-        exact = [c for c in choices if c.get("name", "").casefold() == city.casefold()]
-        populations = sorted(exact, key=lambda c: c.get("population", 0), reverse=True)
-        if (
-            len(populations) > 1
-            and populations[1].get("population", 0) > populations[0].get("population", 0) * 0.2
-        ):
+    exact = [
+        place for place in choices if location_key(place.get("name", "")) == location_key(parts[0])
+    ]
+    candidates = exact or choices
+    populations = sorted(candidates, key=lambda c: c.get("population") or 0, reverse=True)
+    if len(populations) > 1:
+        different_regions = len({(c.get("country_code"), c.get("admin1")) for c in populations}) > 1
+        substantial = (populations[1].get("population") or 0) > (
+            populations[0].get("population") or 0
+        ) * 0.2
+        if different_regions and (qualifiers or substantial):
             labels = [
                 f"{c['name']}, {c.get('admin1', '')}, {c.get('country', '')}"
                 for c in populations[:5]
             ]
             raise ToolFailure("ambiguous_city", f"Several locations match {city}.", labels)
-    return max(choices, key=lambda c: c.get("population", 0))
+    return populations[0]
 
 
 def airport_id(client: ProviderClient, city: str) -> str:

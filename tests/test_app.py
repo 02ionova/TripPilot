@@ -28,7 +28,9 @@ def test_success_result_renders(request_data):
     assert not app.exception
     assert len(app.metric) == 3
     assert app.metric[1].value == "€243.00"
-    assert not app.get("download_button")
+    assert len(app.get("download_button")) == 1
+    assert app.get("download_button")[0].label == "Download full report"
+    assert not any("SerpApi" in caption.value for caption in app.caption)
     assert not app.json
     assert not any("Execution trace" in x.label for x in app.expander)
 
@@ -40,7 +42,9 @@ def test_error_result_renders():
     app.run(timeout=20)
     assert not app.exception
     assert "Missing API key" in app.error[0].value
-    assert not app.get("download_button")
+    assert len(app.get("download_button")) == 1
+    assert app.get("download_button")[0].label == "Download full report"
+    assert not any("SerpApi" in caption.value for caption in app.caption)
     assert not app.json
 
 

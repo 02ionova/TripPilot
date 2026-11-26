@@ -12,6 +12,7 @@ from city_suggestions import city_label, city_options
 from config import Settings
 from design import apply_styles
 from information import render_information
+from reporting import create_report_archive
 from schemas import TravelRequest, current_date
 from ui import render_budget_metrics, render_itinerary_days, render_live_plan
 
@@ -60,7 +61,6 @@ if st.session_state.get("selected_data_mode", mode) != mode or (
 st.session_state["selected_data_mode"] = mode
 if mode == "demo":
     mode_control.caption("Demo · Simulated data")
-quota_status = st.empty()
 with st.container(border=True, key="travel_request_panel"):
     a, b, c = st.columns(3)
     cities = city_options()
@@ -172,10 +172,6 @@ if submitted:
                     "build_itinerary": "Checking the schedule and total cost…",
                 }
                 if event["kind"] == "provider_request":
-                    count = event.get("counters", {}).get("serpapi_requests", 0)
-                    quota_status.caption(
-                        f"SerpApi searches used: {count} / {settings.max_serpapi_requests}"
-                    )
                     return
                 if event["kind"] == "budget_precheck":
                     text = "Minimum costs checked. Preparing your itinerary…"
@@ -286,9 +282,14 @@ if "result" in st.session_state:
         st.write(result.message)
     else:
         st.error(result.message)
-    if result.data_source == "live" and result.status != "success":
-        st.caption(
-            f"SerpApi searches used: {result.serpapi_requests} · Provider cache hits: {result.provider_cache_hits}"
-        )
+    st.divider()
+    st.download_button(
+        "Download full report",
+        create_report_archive(result, st.session_state.get("trace", {}), mode),
+        file_name="trippilot-report.zip",
+        mime="application/zip",
+        on_click="ignore",
+        help="Download your itinerary, JSON files, execution log and source notes in one ZIP archive.",
+    )
 
 render_information(mode, st.session_state.get("result"))

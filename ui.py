@@ -257,11 +257,8 @@ def render_live_plan(result):
     )
     b = plan.budget_breakdown
     render_budget_metrics(plan)
-    st.caption(
-        f"SerpApi searches used: {result.serpapi_requests} · Provider cache hits: {result.provider_cache_hits} · Result assembled: {result.retrieved_at:%Y-%m-%d %H:%M UTC}"
-        if result.retrieved_at
-        else f"SerpApi searches used: {result.serpapi_requests}"
-    )
+    if result.retrieved_at:
+        st.caption(f"Travel information retrieved: {result.retrieved_at:%d %b %Y, %H:%M UTC}")
     st.subheader("Your day-by-day itinerary")
     render_itinerary_days(plan)
     travel, weather, budget = st.tabs(["Flights & stay", "Weather", "Budget"])

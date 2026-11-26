@@ -114,7 +114,7 @@ streamlit run app.py
 
 Open the displayed localhost URL. Choose Live Mode, enter cities (prefer **City, Country**) and future dates, budget for **all** travelers, pace, interests and diets. Planning starts only with **Generate Travel Plan**; Enter can confirm a field value but does not start planning. Adding/removing a traveler immediately adds/subtracts EUR 500 from the current editable total budget (minimum EUR 1). Changing fields does not invoke the agent. Country-qualified suggestions are passed to providers. Missing/invalid keys produce explicit errors, never an automatic simulation fallback.
 
-The day-by-day itinerary appears directly on the main results page, including selected flight segments, transfer allowances, accommodation and meals. Supporting Flights & stay, Weather and Budget tabs appear below it. Retrieved/estimated cost labels, source timestamps and ratings remain visible. Observable planning progress is displayed during generation. Technical logs and JSON export buttons are hidden from the web interface; full execution traces are still automatically saved in `traces/`, and the CLI saves final JSON results. Switching modes clears the previous result.
+The day-by-day itinerary appears directly on the main results page, including selected flight segments, transfer allowances, accommodation and meals. Supporting Flights & stay, Weather and Budget tabs appear below it. Retrieved/estimated cost labels, source timestamps and ratings remain visible. Observable planning progress is displayed during generation. Technical logs remain hidden from the main interface. A single **Download full report** button at the bottom saves a ZIP containing the complete itinerary/result, original request, execution trace, concise log, information notes and budget validation. Full execution traces are also automatically saved in `traces/`, and the CLI saves final JSON results. Switching modes clears the previous result.
 
 ### CLI and examples
 
@@ -231,7 +231,7 @@ trip-pilot-ai/
 python -m pytest -v
 ```
 
-**171 tests passed** after the itinerary presentation update. Tests use mocked OpenAI responses and `httpx.MockTransport`; an autouse network guard blocks accidental real HTTP transport in unit tests. Coverage includes full six-tool recovery, complete round-trip/group pricing, hotel rates/taxes/nights/rooms, dietary uncertainty, forecasts/archive samples, missing/null data, opening hours, transfers, trusted IDs, budget tampering/overruns, cache isolation, no-results reuse, quotas, retries, clean termination, redaction and Streamlit rendering. Tests consume **zero paid API calls**. Ruff and dependency checks are documented in `VERIFICATION.md`.
+**176 tests passed** after the geocoding and report-export update. Tests use mocked OpenAI responses and `httpx.MockTransport`; an autouse network guard blocks accidental real HTTP transport in unit tests. Coverage includes full six-tool recovery, complete round-trip/group pricing, hotel rates/taxes/nights/rooms, dietary uncertainty, forecasts/archive samples, missing/null data, opening hours, transfers, trusted IDs, budget tampering/overruns, cache isolation, no-results reuse, quotas, retries, clean termination, redaction and Streamlit rendering. Tests consume **zero paid API calls**. Ruff and dependency checks are documented in `VERIFICATION.md`.
 
 ## Limitations, attribution and future work
 
@@ -273,3 +273,9 @@ A single floating **i** control at the right edge collects provider disclaimers,
 The main page shows day cards immediately. Flight cards use retrieved airline, flight number, airport and local segment times; no train journeys are invented. Estimated airport transfers and the selected hotel are included on the relevant days. These are display-only references to existing trip costs and never charge flights/accommodation again. Unknown hotel check-in/out times are not invented. On travel-only days, a neutral arrival/departure title replaces inaccurate model titles promising a restaurant visit.
 
 Typography uses locally available sans-serif heading/body stacks (Trebuchet MS and Avenir Next/Segoe UI with fallbacks), with light search fields and rounded white cards. No remote font requests or new frontend runtime dependencies are required.
+
+## Country-qualified geocoding and full report export (26 November 2026)
+
+Some provider country labels differ from normal user labels: Open-Meteo can return no result for `Amsterdam, Netherlands` while its country name is `The Netherlands`. If a qualified lookup returns no matching result, the adapter retries the city name once, then filters the returned locations against **all** supplied country/admin qualifiers. Country-code and common label aliases are supported; no other country is silently substituted. Exact city-name matches are preferred over suburbs, and unresolved ambiguity asks for clarification. Both searches use the existing geocoding cache and consume no SerpApi credits. [Official geocoding parameters and matching rules](https://open-meteo.com/en/docs/geocoding-api).
+
+The full report ZIP includes `README.md`, `result.json`, `request.json`, `execution_trace.json`, `runtime.log`, `information.json` and `budget_validation.json`. It is available after successful and failed runs and contains only the current run's sanitized data; `.env`, provider caches and unrelated traces are never included. Downloading does not invoke the agent or providers. Search counters remain in the information popover, trace and archive, and are hidden from normal page captions/progress.
