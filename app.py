@@ -11,10 +11,11 @@ from budgeting import maximum_budget
 from city_suggestions import city_label, city_options
 from config import Settings
 from design import apply_styles
+from display import display_date
 from information import render_information
 from reporting import create_report_archive
 from schemas import TravelRequest, current_date
-from ui import render_budget_metrics, render_itinerary_days, render_live_plan
+from ui import render_ai_advice, render_budget_metrics, render_itinerary_days, render_live_plan
 
 st.set_page_config(page_title="TripPilot AI", page_icon="✈️", layout="wide")
 apply_styles()
@@ -97,8 +98,16 @@ with st.container(border=True, key="travel_request_panel"):
     today = current_date()
     default_start = max(today, date(2027, 4, 10))
     default_end = min(default_start + timedelta(days=3), date(2035, 12, 31))
-    start = a.date_input("Start date", default_start, min_value=today, max_value=date(2035, 12, 31))
-    end = b.date_input("End date", default_end, min_value=today, max_value=date(2035, 12, 31))
+    start = a.date_input(
+        "Start date",
+        default_start,
+        min_value=today,
+        max_value=date(2035, 12, 31),
+        format="DD/MM/YYYY",
+    )
+    end = b.date_input(
+        "End date", default_end, min_value=today, max_value=date(2035, 12, 31), format="DD/MM/YYYY"
+    )
     budget = c.number_input(
         "Total budget in EUR",
         min_value=1.0,
@@ -179,6 +188,8 @@ if submitted:
                     text = labels.get(event["tool"], "Planning your trip…")
                 elif event["kind"] == "replanning":
                     text = "Adjusting the plan to your requirements…"
+                elif event["kind"] == "ai_fallback_started":
+                    text = "Live search is unavailable. Preparing AI travel suggestions…"
                 elif event["kind"] == "api_retry":
                     text = "The planning service is temporarily busy. Retrying…"
                 else:
@@ -196,10 +207,15 @@ if submitted:
                 "infeasible": "No complete plan found — review the suggestions below",
                 "needs_clarification": "Please review your trip details",
             }.get(result.status, "Planning could not be completed")
+            if result.ai_fallback and result.ai_fallback.status == "available":
+                final_label = "AI suggestions are ready — live offers could not be verified"
             current_step.empty()
             activity.update(
                 label=final_label,
-                state="error" if result.status in {"error", "iteration_limit"} else "complete",
+                state="error"
+                if result.status in {"error", "iteration_limit"}
+                and not (result.ai_fallback and result.ai_fallback.status == "available")
+                else "complete",
                 expanded=False,
             )
 
@@ -213,7 +229,7 @@ if "result" in st.session_state:
         summary = plan.trip_summary
         st.subheader(f"{summary.origin} → {summary.destination}")
         st.caption(
-            f"{summary.start_date} – {summary.end_date} · {summary.travelers} traveler(s) · EUR"
+            f"{display_date(summary.start_date)} – {display_date(summary.end_date)} · {summary.travelers} traveler(s) · EUR"
         )
         budget_data = plan.budget_breakdown
         render_budget_metrics(plan)
@@ -224,7 +240,7 @@ if "result" in st.session_state:
             f, h = plan.selected_flights, plan.selected_accommodation
             st.markdown(f"**{f.airline}** · {f.id} · round trip €{f.total_price:.2f}")
             st.write(
-                f"Outbound {f.departure_date}: {f.departure_time:%H:%M} → {f.arrival_time:%H:%M}; return {f.return_date}: {f.return_departure_time:%H:%M} → {f.return_arrival_time:%H:%M}. All times local."
+                f"Outbound {display_date(f.departure_date)}: {f.departure_time:%H:%M} → {f.arrival_time:%H:%M}; return {display_date(f.return_date)}: {f.return_departure_time:%H:%M} → {f.return_arrival_time:%H:%M}. All times local."
             )
             st.markdown(
                 f"**{h.name}** · {h.accommodation_type} · {h.neighborhood} · rating {h.rating}/10"
@@ -234,7 +250,10 @@ if "result" in st.session_state:
             )
         with weather:
             st.dataframe(
-                [w.model_dump(mode="json") for w in plan.weather_summary],
+                [
+                    {**w.model_dump(mode="json"), "date": display_date(w.date)}
+                    for w in plan.weather_summary
+                ],
                 hide_index=True,
                 width="stretch",
             )
@@ -281,7 +300,12 @@ if "result" in st.session_state:
     elif result.status == "needs_clarification":
         st.write(result.message)
     else:
-        st.error(result.message)
+        if result.ai_fallback and result.ai_fallback.status == "available":
+            st.write(result.message)
+        else:
+            st.error(result.message)
+    if result.ai_fallback:
+        render_ai_advice(result.ai_fallback)
     st.divider()
     st.download_button(
         "Download full report",

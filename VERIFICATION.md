@@ -125,3 +125,15 @@ Actual updated-tool verification found Amsterdam at 52.37403, 4.88969, retrieved
 The single bottom report button produces a sanitized seven-file ZIP on both success and failure. Tests inspect archive contents, parse all JSON, verify the readable itinerary/log, and confirm credential redaction. Main progress/result captions no longer display search counters; the counters remain available in the archive/info control. Full suite: **176 tests passed**.
 
 The report button was also clicked in a real local Chromium session using the saved Rome result. The browser downloaded `trippilot-report.zip`, its seven entries were opened and checked, and the search-counter caption was absent. The browser check did not call travel providers or rerun the agent.
+
+
+## AI backup response and readable dates — 26 November 2026
+
+Unresolved Live travel-search failures can now trigger one separate OpenAI structured response using the original request. It contains unverified daily ideas, qualitative budget guidance and verification steps. The original terminal status remains unchanged; no itinerary, bookable offer or budget-validation claim is manufactured. Successful recovery, invalid input, ambiguous locations, disabled configuration and absent OpenAI credentials do not trigger the extra call. A strict date check and typed schema reject malformed backup content. The backup has a 30-second maximum request timeout and no explicit retries.
+
+The UI shows backup model, response duration and reported token usage. Traces record only observable content/events. Full report archives include `ai_fallback.json` when applicable. Human-facing dates and flight durations are formatted consistently; machine-readable JSON remains ISO and airport-local clocks are preserved.
+
+- Automated suite: **195 passed in 3.43 seconds**, zero external API calls. New tests cover actual loop-to-backup transition after a mocked hotel no-results response, no automatic success, single-call limits, invalid dates/schema, timeout secret handling, report contents and Streamlit rendering.
+- One actual OpenAI backup request using the original failed Amsterdam request succeeded with **gpt-4.1-mini**, **6.515 seconds**, **1,148 tokens**, four days. This was a direct helper verification, not a new successful full-agent itinerary trace. **Zero SerpApi searches** were used. The local verification output is under ignored `results/ai_backup_verification.json`; no key was logged.
+- A real local Chromium session verified Streamlit startup, the existing daily plan/flight/stay cards, desktop/mobile layout, information control and full report download using a saved genuine result. All external browser requests were blocked and the local server stopped afterward.
+- `.env` and the configured model were not changed. The tested model remains configurable; newer models must be checked for Chat Completions tool/structured-output compatibility before substitution.

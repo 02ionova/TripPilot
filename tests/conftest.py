@@ -73,6 +73,7 @@ def fixed_application_date(monkeypatch):
     from datetime import date
 
     monkeypatch.setenv("DATA_MODE", "demo")
+    monkeypatch.setenv("ENABLE_AI_FALLBACK", "false")
     monkeypatch.setattr("schemas.current_date", lambda: date(2026, 11, 24))
 
 

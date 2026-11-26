@@ -100,11 +100,14 @@ SERPAPI_API_KEY=
 MAX_AGENT_ITERATIONS=15
 MAX_SERPAPI_REQUESTS_PER_RUN=15
 DATA_MODE=live
+ENABLE_AI_FALLBACK=true
 ```
 
 Create/sign in to a [SerpApi account](https://serpapi.com/users/sign_up), then copy the API key from the private dashboard into `SERPAPI_API_KEY`. The same key is used for all SerpApi engines. No new subscription or paid plan is enabled by this application. Open-Meteo needs no key for its free noncommercial API; OpenAI usage is billed separately by OpenAI.
 
 `gpt-4.1-mini` was verified with the installed OpenAI 2.x SDK using Chat Completions function calling and JSON-schema structured output. A replacement model must support both and be accessible to your OpenAI API project. Existing exported environment variables take precedence over `.env`. Restart Streamlit after changing keys/settings. Never commit `.env`.
+
+OpenAI now labels this tested model as deprecated. Model migrations must check endpoint compatibility: for example, `gpt-6.1-terra` requires Responses API for tool calling, while this agent currently uses Chat Completions. Do not change to an incompatible model name without adapting the loop. See the official [model documentation](https://developers.openai.com/api/docs/models/gpt-6.1-terra).
 
 ### Launch the web application
 
@@ -181,6 +184,16 @@ Exact provider requests are reused within the run and in an ignored SQLite TTL c
 
 Unknown tools/arguments, no results/prices, unsupported/ambiguous locations, missing keys, invalid dates, timeouts, provider errors, quota limits, schedule conflicts and over-budget plans become structured feedback. Repeated failures terminate cleanly. No subscription changes are performed.
 
+### Optional AI backup response
+
+When Live planning ends with an unresolved external travel-search failure, the application can make **one additional OpenAI request** with the original travel request and sanitized search errors. This is a general-knowledge API answer, not a request to the ChatGPT website or a second live search provider. It offers flexible daily ideas and search/verification strategies; it must not invent flights, quotes, availability, schedules or a confirmed budget.
+
+The UI displays this response separately, explicitly marks it unverified, and shows the model, duration and token usage reported by OpenAI. The original error/status is preserved; no trusted itinerary is created and no budget validation is claimed. The CLI keeps its original failure exit code. A malformed response or backup timeout terminates without further retries. Successful searches that recover within the agent loop do not trigger a backup. Neither do invalid input, ambiguous cities, a pure budget-validation failure or a terminal OpenAI error. Missing OpenAI credentials prevent the backup entirely.
+
+Set `ENABLE_AI_FALLBACK=false` to disable it. The additional call consumes OpenAI tokens and **zero SerpApi searches**. The response and observable events are recorded in the execution trace; the full report adds `ai_fallback.json` when a backup was attempted. Traces never include hidden reasoning. This feature does not automatically switch Live Mode to Demo Mode.
+
+Dates in the interface, CLI and readable report use `10 Apr 2027`; flight timestamps use `10 Apr 2027 · 20:55` and durations use `1 h 15 min`. Flight clocks retain the provider's airport-local time. Form dates use `DD/MM/YYYY`. API inputs and machine-readable JSON/trace files retain ISO dates and timestamps.
+
 `tracing.py` records observable actions only: run ID/timestamps, original request, model, assistant responses/tool calls, call IDs, arguments, raw sanitized provider results, source/retrieval times, errors, retries/replanning, timings/token usage, counters, final response/status and budget validation. Hidden chain-of-thought is neither requested nor saved. API keys, authorization fields and credential-bearing URL parameters are redacted; raw exception bodies and account email/key are not logged. Trace files still contain travel preferences: review before sharing.
 
 ## Genuine Live execution traces
@@ -231,7 +244,7 @@ trip-pilot-ai/
 python -m pytest -v
 ```
 
-**176 tests passed** after the geocoding and report-export update. Tests use mocked OpenAI responses and `httpx.MockTransport`; an autouse network guard blocks accidental real HTTP transport in unit tests. Coverage includes full six-tool recovery, complete round-trip/group pricing, hotel rates/taxes/nights/rooms, dietary uncertainty, forecasts/archive samples, missing/null data, opening hours, transfers, trusted IDs, budget tampering/overruns, cache isolation, no-results reuse, quotas, retries, clean termination, redaction and Streamlit rendering. Tests consume **zero paid API calls**. Ruff and dependency checks are documented in `VERIFICATION.md`.
+**195 tests passed** after the AI backup and date-display update. Tests use mocked OpenAI responses and `httpx.MockTransport`; an autouse network guard blocks accidental real HTTP transport in unit tests. Coverage includes full six-tool recovery, complete round-trip/group pricing, hotel rates/taxes/nights/rooms, dietary uncertainty, forecasts/archive samples, missing/null data, opening hours, transfers, trusted IDs, budget tampering/overruns, cache isolation, no-results reuse, quotas, retries, clean termination, redaction and Streamlit rendering. Backup tests cover single-call limits, invalid output/dates, timeout/secret handling, preserving failure status and absent budget validation, token statistics, report export and UI rendering. Tests consume **zero paid API calls**. Ruff and dependency checks are documented in `VERIFICATION.md`.
 
 ## Limitations, attribution and future work
 

@@ -5,6 +5,7 @@ from html import escape
 import streamlit as st
 
 from config import ROOT
+from display import display_date, display_datetime, display_duration
 from providers.travel import safe_url
 
 
@@ -126,8 +127,12 @@ def render_daily_flights(plan, day, *, returning: bool) -> None:
                 "flight",
                 label,
                 f"{leg.departure_airport} → {leg.arrival_airport}",
-                f"{leg.airline}{number} · {leg.departure:%d %b %H:%M} → {leg.arrival:%d %b %H:%M} (airport local times)"
-                + (f" · {leg.duration_minutes} min" if leg.duration_minutes is not None else ""),
+                f"{leg.airline}{number} · {display_datetime(leg.departure)} → {display_datetime(leg.arrival)} (airport local times)"
+                + (
+                    f" · {display_duration(leg.duration_minutes)}"
+                    if leg.duration_minutes is not None
+                    else ""
+                ),
                 flight.search_url,
             )
     elif day.date == (flight.return_date if returning else flight.departure_date):
@@ -253,12 +258,12 @@ def render_live_plan(result):
     st.caption("Your travel plan is ready.")
     st.subheader(f"{summary.origin} → {summary.destination}")
     st.caption(
-        f"{summary.start_date} – {summary.end_date} · {summary.travelers} traveler(s) · EUR · Live Mode"
+        f"{display_date(summary.start_date)} – {display_date(summary.end_date)} · {summary.travelers} traveler(s) · EUR · Live Mode"
     )
     b = plan.budget_breakdown
     render_budget_metrics(plan)
     if result.retrieved_at:
-        st.caption(f"Travel information retrieved: {result.retrieved_at:%d %b %Y, %H:%M UTC}")
+        st.caption(f"Travel information retrieved: {display_datetime(result.retrieved_at)} UTC")
     st.subheader("Your day-by-day itinerary")
     render_itinerary_days(plan)
     travel, weather, budget = st.tabs(["Flights & stay", "Weather", "Budget"])
@@ -272,17 +277,19 @@ def render_live_plan(result):
             ("Outbound", flight.outbound_segments),
             ("Return", flight.return_segments),
         ]:
-            st.markdown(f"**{title} · {max(0, len(legs) - 1)} stop(s)**")
+            st.markdown(
+                f"**{title} · {'Direct flight' if len(legs) == 1 else str(len(legs) - 1) + ' stop(s)'}**"
+            )
             st.dataframe(
                 [
                     {
                         "Airline": leg.airline,
                         "Flight": leg.flight_number,
                         "From": leg.departure_airport,
-                        "Departure (airport local time)": str(leg.departure),
+                        "Departure (local)": display_datetime(leg.departure),
                         "To": leg.arrival_airport,
-                        "Arrival (airport local time)": str(leg.arrival),
-                        "Duration (minutes)": leg.duration_minutes,
+                        "Arrival (local)": display_datetime(leg.arrival),
+                        "Duration": display_duration(leg.duration_minutes),
                     }
                     for leg in legs
                 ],
@@ -293,7 +300,7 @@ def render_live_plan(result):
             st.link_button("View flight search", flight.search_url)
         if flight.source:
             st.caption(
-                f"{flight.source.provider} · retrieved {flight.source.retrieved_at:%Y-%m-%d %H:%M UTC}"
+                f"{flight.source.provider} · retrieved {display_datetime(flight.source.retrieved_at)} UTC"
             )
         hotel = plan.selected_accommodation
         if hotel:
@@ -316,7 +323,7 @@ def render_live_plan(result):
         st.dataframe(
             [
                 {
-                    "Date": str(w.date),
+                    "Date": display_date(w.date),
                     "Information": w.information_type,
                     "Min °C": w.min_temperature,
                     "Max °C": w.max_temperature,
@@ -365,3 +372,37 @@ def render_live_plan(result):
             hide_index=True,
             width="stretch",
         )
+
+
+def render_ai_advice(advice) -> None:
+    """Keep unverified model suggestions visibly separate from trusted itineraries."""
+    st.subheader("AI backup response")
+    st.caption(
+        "OpenAI general-knowledge suggestions · No live search · Prices, availability and budget are not verified"
+    )
+    if advice.status != "available":
+        st.write(advice.error)
+        return
+    model, duration, tokens = st.columns(3)
+    model.metric("AI model", advice.model)
+    duration.metric("Response time", f"{advice.duration_seconds:.1f} s")
+    tokens.metric(
+        "Tokens used",
+        advice.usage.total_tokens if advice.usage.total_tokens is not None else "Not reported",
+    )
+    content = advice.content
+    st.markdown(f"**{content.title}**")
+    st.write(content.summary)
+    for day in content.days:
+        with st.container(border=True):
+            st.markdown(f"**{display_date(day.date)} · {day.title}**")
+            for suggestion in day.suggestions:
+                st.write(f"• {suggestion}")
+    if content.budget_guidance:
+        st.markdown("**Budget approach**")
+        for text in content.budget_guidance:
+            st.write(f"• {text}")
+    if content.verification_steps:
+        with st.expander("What to verify before booking"):
+            for text in content.verification_steps:
+                st.write(f"• {text}")

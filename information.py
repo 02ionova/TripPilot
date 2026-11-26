@@ -34,6 +34,11 @@ def information_groups(mode: str, result=None) -> dict[str, list[str]]:
         groups["Provider usage"] = [
             f"SerpApi searches: {result.serpapi_requests}; provider cache hits: {result.provider_cache_hits}."
         ]
+    if result.ai_fallback:
+        groups["AI backup response"] = [
+            "The backup answer uses OpenAI general knowledge without live search. It is not a retrieved quote or validated itinerary. Confirm all suggestions before booking.",
+            "A maximum of one extra OpenAI call is made after unresolved live search errors; no extra SerpApi requests are made. OpenAI token usage is separate from SerpApi credits.",
+        ]
     if result.status != "success":
         return groups
     plan = result.itinerary

@@ -7,6 +7,7 @@ from pathlib import Path
 
 from agent import TravelAgent
 from config import ROOT, Settings
+from display import display_date
 
 
 def main() -> int:
@@ -41,16 +42,29 @@ def main() -> int:
             print(
                 f"  {name.replace('_', ' ').title()}: EUR {getattr(result.budget_estimate, name):.2f}"
             )
+    if result.ai_fallback:
+        advice = result.ai_fallback
+        print(
+            f"\nAI BACKUP — unverified suggestions; model {advice.model}; {advice.duration_seconds:.1f}s; tokens {advice.usage.total_tokens}"
+        )
+        if advice.content:
+            print(advice.content.summary)
+            for day in advice.content.days:
+                print(f"{display_date(day.date)}: {day.title}")
+                for suggestion in day.suggestions:
+                    print(f"  - {suggestion}")
+        else:
+            print(advice.error)
     if result.itinerary:
         plan = result.itinerary
         summary = plan.trip_summary
         print(
-            f"{summary.origin} → {summary.destination} | {summary.start_date} – {summary.end_date} | {summary.travelers} traveler(s)"
+            f"{summary.origin} → {summary.destination} | {display_date(summary.start_date)} – {display_date(summary.end_date)} | {summary.travelers} traveler(s)"
         )
         for key, value in plan.budget_breakdown.model_dump().items():
             print(f"{key.replace('_', ' ').title()}: EUR {value:.2f}")
         for day in plan.daily_itinerary:
-            print(f"\n{day.date}: {day.title}")
+            print(f"\n{display_date(day.date)}: {day.title}")
             for slot in day.schedule:
                 print(
                     f"  {slot.start_time:%H:%M}–{slot.end_time:%H:%M} {slot.meal or 'visit'}: {slot.activity.name}"

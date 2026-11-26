@@ -4,6 +4,7 @@ import io
 import json
 from zipfile import ZIP_DEFLATED, ZipFile
 
+from display import display_date, display_datetime
 from information import information_groups
 from schemas import FinalResponse
 from tracing import redact
@@ -18,7 +19,7 @@ def report_markdown(result: FinalResponse, trace: dict) -> str:
         lines += [
             "",
             f"## {s.origin} → {s.destination}",
-            f"{s.start_date} – {s.end_date}; {s.travelers} traveler(s); EUR",
+            f"{display_date(s.start_date)} – {display_date(s.end_date)}; {s.travelers} traveler(s); EUR",
             "",
             "## Budget",
         ]
@@ -38,7 +39,7 @@ def report_markdown(result: FinalResponse, trace: dict) -> str:
         ]:
             lines += [f"### {title}"]
             lines += [
-                f"- {p.airline} {p.flight_number or ''}: {p.departure_airport} {p.departure} → {p.arrival_airport} {p.arrival} (airport local times)"
+                f"- {p.airline} {p.flight_number or ''}: {p.departure_airport} {display_datetime(p.departure)} → {p.arrival_airport} {display_datetime(p.arrival)} (airport local times)"
                 for p in legs
             ]
         if flight.search_url:
@@ -56,7 +57,7 @@ def report_markdown(result: FinalResponse, trace: dict) -> str:
         for day in plan.daily_itinerary:
             lines += [
                 "",
-                f"## {day.date} — {day.title}",
+                f"## {display_date(day.date)} — {day.title}",
                 f"{day.weather.information_type}: {day.weather.conditions}; {day.weather.min_temperature}–{day.weather.max_temperature} °C",
                 f"Daily expenses: EUR {day.estimated_cost:.2f} (flights/accommodation charged separately)",
             ]
@@ -66,6 +67,31 @@ def report_markdown(result: FinalResponse, trace: dict) -> str:
                 + (f" | {slot.activity.url}" if slot.activity.url else "")
                 for slot in day.schedule
             ]
+    if result.ai_fallback:
+        backup = result.ai_fallback
+        lines += [
+            "",
+            "## AI backup response — unverified suggestions",
+            f"Model: {backup.model}; elapsed: {backup.duration_seconds:.1f} s; tokens: {backup.usage.total_tokens if backup.usage.total_tokens is not None else 'unavailable'}",
+            "No live prices, availability or budget validation is implied.",
+        ]
+        if backup.content:
+            lines += [backup.content.title, backup.content.summary]
+            for day in backup.content.days:
+                lines += [
+                    f"### {display_date(day.date)} — {day.title}",
+                    *[f"- {s}" for s in day.suggestions],
+                ]
+        else:
+            lines.append(backup.error or "Backup unavailable")
+        lines += (
+            [*backup.content.budget_guidance, *backup.content.verification_steps]
+            if backup.content
+            else []
+        )
+        lines.append(
+            "Backup data file: ai_fallback.json (unverified response and usage statistics)."
+        )
     lines += [
         "",
         "## Report files",
@@ -91,6 +117,8 @@ def create_report_archive(result: FinalResponse, trace: dict, mode: str) -> byte
         "information.json": information_groups(mode, result),
         "budget_validation.json": trace.get("budget_validation"),
     }
+    if result.ai_fallback:
+        contents["ai_fallback.json"] = result.ai_fallback.model_dump(mode="json")
     log = []
     for event in trace.get("events", []):
         detail = {

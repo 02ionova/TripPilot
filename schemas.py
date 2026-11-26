@@ -402,11 +402,49 @@ class BudgetEstimate(Model):
     shortfall: float = Field(ge=0)
 
 
+class AdviceDay(Model):
+    date: date
+    title: str
+    suggestions: list[str]
+
+
+class AIAdviceContent(Model):
+    """General suggestions only, never trusted offers or a validated itinerary."""
+
+    title: str
+    summary: str
+    days: list[AdviceDay]
+    budget_guidance: list[str]
+    verification_steps: list[str]
+
+
+class TokenUsage(Model):
+    prompt_tokens: int | None = None
+    completion_tokens: int | None = None
+    total_tokens: int | None = None
+
+
+class AIAdvice(Model):
+    status: Literal["available", "error"]
+    reason: str
+    failed_tools: list[str]
+    content: AIAdviceContent | None = None
+    model: str
+    generated_at: datetime
+    duration_seconds: float
+    usage: TokenUsage = Field(default_factory=TokenUsage)
+    data_source: Literal["unverified_ai"] = "unverified_ai"
+    budget_validated: Literal[False] = False
+    availability_verified: Literal[False] = False
+    error: str | None = None
+
+
 class FinalResponse(Model):
     status: Literal["success", "needs_clarification", "infeasible", "error", "iteration_limit"]
     message: str
     itinerary: Itinerary | None = None
     budget_estimate: BudgetEstimate | None = None
+    ai_fallback: AIAdvice | None = None
     serpapi_requests: int = 0
     provider_cache_hits: int = 0
     retrieved_at: datetime | None = None

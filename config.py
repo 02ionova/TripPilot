@@ -24,6 +24,11 @@ class Settings:
     max_serpapi_requests: int = field(
         default_factory=lambda: int(os.getenv("MAX_SERPAPI_REQUESTS_PER_RUN", "15"))
     )
+    enable_ai_fallback: bool = field(
+        default_factory=lambda: (
+            os.getenv("ENABLE_AI_FALLBACK", "true").lower() in {"true", "1", "yes"}
+        )
+    )
     timeout: float = 60.0
     http_timeout: float = 25.0
     estimated_meal_eur: float = 15.0

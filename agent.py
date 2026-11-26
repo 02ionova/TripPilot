@@ -22,6 +22,7 @@ from pydantic import ValidationError
 from budgeting import budget_notice, maximum_budget
 from cities import bind_city_label
 from config import Settings
+from fallback import generate_advice, unresolved_search_errors
 from planning import estimate_minimum_budget
 from prompts import DEMONSTRATION_POLICY, LIVE_SYSTEM_PROMPT, SYSTEM_PROMPT
 from schemas import BuildArgs, FinalDecision, FinalResponse, Itinerary, LiveBuildArgs, TravelRequest
@@ -102,6 +103,7 @@ class TravelAgent:
         live = self.settings.data_mode == "live"
         self.trace.data["data_mode"] = self.settings.data_mode
         budget_estimate = None
+        request = None
 
         def finish(status, message, itinerary=None):
             stats = self.runtime.client.stats() if self.runtime else {}
@@ -111,18 +113,33 @@ class TravelAgent:
                 notice = budget_notice(request.budget, itinerary.budget_breakdown.total)
                 if notice:
                     message = message + " " + notice
-            result = self.trace.finish(
-                FinalResponse(
-                    status=status,
-                    message=message,
-                    itinerary=itinerary,
-                    budget_estimate=budget_estimate,
-                    data_source="live" if live else "simulated",
-                    serpapi_requests=stats.get("serpapi_requests", 0),
-                    provider_cache_hits=stats.get("provider_cache_hits", 0),
-                    retrieved_at=now() if live else None,
-                )
+            response_data = FinalResponse(
+                status=status,
+                message=message,
+                itinerary=itinerary,
+                budget_estimate=budget_estimate,
+                data_source="live" if live else "simulated",
+                serpapi_requests=stats.get("serpapi_requests", 0),
+                provider_cache_hits=stats.get("provider_cache_hits", 0),
+                retrieved_at=now() if live else None,
             )
+            errors = unresolved_search_errors(self.trace.data)
+            last_event = (
+                self.trace.data["events"][-1].get("kind") if self.trace.data["events"] else None
+            )
+            if (
+                live
+                and request is not None
+                and status != "success"
+                and self.settings.enable_ai_fallback
+                and errors
+                and (self.client is not None or self.settings.api_key)
+                and last_event not in {"api_error", "api_retry", "clarification_required"}
+            ):
+                response_data.ai_fallback = generate_advice(
+                    request, errors, self.settings, self.client, self.event
+                )
+            result = self.trace.finish(response_data)
             if self.runtime:
                 self.runtime.client.close()
             return result
@@ -134,6 +151,11 @@ class TravelAgent:
             return finish("needs_clarification", "Please correct your request: " + details)
         if live:
             if not self.settings.serpapi_api_key:
+                self.event(
+                    "provider_unavailable",
+                    tool="search_flights",
+                    error={"code": "missing_api_key", "message": "SERPAPI_API_KEY is missing."},
+                )
                 return finish(
                     "error",
                     "SERPAPI_API_KEY is missing. Configure it in .env and restart. Live Mode never switches to simulated data automatically.",
